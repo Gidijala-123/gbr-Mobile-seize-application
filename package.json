@@ -15,7 +15,7 @@
     "cryptr": "^6.0.2",
     "debug": "~2.6.9",
     "email-check": "^1.1.0",
-    "express": "^4.16.4",
+    "express": "^4.19.2",
     "express-session": "^1.17.1",
     "http-errors": "~1.6.3",
     "jquery": "^3.5.1",
