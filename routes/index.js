@@ -96,16 +96,16 @@ router.post("/postforgot", function (req, res) {
     }
   });
 
-  var transporter = nodemailer.createTransport({
-    service: "gmail",
+  let transporter = nodemailer.createTransport({
+    service: "Gmail",
     auth: {
-      user: "edifakemail0@gmail.com",
-      pass: "tllydjneetjlztaj",
+      user: "browserlogins@gmail.com",
+      pass: "dpoy hnpu nekd jsms",
     },
   });
 
   var mailOptions = {
-    from: "edifakemail0@gmail.com",
+    from: "browserlogins@gmail.com",
     to: req.body.email,
     subject: "OTP",
     html: `<div class="container" style="max-width: 90%; margin: auto; padding-top: 20px"><h2><b>Verification code</b></h2><p>Please use the verification code below to sign in. ✔</p><h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${newpassword}</h2><p style="font-size:0.9em;">Regards,<br />Your Brand</p><hr style="border:none;border-top:1px solid #eee" /><div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300"><p>Your Brand Inc</p><p>Bhargava Gidijala</p><p>+91 9493818156</p></div>`,
