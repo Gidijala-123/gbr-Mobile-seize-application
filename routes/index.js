@@ -6,7 +6,7 @@ var Cryptr = require("cryptr");
 var cryptr = new Cryptr("myTotalySecretKey");
 var monk = require("monk"); //its a middleware for express and mongodb
 const db = monk(
-  "mongodb+srv://gbr_psite:pFFKMijDVmGg8tWY@cluster0.99ots.mongodb.net/mobile_seize_db",
+  "mongodb+srv://user_gbr:user_password@gbrclustername.qzdpvo9.mongodb.net/mobile_seize_db",
   function (err, connected) {
     if (err) {
       console.log(
