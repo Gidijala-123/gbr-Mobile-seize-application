@@ -1,235 +1,213 @@
 html
   head
-    title Login and Signup page
+    title GBR | Mobile Storage Application — Login
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    link(href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css")
-    link(href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet" type="text/css")
+    link(href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
-    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css")
     link(rel='stylesheet' type='text/css' href='stylesheets/signlog.css')
-  
+
   body(ng-app="loginapp")
-    
-    #stars
-    #stars2
-    #stars3
-    #title
-      span
-        | Welcome to
-      br
-      span.qw
-        | Mobile Seize Application
 
-    .panda
-      .ear
-      .face
-        .eye-shade
-        .eye-white
-          .eye-ball
-        .eye-shade.rgt
-        .eye-white.rgt
-          .eye-ball
-        .nose
-        .mouth
-      .body  
-      .foot
-        .finger
-      .foot.rgt
-        .finger
+    canvas#bg-canvas
 
-      input#flippercheckbox.flippercheckbox(type="checkbox" name="flippercheckbox" hidden="")
-      .form_container
-        .formsignup
-          form(ng-controller="signupController" style="background-color:#099F9F;border-radius:1vw;")
-            .hand
-            .hand.rgt
-            h2
-              span S
-              span i
-              span g
-              span n
-              |-
-              span U
-              span p
-            .field
-              span.label__icon.fa.fa-envelope
-              input#signupname(type="email" ng-model="reg.email" placeholder="Enter your mail id" required="" autocomplete="off")
-              label(for="signupname") Email ID
-            .field
-              span.label__icon.fa.fa-eye.toggle-password(toggle="#password1")
-              input#password1(type="password" ng-model="reg.pwd" onkeyup='check();' placeholder="Password must be of length 10" minlength="10" required autocomplete="off")
-              label(for="password1") Password 
-            .field
-              span.label__icon.fa.fa-eye.toggle-password(toggle="#password2")
-              input#password2(type="password" ng-model="reg.pwd2" onkeyup='check();' placeholder="Password must be of length 10" minlength="10" required autocomplete="off")
-              label#message(for="password2") Confirm Password   
-            .bottomDiv        
-              button.btn.bbtn2(ng-click="signup(reg)" type="submit") Signup
-              .label
-                label.footer1 Already a member?
-                label.footer4.hover1(for="flippercheckbox") Login here!
+    .auth-wrapper#authWrapper
 
-        .formlogin        
-          form(ng-controller="loginController" style="background-color:#72043E;border-radius:1vw;")
-            .hand
-            .hand.rgt
-            h2
-              span(style="font-size: 2vw;") L
-              span o
-              span g
-              span i
-              span(style="font-size: 2vw;") n
-            .field
-              span.label__icon.fa.fa-user(style="font-size:1.55vw;margin-left:1px;")
-              input#uname(type="text" ng-model="log.uname" placeholder="Enter your name" required autocomplete="off")
-              label(for="uname") User name
-            .field
-              span.label__icon.fa.fa-envelope
-              input#loginname(type="email" ng-model="log.email" placeholder="Enter your mail id" required autocomplete="off")
-              label(for="loginname") Email ID
-            .field
-              span.label__icon.fa.fa-eye.toggle-password(toggle="#password3")
-              input#password3(type="password" ng-model="log.pwd" placeholder="Password must be of length 16" required minlength="10" autocomplete="off")
-              label(for="password3") Password          
-            .bottomDiv
-              button.btn.bbtn2(type="submit" value="Login" ng-click="login(log)") Login
-              .label
-                a.footer1(href="/forgot" style="text-decoration:none;") Forgot password ?
-                label.footer4.hover2(for="flippercheckbox" ) Goto Signup
-        
-  script(src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js")
-  script(src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js")
-  script(src="https://code.jquery.com/jquery-2.2.4.min.js")
-  script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js")
-  script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js")
-  script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js")
+      //- ── Sliding overlay (right half) ─────────────────────────────
+      .overlay-container
+        .overlay
+          //- Left panel: shown when signup form is active
+          .overlay-panel.overlay-left
+            .overlay-brand
+              i.fa.fa-mobile
+              span MSA
+            h1 Welcome Back!
+            p Already have an account? Sign in to access the Mobile Storage Application dashboard.
+            button.ghost-btn#signInBtn
+              i.fa.fa-sign-in
+              |  Sign In
+
+          //- Right panel: shown when login form is active
+          .overlay-panel.overlay-right
+            .overlay-brand
+              i.fa.fa-mobile
+              span MSA
+            h1 New Here?
+            p Register to start recording and tracking mobile devices stored in your institution.
+            button.ghost-btn#signUpBtn
+              i.fa.fa-user-plus
+              |  Create Account
+
+      //- ── LOGIN form ───────────────────────────────────────────────
+      .form-container.sign-in-container
+        form(ng-controller="loginController" ng-submit="login(log)" novalidate)
+          //- Animated phone illustration
+          .phone-illustration
+            .phone-device
+              .phone-screen
+            .phone-signals
+              .signal-dot
+              .signal-dot
+              .signal-dot
+
+          h2 Sign In
+          p.form-sub Access your storage dashboard
+
+          .input-group
+            span.input-icon.fa.fa-user
+            input#uname(type="text" ng-model="log.uname" placeholder="Full name" required autocomplete="off")
+
+          .input-group
+            span.input-icon.fa.fa-envelope
+            input#loginname(type="email" ng-model="log.email" placeholder="Email address" required autocomplete="off")
+
+          .input-group
+            span.input-icon.fa.fa-lock
+            input#password3(type="password" ng-model="log.pwd" placeholder="Password (min 10 chars)" required minlength="10" autocomplete="off")
+            span.pw-toggle.fa.fa-eye.toggle-password(toggle="#password3")
+
+          .form-links
+            a.forgot-link(href="/forgot")
+              i.fa.fa-key
+              |  Forgot password?
+
+          button.submit-btn(type="submit")
+            span Login
+            i.fa.fa-arrow-right
+
+          .mobile-switch
+            | New here?&nbsp;
+            span#mobileSignupLink Create an account
+
+      //- ── SIGNUP form ──────────────────────────────────────────────
+      .form-container.sign-up-container
+        form(ng-controller="signupController" ng-submit="signup(reg)" novalidate)
+          h2 Create Account
+          p.form-sub Join Mobile Storage Application
+
+          .input-group
+            span.input-icon.fa.fa-envelope
+            input#signupname(type="email" ng-model="reg.email" placeholder="Email address" required="" autocomplete="off")
+
+          .input-group
+            span.input-icon.fa.fa-lock
+            input#password1(type="password" ng-model="reg.pwd" onkeyup='check();' placeholder="Password (min 10 chars)" minlength="10" required autocomplete="off")
+            span.pw-toggle.fa.fa-eye.toggle-password(toggle="#password1")
+
+          .input-group
+            span.input-icon.fa.fa-check-circle
+            input#password2(type="password" ng-model="reg.pwd2" onkeyup='check();' placeholder="Confirm password" minlength="10" required autocomplete="off")
+            span.pw-toggle.fa.fa-eye.toggle-password(toggle="#password2")
+
+          #message.match-msg
+
+          button.submit-btn(type="submit")
+            span Sign Up
+            i.fa.fa-arrow-right
+
+          .mobile-switch
+            | Already a member?&nbsp;
+            span#mobileLoginLink Sign in
+
+    //- hidden flipper checkbox for Angular/JS compatibility
+    input#flippercheckbox.flippercheckbox(type="checkbox" name="flippercheckbox" checked hidden="" style="display:none")
+
+  script(src="/javascripts/jquery.js")
+  script(src="/javascripts/bootstrap.min.js")
   script(type="text/javascript" src="javascripts/angular.min.js")
+
   script.
-    $('#password1').focusin(function(){
-    $('form').addClass('up')
-    });
-    $('#password1').focusout(function(){
-    $('form').removeClass('up')
-    });/*while entering signup password*/
+    // ── Animated particle canvas ──────────────────────────────────────
+    (function () {
+      var cv = document.getElementById('bg-canvas');
+      var cx = cv.getContext('2d');
+      var pts = [];
+      function rs() { cv.width = window.innerWidth; cv.height = window.innerHeight; }
+      rs(); window.addEventListener('resize', rs);
+      for (var i = 0; i < 70; i++) {
+        pts.push({ x: Math.random() * cv.width, y: Math.random() * cv.height,
+          r: Math.random() * 1.6 + 0.3, dx: (Math.random() - 0.5) * 0.35,
+          dy: (Math.random() - 0.5) * 0.35, o: Math.random() * 0.45 + 0.12 });
+      }
+      function draw() {
+        cx.clearRect(0, 0, cv.width, cv.height);
+        pts.forEach(function (p) {
+          cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          cx.fillStyle = 'rgba(167,243,208,' + p.o + ')'; cx.fill();
+          p.x += p.dx; p.y += p.dy;
+          if (p.x < 0 || p.x > cv.width) p.dx *= -1;
+          if (p.y < 0 || p.y > cv.height) p.dy *= -1;
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
 
-    $('#password2').focusin(function(){
-    $('form').addClass('up')
+    // ── Overlay panel toggle ──────────────────────────────────────────
+    var wr = document.getElementById('authWrapper');
+    document.getElementById('signUpBtn').addEventListener('click', function () {
+      wr.classList.add('right-panel-active');
     });
-    $('#password2').focusout(function(){
-    $('form').removeClass('up')
-    });/*while entering singup confirmation password*/
+    document.getElementById('signInBtn').addEventListener('click', function () {
+      wr.classList.remove('right-panel-active');
+    });
+    var msl = document.getElementById('mobileSignupLink');
+    var mll = document.getElementById('mobileLoginLink');
+    if (msl) msl.addEventListener('click', function () { wr.classList.add('right-panel-active'); });
+    if (mll) mll.addEventListener('click', function () { wr.classList.remove('right-panel-active'); });
 
-    $('#password3').focusin(function(){
-    $('form').addClass('up')
+    // ── Password toggle (eye icon) ────────────────────────────────────
+    $('.toggle-password').on('click', function () {
+      $(this).toggleClass('fa-eye fa-eye-slash');
+      var inp = $($(this).attr('toggle'));
+      inp.attr('type', inp.attr('type') === 'password' ? 'text' : 'password');
     });
-    $('#password3').focusout(function(){
-    $('form').removeClass('up')
-    });/*while entering login password*/
 
-    // Panda Eye move
-    $(document).on( "mousemove", function( event ) {
-    var dw = $(document).width() / 5;
-    var dh = $(document).height() / 12;
-    var x = event.pageX/ dw;
-    var y = event.pageY/ dh;
-    $('.eye-ball').css({
-    width : x,
-    height : y
-    });
-    });
+    // ── Password match indicator ──────────────────────────────────────
+    function updatePasswordMessage() {
+      var msg = document.getElementById('message');
+      if (!msg) return;
+      var p1 = document.getElementById('password1');
+      var p2 = document.getElementById('password2');
+      var v1 = p1 ? p1.value : '', v2 = p2 ? p2.value : '';
+      if (!v1 && !v2) { msg.innerHTML = ''; msg.className = 'match-msg'; return; }
+      if (v1 === v2 && v1.length >= 10) {
+        msg.className = 'match-msg match';
+        msg.innerHTML = '<i class="fa fa-check-circle"></i> Passwords match';
+      } else {
+        msg.className = 'match-msg no-match';
+        msg.innerHTML = '<i class="fa fa-times-circle"></i> ' +
+          (v1.length < 10 ? 'Minimum 10 characters required' : 'Passwords do not match');
+      }
+    }
+    function check() { updatePasswordMessage(); }
+    var ip1 = document.getElementById('password1'), ip2 = document.getElementById('password2');
+    if (ip1) ip1.addEventListener('input', updatePasswordMessage);
+    if (ip2) ip2.addEventListener('input', updatePasswordMessage);
 
   script.
     var app = angular.module('loginapp', []);
-    app.controller('signupController', function($scope,$http){
-    //to join controller and view together we use scope
-      $scope.signup = function(reg){
-        $http({
-          method : 'POST',
-          url : '/postsignup',
-          data : $scope.reg
-        }).then( function success(response){
+
+    app.controller('signupController', function ($scope, $http) {
+      $scope.signup = function (reg) {
+        if (!reg || !reg.email || !reg.pwd || reg.pwd !== reg.pwd2) {
+          alert('Please enter a valid email and matching passwords.');
+          return;
+        }
+        $http({ method: 'POST', url: '/postsignup', data: { email: reg.email, pwd: reg.pwd }
+        }).then(function () {
           $scope.reg = {};
-          alert("Your've Registered Successfully"+"!🤗");
-        }, function error(response){
-          alert('An user with same mail ID exists !'); 
-        });
-      }
+          alert("Registered successfully! \uD83E\uDD97");
+        }, function (res) { alert(res.data || 'Unable to create your account.'); });
+      };
     });
 
-    app.controller('loginController', function($scope,$http,$window){
-      $scope.login = function(log){
-        $http({
-          method:'POST',
-          url: '/postlogin',
-          data: $scope.log
-        }).then(function success(response){
-          alert('Welcome Mr.'+log.uname+'🤗'+'\nPlease wait you are redirecting to home page!');
-          $window.location.href = '/home'
-        }, function error(response){
-          $scope.log = {};
-          alert('invalid credentials');
-        });
-      }
-
+    app.controller('loginController', function ($scope, $http, $window) {
+      $scope.login = function (log) {
+        $http({ method: 'POST', url: '/postlogin',
+          data: { uname: log.uname, email: log.email, pwd: log.pwd }
+        }).then(function () {
+          alert('Welcome, ' + log.uname + '! \uD83D\uDCF1\nRedirecting to dashboard...');
+          $window.location.href = '/home';
+        }, function (res) { $scope.log = {}; alert(res.data || 'Invalid credentials.'); });
+      };
     });
-
-  script.
-    $(".toggle-password").click(function() {
-    $(this).toggleClass("fa-eye fa-eye-slash");
-    var input = $($(this).attr("toggle"));
-    if (input.attr("type") == "password") {
-      input.attr("type", "text");
-    } else {
-      input.attr("type", "password");
-    }
-    });
-
-  script.
-    var check=function(){
-    if(document.getElementById('password1').value==document.getElementById('password2').value)
-    {
-    document.getElementById('message').style.color='#08FB25';
-    document.getElementById('message').style.fontWeight='bold';
-    document.getElementById('message').style.textShadow='0 0 2.3px black';
-    document.getElementById('message').innerHTML='Passwords matching..!';
-    document.getElementById('submit').disabled=false;
-    }
-    else
-    {
-    document.getElementById('message').style.color='#FE0303';
-    document.getElementById('message').style.fontWeight='bold';
-    document.getElementById('message').style.textShadow='0 0 2.3px black';
-    document.getElementById('message').innerHTML="Passwords doesn't matched..!";
-    document.getElementById('submit').disabled=true;
-    }
-    };
-    
-  script.
-    window.onload = function() {
-    document.addEventListener("contextmenu", function(e){
-    e.preventDefault();
-    }, false);
-    document.addEventListener("keydown", function(e) {
-    // "J" key
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 74) {
-    alert('not allowed');
-    disabledEvent(e);
-    }
-    // "F12" key
-    if (event.keyCode == 123) {
-    alert('Too smart!\nBut you are not allowed for this action');
-    disabledEvent(e);
-    }
-    }, false);
-    function disabledEvent(e){
-    if (e.stopPropagation){
-    e.stopPropagation();
-    } else if (window.event){
-    window.event.cancelBubble = true;
-    }
-    e.preventDefault();
-    return false;
-    }
-    };
-    
-  

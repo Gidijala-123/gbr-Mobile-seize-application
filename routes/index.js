@@ -1,257 +1,380 @@
-var express = require("express");
-var router = express.Router();
-var randomstring = require("randomstring");
-var nodemailer = require("nodemailer");
-var Cryptr = require("cryptr");
-var cryptr = new Cryptr("myTotalySecretKey");
-var monk = require("monk"); //its a middleware for express and mongodb
-const db = monk(
-  "mongodb+srv://user_gbr:user_password@gbrclustername.qzdpvo9.mongodb.net/mobile_seize_db",
-  function (err, connected) {
-    if (err) {
-      console.log(
-        "MongoDB AtlasConnection failed!\nPlease check your internet connection\n"
-      );
-    } else {
-      console.log("MongoDB Atlas is connected..!\n");
-    }
+const express = require("express");
+const router = express.Router();
+const randomstring = require("randomstring");
+const nodemailer = require("nodemailer");
+const Cryptr = require("cryptr");
+const { MongoClient } = require("mongodb");
+const crypto = require("crypto");
+const { promisify } = require("util");
+const cryptr = new Cryptr("myTotalySecretKey");
+const scrypt = promisify(crypto.scrypt);
+const pbkdf2 = promisify(crypto.pbkdf2);
+const PASSWORD_HASH_ITERATIONS = 60000;
+
+function sanitizeMongoUri(rawUri) {
+  if (typeof rawUri !== "string") return rawUri;
+  try {
+    const url = new URL(rawUri);
+    if (url.searchParams.has("appName")) url.searchParams.delete("appName");
+    return url.toString();
+  } catch (err) {
+    return rawUri;
   }
-);
+}
 
-// var db = monk('localhost:27017/Mob_db');
-var signlog_coll = db.get("registration_coll");
-var visitors_of_page = db.get("visitors_of_page");
-var error_reports = db.get("error_reports");
-var std = db.get("std");
+function createCollectionAdapter(collection) {
+  return {
+    async insert(doc) {
+      const result = await collection.insertOne(doc);
+      return { ...doc, _id: result.insertedId };
+    },
+    async findOne(filter) {
+      return collection.findOne(filter);
+    },
+    async find(filter) {
+      return collection.find(filter || {}).toArray();
+    },
+    async update(filter, updateDoc) {
+      return collection.updateOne(filter, updateDoc);
+    },
+    async createIndex(spec, options = {}) {
+      return collection.createIndex(spec, options);
+    },
+    async remove(filter) {
+      return collection.deleteMany(filter);
+    },
+  };
+}
 
-router.get("/", function (req, res) {
+let mongoClient;
+let signlogColl;
+let visitorsOfPage;
+let errorReports;
+let studentData;
+let mongoReady = null;
+let mongoInitError = null;
+
+async function initializeMongo() {
+  const mongoUri = sanitizeMongoUri(process.env.MONGODB_URI);
+  if (!mongoUri) {
+    throw new Error("MONGODB_URI must be configured before starting the application");
+  }
+
+  mongoClient = new MongoClient(mongoUri, {
+    serverSelectionTimeoutMS: 10000,
+    connectTimeoutMS: 10000,
+  });
+
+  await mongoClient.connect();
+  console.log("MongoDB Atlas is connected..!");
+
+  const dbName = new URL(mongoUri).pathname.replace(/^\/+/, "") || "admin";
+  const db = mongoClient.db(dbName);
+
+  signlogColl = createCollectionAdapter(db.collection("registration_coll"));
+  visitorsOfPage = createCollectionAdapter(db.collection("visitors_of_page"));
+  errorReports = createCollectionAdapter(db.collection("error_reports"));
+  studentData = createCollectionAdapter(db.collection("student_data"));
+
+  await Promise.all([
+    signlogColl.createIndex({ email: 1 }, { unique: true }),
+    studentData.createIndex({ rno: 1 }),
+    studentData.createIndex({ status: 1 }),
+  ]);
+}
+
+mongoReady = initializeMongo().catch((err) => {
+  mongoInitError = err;
+  console.error("MongoDB Atlas connection failed! Please check your internet connection.", err);
+  console.error("MongoDB index setup failed:", err.message);
+  return false;
+});
+
+async function ensureDbReady() {
+  if (mongoInitError) throw mongoInitError;
+  if (!mongoReady) {
+    throw new Error("MongoDB is not initialized yet.");
+  }
+  await mongoReady;
+  if (!signlogColl || !studentData || !errorReports || !visitorsOfPage) {
+    throw new Error("MongoDB collections are not ready.");
+  }
+}
+
+const normalizeEnvValue = (value, fallback = "") => {
+  if (typeof value !== "string") return fallback;
+  const trimmed = value.trim();
+  return trimmed ? trimmed.replace(/\s+/g, "") : fallback;
+};
+
+const normalizeEmail = (email) => String(email || "").trim().toLowerCase();
+const isEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const isValidPassword = (password) => typeof password === "string" && password.length >= 10 && password.length <= 128;
+const hasSessionUser = (req) => Boolean(req && req.session && req.session.user);
+
+function normalizeStudentRecord(body, status = null) {
+  return {
+    Date: body.Date,
+    Time: body.Time,
+    sname: body.sname,
+    spno: body.spno,
+    rno: body.rno,
+    clg: body.clg,
+    brch: body.brch,
+    year: body.year,
+    sec: body.sec,
+    pname: body.pname,
+    ppno: body.ppno,
+    ename: body.ename,
+    epno: body.epno,
+    eid: body.eid,
+    rsn: body.rsn,
+    mmodel: body.mmodel,
+    imei: body.imei,
+    mclr: body.mclr,
+    ...(status ? { status } : {}),
+  };
+}
+
+async function hashPassword(password) {
+  const salt = crypto.randomBytes(16).toString("hex");
+  const derivedKey = await pbkdf2(password, salt, PASSWORD_HASH_ITERATIONS, 64, "sha512");
+  return `pbkdf2$${PASSWORD_HASH_ITERATIONS}$${salt}$${derivedKey.toString("hex")}`;
+}
+
+async function verifyPassword(password, storedPassword) {
+  if (typeof storedPassword !== "string") return false;
+
+  if (storedPassword.startsWith("pbkdf2$")) {
+    const [, iterations, salt, expected] = storedPassword.split("$");
+    const actual = await pbkdf2(password, salt, Number(iterations), 64, "sha512");
+    return crypto.timingSafeEqual(Buffer.from(expected, "hex"), actual);
+  }
+
+  if (storedPassword.startsWith("scrypt$")) {
+    const [, salt, expected] = storedPassword.split("$");
+    const actual = await scrypt(password, salt, 64, { N: 1024, r: 8, p: 1 });
+    return crypto.timingSafeEqual(Buffer.from(expected, "hex"), actual);
+  }
+
+  try {
+    return cryptr.decrypt(storedPassword) === password;
+  } catch (err) {
+    return false;
+  }
+}
+
+function requireLogin(req, res, next) {
+  if (!req.session.user) return res.status(401).json({ error: "Authentication required" });
+  next();
+}
+
+async function recordError(type, email, err) {
+  if (!errorReports) return;
+  try {
+    await errorReports.insert({ type, email, message: err.message, time: new Date() });
+  } catch (logError) {
+    console.error("Unable to record application error:", logError.message);
+  }
+}
+
+// Routes
+router.get("/", (req, res) => {
   res.render("signLog_net");
 });
 
-router.get("/forgot", function (req, res) {
+router.get("/forgot", (req, res) => {
   res.render("forgot");
 });
 
-router.post("/postsignup", function (req, res) {
-  signlog_coll.createIndex({ email: 1 }, { unique: true }); //takes only one unique record into collection
-  signlog_coll.insert(
-    {
-      email: req.body.email,
-      pwd: cryptr.encrypt(req.body.pwd),
-      "Signup time": new Date(),
-    },
-    function (err, docs) {
-      if (err) {
-        console.log("email exists");
-        error_reports.insert({
-          email: req.body.email,
-          pwd: req.body.pwd,
-          "Signup error time": new Date(),
-        });
-      } else {
-        res.send(docs);
-      }
-    }
-  );
-});
-
-router.post("/postlogin", function (req, res) {
-  visitors_of_page.insert({
-    "Visitor name": req.body.uname,
-    "Time of visit": new Date(),
-  });
-  signlog_coll.find({ email: req.body.email }, function (err, data) {
-    var password1 = cryptr.decrypt(data[0].pwd);
-    var password2 = req.body.pwd;
-    console.log(password1 == password2);
-    if (password1 == password2) {
-      delete data.pwd;
-      req.session.email = data;
-      res.sendStatus(200);
-      console.log("Passwords matched with db!");
-    } else {
-      error_reports.insert({
-        email: req.body.email,
-        pwd: req.body.pwd,
-        "Login error time": new Date(),
-      });
-      res.sendStatus(500);
-      req.session.destroy();
-    }
-  });
-});
-
-//----------------------------------------------OTP Email--------------------------------------------------------//
-router.post("/postforgot", function (req, res) {
-  var otp_email = req.body.email;
-  var newpassword = randomstring.generate(7);
-  signlog_coll.createIndex({ email: 1 }, { unique: true }); //takes only one unique record into collection
-  signlog_coll.findOne({ email: otp_email }, function (err, data) {
-    if (err) throw err;
-    if (data) {
-      console.log("Found: " + email);
-      signlog_coll.update({ email: otp_email }, { $set: { pwd: newpassword } });
-    } else {
-      console.log(email + "Not found");
-    }
-  });
-
-  let transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-      user: "browserlogins@gmail.com",
-      pass: "dpoy hnpu nekd jsms",
-    },
-  });
-
-  var mailOptions = {
-    from: "browserlogins@gmail.com",
-    to: req.body.email,
-    subject: "OTP",
-    html: `<div class="container" style="max-width: 90%; margin: auto; padding-top: 20px"><h2><b>Verification code</b></h2><p>Please use the verification code below to sign in. ✔</p><h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${newpassword}</h2><p style="font-size:0.9em;">Regards,<br />Your Brand</p><hr style="border:none;border-top:1px solid #eee" /><div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300"><p>Your Brand Inc</p><p>Bhargava Gidijala</p><p>+91 9493818156</p></div>`,
-  };
-
-  transporter.sendMail(mailOptions, function (err, info) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("email sent");
-      res.send(info);
-    }
-  });
-});
-
-// rendering specific data based on 'status'
-router.get("/home", function (req, res) {
-  if (req.session && req.session.email) {
-    res.locals.email = req.session.email;
-    std.find({}, function (err, db) {
-      std.find({ status: "At_office" }, function (err, db1) {
-        std.find({ status: "Returned" }, function (err, db2) {
-          if (err) {
-            req.session.destroy();
-            console.log(err);
-          } else {
-            // console.log(db);
-            res.render("home", {
-              data: db,
-              data1: db1,
-              data2: db2,
-              data3: db,
-              count: db.length,
-              count1: db1.length,
-              count2: db2.length,
-            });
-          }
-        });
-      });
+router.post("/postsignup", async (req, res) => {
+  const email = normalizeEmail(req.body.email);
+  const password = req.body.pwd;
+  if (!isEmail(email) || !isValidPassword(password)) {
+    return res.status(400).send("Enter a valid email and a password of at least 10 characters.");
+  }
+  try {
+    await ensureDbReady();
+    const doc = await signlogColl.insert({
+      email,
+      pwd: await hashPassword(password),
+      createdAt: new Date(),
     });
+    res.status(201).json({ id: doc._id, email: doc.email });
+  } catch (err) {
+    await recordError("signup", email, err);
+    if (err.code === 11000 || /duplicate/i.test(err.message)) return res.status(409).send("An account with that email already exists.");
+    res.status(500).send("Unable to create the account right now.");
   }
 });
 
-router.post("/hh", function (req, res) {
-  var data = {
-    Date: req.body.Date,
-    Time: req.body.Time,
-    sname: req.body.sname,
-    spno: req.body.spno,
-    rno: req.body.rno,
-    clg: req.body.clg,
-    brch: req.body.brch,
-    year: req.body.year,
-    sec: req.body.sec,
-    pname: req.body.pname,
-    ppno: req.body.ppno,
-    ename: req.body.ename,
-    epno: req.body.epno,
-    eid: req.body.eid,
-    rsn: req.body.rsn,
-    mmodel: req.body.mmodel,
-    imei: req.body.imei,
-    mclr: req.body.mclr,
-    status: "At_office",
-  };
-  std.insert(data, function (err, db) {
-    if (err) {
-      req.session.destroy();
-      console.log(err);
-    } else {
-      console.log(db);
-      res.redirect("/home");
+router.post("/postlogin", async (req, res) => {
+  const email = normalizeEmail(req.body.email);
+  const password = req.body.pwd;
+  if (!isEmail(email) || typeof password !== "string") return res.status(400).send("Enter your email and password.");
+  try {
+    await ensureDbReady();
+    const data = await signlogColl.findOne({ email });
+    if (!data || !(await verifyPassword(password, data.pwd))) throw new Error("Invalid credentials");
+    if (!data.pwd.startsWith("pbkdf2$")) await signlogColl.update({ _id: data._id }, { $set: { pwd: await hashPassword(password) } });
+    await new Promise((resolve, reject) => req.session.regenerate((err) => (err ? reject(err) : resolve())));
+    req.session.user = { id: data._id, email: data.email };
+    await visitorsOfPage.insert({ name: req.body.uname, email, time: new Date() });
+    res.sendStatus(204);
+  } catch (err) {
+    await recordError("login", email, err);
+    res.status(401).send("Invalid login credentials.");
+  }
+});
+
+router.post("/postforgot", async (req, res) => {
+  const otpEmail = normalizeEmail(req.body.email);
+  if (!isEmail(otpEmail)) return res.status(400).send("Enter a valid email address.");
+  try {
+    await ensureDbReady();
+    const newpassword = randomstring.generate(7);
+
+    const user = await signlogColl.findOne({ email: otpEmail });
+    if (!user) {
+      throw new Error(`Email ${otpEmail} not found`);
     }
-  });
+
+    const gmailUser = normalizeEnvValue(process.env.GMAIL_USER);
+    const gmailPass = normalizeEnvValue(process.env.GMAIL_PASS);
+
+    if (!gmailUser || !gmailPass) throw new Error("Mail service is not configured");
+    const transporter = nodemailer.createTransport({ service: "gmail", auth: { user: gmailUser, pass: gmailPass } });
+
+    let mailOptions = {
+      from: gmailUser,
+      to: otpEmail,
+      subject: "OTP",
+      html: `<div style="max-width: 90%; margin: auto; padding-top: 20px">
+               <h2><b>Verification code</b></h2>
+               <p>Please use the verification code below to sign in. ✔</p>
+               <h2 style="background: #00466a; margin: 0 auto; width: max-content; padding: 0 10px; color: #fff; border-radius: 4px;">${newpassword}</h2>
+               <p style="font-size: 0.9em;">Regards,<br />Your Brand</p>
+               <hr style="border: none; border-top: 1px solid #eee" />
+               <div style="float: right; padding: 8px 0; color: #aaa; font-size: 0.8em; line-height: 1; font-weight: 300">
+                 <p>Your Brand Inc</p>
+                 <p>Bhargava Gidijala</p>
+                 <p>+91 9493818156</p>
+               </div>
+             </div>`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    await signlogColl.update({ email: otpEmail }, { $set: { pwd: await hashPassword(newpassword) } });
+    res.sendStatus(204);
+  } catch (err) {
+    await recordError("password-reset", otpEmail, err);
+    res.status(500).send("Unable to send the reset email. Please try again later.");
+  }
 });
 
-router.post("/change", function (req, res) {
-  std.update(
-    { rno: req.body.rno },
-    { $set: { status: "Returned" } },
-    function (err, docs) {
-      console.log(docs);
-    }
-  );
-  res.redirect("/home");
+router.get("/home", async (req, res) => {
+  if (!hasSessionUser(req)) return res.redirect("/");
+
+  res.locals.email = req.session.user.email;
+  try {
+    await ensureDbReady();
+    const data = await studentData.find({});
+    const data1 = data.filter((record) => record.status === "At_office");
+    const data2 = data.filter((record) => record.status === "Returned");
+    const data3 = data;
+    res.render("home", {
+      data,
+      data1,
+      data2,
+      data3,
+      count: data.length,
+      count1: data1.length,
+      count2: data2.length,
+    });
+  } catch (err) {
+    console.error("Home page error:", err);
+    req.session.destroy();
+    res.status(500).send("An error occurred while loading the home page.");
+  }
 });
 
-router.post("/edit", function (req, res) {
-  var r = req.body.rno;
-  std.find({ rno: r }, function (err, db) {
-    console.log(db);
-    res.send(db);
-  });
+router.post("/hh", async (req, res) => {
+  if (!hasSessionUser(req)) return res.redirect("/");
+  try {
+    await ensureDbReady();
+    const data = normalizeStudentRecord(req.body, "At_office");
+    const dbResponse = await studentData.insert(data);
+    console.log(dbResponse);
+    res.redirect("/home");
+  } catch (err) {
+    console.error("Insert data error:", err);
+    req.session.destroy();
+    res.status(500).send("An error occurred while inserting the data.");
+  }
 });
 
-router.post("/update", function (req, res) {
-  var data3 = {
-    Date: req.body.Date,
-    Time: req.body.Time,
-    sname: req.body.sname,
-    spno: req.body.spno,
-    rno: req.body.rno,
-    clg: req.body.clg,
-    brch: req.body.brch,
-    year: req.body.year,
-    sec: req.body.sec,
-    pname: req.body.pname,
-    ppno: req.body.ppno,
-    ename: req.body.ename,
-    epno: req.body.epno,
-    eid: req.body.eid,
-    rsn: req.body.rsn,
-    mmodel: req.body.mmodel,
-    imei: req.body.imei,
-    mclr: req.body.mclr,
-  };
-  std.update({ rno: req.body.rno }, { $set: data3 }, function (err, db) {
-    console.log(db);
-  });
-
-  res.redirect("/home");
+router.post("/change", async (req, res) => {
+  if (!hasSessionUser(req)) return res.status(401).send("Authentication required.");
+  try {
+    await ensureDbReady();
+    const docs = await studentData.update(
+      { rno: req.body.rno },
+      { $set: { status: "Returned" } }
+    );
+    console.log(docs);
+    res.redirect("/home");
+  } catch (err) {
+    console.error("Change status error:", err);
+    res.status(500).send("An error occurred while updating the status.");
+  }
 });
 
-router.get("/logout", function (req, res) {
-  req.session.destroy();
-  res.redirect("/");
+router.post("/edit", async (req, res) => {
+  if (!hasSessionUser(req)) return res.status(401).send("Authentication required.");
+  try {
+    await ensureDbReady();
+    const dbResponse = await studentData.find({ rno: req.body.rno });
+    console.log(dbResponse);
+    res.send(dbResponse);
+  } catch (err) {
+    console.error("Edit data error:", err);
+    res.status(500).send("An error occurred while fetching the data.");
+  }
 });
+
+router.post("/update", async (req, res) => {
+  if (!hasSessionUser(req)) return res.redirect("/");
+  try {
+    await ensureDbReady();
+    const data = normalizeStudentRecord(req.body);
+    const dbResponse = await studentData.update(
+      { rno: req.body.rno },
+      { $set: data }
+    );
+    console.log(dbResponse);
+    res.redirect("/home");
+  } catch (err) {
+    console.error("Update data error:", err);
+    res.status(500).send("An error occurred while updating the data.");
+  }
+});
+
+router.post("/delete", async (req, res) => {
+  if (!hasSessionUser(req)) return res.status(401).json({ error: "Authentication required" });
+  try {
+    await ensureDbReady();
+    const rno = req.body.rno;
+    if (!rno) return res.status(400).json({ error: "Roll number is required" });
+    const result = await studentData.remove({ rno });
+    res.json({ success: true, deleted: result.deletedCount || 1, rno });
+  } catch (err) {
+    console.error("Delete error:", err);
+    res.status(500).json({ error: "Failed to delete record" });
+  }
+});
+
+router.get("/logout", (req, res) => {
+  req.session.destroy(() => res.redirect("/"));
+});
+
 module.exports = router;
-
-////////////////////////////////////////////////////// previous data with password encryption //////////////////////////////////////////////////////
-// router.post('/postlogin', function(req,res){
-//   var mail = req.body.mail;
-//   sign_coll.find({'mail':req.body.mail},function(err,data){
-//   var password1 = crypt.decrypt(data[0].pwd);
-//   var password2 = req.body.pwd;
-//   console.log(password1==password2);
-//   if(password1==password2)
-//   {
-//     res.sendStatus(200);
-//     req.session.mail=data;
-//     console.log("login success..!");
-//     // res.redirect('/home');
-//     // res.send(data);
-//   }
-//   else{
-//     res.sendStatus(500);
-//   }
-//   })
-// });

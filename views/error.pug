@@ -1,6 +1,24 @@
 extends layout
 
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+  style.
+    body { margin: 0; padding: 0; min-height: 100vh; background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 60%, #0f766e 100%); font-family: 'Lato', sans-serif; display: flex; align-items: center; justify-content: center; }
+    .error-wrap { text-align: center; padding: 48px 40px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(10px); box-shadow: 0 20px 60px rgba(15,23,42,0.45); max-width: 520px; }
+    .error-code { font-size: 96px; font-weight: 800; background: linear-gradient(135deg, #fbbf24, #22d3ee); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; margin: 0 0 8px; letter-spacing: 2px; }
+    .error-title { font-size: 28px; font-weight: 700; color: #ffffff; margin: 0 0 12px; }
+    .error-msg { font-size: 16px; color: #cbd5e1; line-height: 1.6; margin: 0 0 24px; }
+    .error-stack { background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 16px; text-align: left; font-family: 'Anonymous Pro', monospace; font-size: 12.5px; line-height: 1.55; color: #e2e8f0; max-height: 220px; overflow: auto; white-space: pre-wrap; }
+    .error-actions { margin-top: 24px; }
+    .error-home { display: inline-block; padding: 12px 28px; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1f2937; text-decoration: none; font-weight: 700; border-radius: 10px; box-shadow: 0 6px 18px rgba(251,191,36,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease; letter-spacing: 0.3px; }
+    .error-home:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(251,191,36,0.42); }
+  .error-wrap
+    h1.error-code= error.status || '500'
+    h2.error-title= message
+    if message
+      p.error-msg We ran into an unexpected issue. You can head back home or try again in a moment.
+    if error.stack
+      pre.error-stack #{error.stack}
+    .error-actions
+      a.error-home(href='/')
+        i.fa.fa-home(style='margin-right:8px;')
+        | Back to Home

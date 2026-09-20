@@ -6,8 +6,14 @@ $(document).ready(function()
      var aa=$(this).val();
       $.post('/change',{"rno":aa},function(data)
       {
-        alert("Mobile returned & Status changed successfully..!");
+        if (window.GBR && GBR.toast) {
+          GBR.toast.success("✅ Mobile returned — status changed to Returned.");
+        } else {
+          alert("Mobile returned & Status changed successfully..!");
+        }
         location.reload('/home');
+      }).fail(function() {
+        if (window.GBR && GBR.toast) GBR.toast.error("Failed to update status. Please try again.");
       });
     });
   
@@ -51,7 +57,10 @@ $(document).ready(function()
     		$('#ename').val(b[0].ename);
     		$('#epno').val(b[0].epno);
     		$('#eid').val(b[0].eid);
-    	});
+            if (window.GBR && GBR.toast) GBR.toast.info('📝 Edit form loaded — modify and save.');
+    	}).fail(function(){
+            if (window.GBR && GBR.toast) GBR.toast.error('Failed to load record for editing.');
+        });
     	$('.dontdisplay').show();
     });  
 
