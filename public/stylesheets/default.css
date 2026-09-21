@@ -164,7 +164,8 @@
 /* ── Faculty grid (.faculty-grid) ── */
 .faculty-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* auto-fill: cards fill available space, min 200px each, wrap cleanly */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 16px;
   background: transparent;
   border: none;
@@ -245,25 +246,38 @@
 .faculty-grid .cntr:nth-child(4n+3) .cntf2 { border-top-color: #7c3aed; }
 .faculty-grid .cntr:nth-child(4n+4) .cntf2 { border-top-color: #0891b2; }
 
-/* Name styling within cntf2 */
-.cntf2 br { display: none; }
-
-/* Faculty badge icon */
-.cntf2::before {
-  content: '\f007';
-  font-family: FontAwesome;
+/* Faculty info text — allow br line breaks, style name/details */
+.cntf2 br { display: block !important; content: ''; margin-bottom: 2px; }
+.cntf2 strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 6px;
+  letter-spacing: 0.01em;
+}
+.cntf2 span.fi-label {
   font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
   color: #94a3b8;
   display: block;
-  margin-bottom: 4px;
+  margin-top: 6px;
+}
+.cntf2 span.fi-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  display: block;
 }
 
 /* ── Responsive ── */
 @media (max-width: 900px) {
-  .faculty-grid { grid-template-columns: repeat(2, 1fr); }
+  .faculty-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
 }
 @media (max-width: 560px) {
-  .faculty-grid { grid-template-columns: 1fr; }
+  .faculty-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
   .cnt0 { flex-direction: column; }
   .cnth1 { flex: 0 0 auto; width: 100%; height: 200px; }
 }
