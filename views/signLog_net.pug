@@ -53,10 +53,6 @@ html
           p.form-sub Access your storage dashboard
 
           .input-group
-            span.input-icon.fa.fa-user
-            input#uname(type="text" ng-model="log.uname" placeholder="Full name" required autocomplete="off")
-
-          .input-group
             span.input-icon.fa.fa-envelope
             input#loginname(type="email" ng-model="log.email" placeholder="Email address" required autocomplete="off")
 
@@ -204,9 +200,9 @@ html
     app.controller('loginController', function ($scope, $http, $window) {
       $scope.login = function (log) {
         $http({ method: 'POST', url: '/postlogin',
-          data: { uname: log.uname, email: log.email, pwd: log.pwd }
+          data: { email: log.email, pwd: log.pwd }
         }).then(function () {
-          alert('Welcome, ' + log.uname + '! \uD83D\uDCF1\nRedirecting to dashboard...');
+          alert('Welcome! \uD83D\uDCF1\nRedirecting to dashboard...');
           $window.location.href = '/home';
         }, function (res) { $scope.log = {}; alert(res.data || 'Invalid credentials.'); });
       };

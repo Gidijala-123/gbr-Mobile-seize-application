@@ -20,13 +20,15 @@ $(document).ready(function()
 
 // to change the status color after clicking on transfer button
     $("td").each(function(){
-        if($(this).text()=="Returned"){
+        if($(this).text().trim()==="Returned"){
             $(this).css("backgroundColor","#FD052E");
             $(this).css("color","white");
+            $(this).addClass("status-returned");
         }
-        if($(this).text()=="At_office"){
+        if($(this).text().trim()==="At_office"){
             $(this).css("backgroundColor","#85FD2D");
-            $(this).css("color","black"); 
+            $(this).css("color","black");
+            $(this).addClass("status-at-office");
         }
     });
     

@@ -11,6 +11,7 @@ html
     link(rel='stylesheet', href='stylesheets/component.css')
     link(rel='stylesheet', href='stylesheets/default.css')
     link(rel='stylesheet', href='stylesheets/style.css')
+    link(rel='stylesheet', href='stylesheets/elegant-redesign.css')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
     link(href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet")
     link(href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet")
@@ -84,13 +85,10 @@ html
                   form.form-group(action='/hh',method='post')
                       center
                         .col-md-4
-                          .dd1
+                          .dd1.stat-card--blue
                             p.p1
-                              a.stat-link(data-toggle='tab',href=".ttlist")
-                               | Total
-                               br
-                               | Mobiles
-                            
+                              i.fa.fa-database.stat-ico
+                              a.stat-link(data-toggle='tab',href=".ttlist") Total Mobiles
                             .pp1 #{count}
                           label Date
                           br
@@ -129,12 +127,10 @@ html
                           br
 
                         .col-md-4
-                          .dd1
+                          .dd1.stat-card--green
                             p.p1
-                              a.stat-link(data-toggle='tab',href=".tolist")
-                               | Mobiles
-                               br
-                               | at office
+                              i.fa.fa-building-o.stat-ico
+                              a.stat-link(data-toggle='tab',href=".tolist") Mobiles at Office
                             
                             .pp1 #{count1}
                           label Branch
@@ -173,8 +169,9 @@ html
                           input.form-control#epn2(type="number" name="epno" required="" )
 
                         .col-md-4
-                          .dd1
+                          .dd1.stat-card--purple
                             p.p1
+                              i.fa.fa-check-circle-o.stat-ico
                               a.stat-link(data-toggle='tab',href=".trlist") Returned Mobiles
                             
                             .pp1 #{count2}
@@ -558,30 +555,70 @@ html
                         input.inp.btn4(type='submit', name='', value='update')
 
               #contact.tab-pane.fade.align
-                p.anim-typewriter Contacts - Tab
-                .containerr.demo-4                      
-                  header.clearfix
-                    h3.contact-h Adtiya College Of Institutions 
-                      button#xyz &#174; 
-                      span.ck A place for Versatile and Experienced faculty
-                  .main.clearfix
-                    .x1
-                      p.bn
-                        |Aditya PG College
-                        br
-                        |Ayodhya Nagar
-                        br
-                        |Ph:0884-2346661
-                        br
-                        |Kakinada
-                        br
-                        |Andhra Pradesh
-                        br
-                        |Pin:533437
-                        br
-                        |India.
-                    .x2
-                      p.contact-click-hint Click on this<span class="contact-hand-emoji">&#x1f447;</span>
+                p.anim-typewriter Contact Staff
+                //- Institution header card
+                .contact-hero
+                  .contact-hero-icon
+                    i.fa.fa-university
+                  .contact-hero-text
+                    h2.contact-inst-name Aditya College of Institutions
+                    p.contact-inst-tagline A place for Versatile and Experienced faculty
+                  .contact-hero-address
+                    .contact-address-item
+                      i.fa.fa-map-marker
+                      span Aditya PG College, Ayodhya Nagar
+                    .contact-address-item
+                      i.fa.fa-phone
+                      span 0884-2346661
+                    .contact-address-item
+                      i.fa.fa-map-pin
+                      span Kakinada, Andhra Pradesh — 533437
+
+                //- Department selector
+                .contact-selector-section
+                  p.contact-selector-label
+                    i.fa.fa-hand-pointer-o
+                    |  Select Department &amp; Year to view faculty details
+                  .contact-dept-grid
+                    //- MCA cards
+                    .dept-card(data-dept="mca")
+                      .dept-card-icon
+                        i.fa.fa-laptop
+                      .dept-card-name MCA
+                      .dept-years
+                        button.year-btn(data-target="m11") 1st Yr · ACET
+                        button.year-btn(data-target="m12") 1st Yr · ADTP
+                        button.year-btn(data-target="m21") 2nd Yr · ACET
+                        button.year-btn(data-target="m22") 2nd Yr · ADTP
+                        button.year-btn(data-target="m31") 3rd Yr · ACET
+                        button.year-btn(data-target="m32") 3rd Yr · ADTP
+                    //- BCA cards
+                    .dept-card(data-dept="bca")
+                      .dept-card-icon
+                        i.fa.fa-code
+                      .dept-card-name BCA
+                      .dept-years
+                        button.year-btn(data-target="b11") 1st Yr · ACET
+                        button.year-btn(data-target="b12") 1st Yr · ADTP
+                        button.year-btn(data-target="b21") 2nd Yr · ACET
+                        button.year-btn(data-target="b22") 2nd Yr · ADTP
+                        button.year-btn(data-target="b31") 3rd Yr · ACET
+                        button.year-btn(data-target="b32") 3rd Yr · ADTP
+                    //- Animation
+                    .dept-card(data-dept="anim")
+                      .dept-card-icon
+                        i.fa.fa-paint-brush
+                      .dept-card-name Animation
+                      .dept-years
+                        button.year-btn(data-target="a11") 1st Yr · ASCS
+                        button.year-btn(data-target="a21") 2nd Yr · ASCS
+                        button.year-btn(data-target="a31") 3rd Yr · ASCS
+
+                //- Legacy dl-menu (kept for JS click.js compatibility, hidden)
+                .contact-legacy-hidden
+                  .containerr.demo-4
+                    .main.clearfix
+                      .x2
                         #dl-menu.dl-menuwrapper
                           button.dl-trigger.btn6
                           ul.dl-menu
@@ -640,130 +677,114 @@ html
                                   a.x3 1st Year
                                   ul.dl-submenu
                                     li
-                                      a.x3#cnta11 ASCS 
+                                      a.x3#cnta11 ASCS
                                 li
                                   a.x3 2nd Year
                                   ul.dl-submenu
                                     li
-                                      a.x3#cnta21 ASCS 
+                                      a.x3#cnta21 ASCS
                                 li
                                   a.x3 3rd Year
                                   ul.dl-submenu
                                     li
                                       a.x3#cnta31 ASCS
-                                 
+
+                //- Faculty detail panels (shown by new year-btn + legacy click.js)
+                .faculty-panels-container
+                  button#contact-back-btn.contact-back-btn(style="display:none;")
+                    i.fa.fa-arrow-left
+                    |  Back to Departments
 
                   .asd
                     #m11.dnt.slideInDown
-                      h4 MCA 1st year ACET Faculty details
+                      h4 MCA · 1st Year · ACET — Faculty Details
                       .cnt0
-                        .cnth1(style='background:url("images/nrk.jpg");background-size:cover;')
+                        .cnth1(style='background:url("images/nrk.jpg");background-size:cover;background-position:center top;')
                         .cnth2
-                          h4.mn Class Teacher
-                          .cnthc1
-                            |Name : N.Ramakrishna
-                            br
-                            |EID : YUU8EKK3
-                            br
-                            |Deals : OOAD
-                            br
-                            |Phone : 9898839892
-                          .cnthc2
-                            |Area : Ayodhya nagar
-                            br
-                            |Place : Kakinada
-                            br
-                            |Pin : 533004
-                    
+                          span.mn Class Teacher
+                          .teacher-details
+                            .cnthc1
+                              |Name
+                              br
+                              |Employee ID
+                              br
+                              |Subject
+                              br
+                              |Phone
+                            .cnthc2
+                              |N. Ramakrishna
+                              br
+                              |YUU8EKK3
+                              br
+                              |OOAD
+                              br
+                              |9898839892
+                          .cnthc2(style="margin-top:10px;color:#64748b;font-size:13px;")
+                            i.fa.fa-map-marker(style="margin-right:6px;color:#0f766e;")
+                            |Ayodhya Nagar, Kakinada — 533004
+
                       .cntf0.faculty-grid
                         .cntr
-                          .cntf1(style="background:url('images/princy.jpg');background-size:cover;background-position:center;")
+                          .cntf1(style="background:url('images/princy.jpg');background-size:cover;background-position:center top;")
                           .cntf2
-                              |Name: D.Beulah
-                              br
-                              |Deals: STM
-                              br
-                              |EID: YU097J6
-                        .cntr
-                          .cntf1(style="background:url('images/satya.jpg');background-size:cover;background-position:center;")
-                          .cntf2
-                              |Name: G.Satya
-                              br
-                              |Deals: Computer Networks
-                              br
-                              |EID: LDK0097J6
-                        .cntr
-                          .cntf1(style="background:url('images/kumar.jpg');background-size:cover;background-position:center;")
-                          .cntf2
-                              |Name: U.L.N.kumar
-                              br
-                              |Deals: Bigdata Analytics
-                              br
-                              |EID: GH8818F4
-                        .cntr
-                          .cntf1(style="background:url('images/chandra.jpg');background-size:cover;background-position:center center;")
-                          .cntf2
-                            |Name: V.Chandrakumar
+                            strong D. Beulah
                             br
-                            |Deals: E-Commerce
+                            |Subject: STM
+                            br
+                            |EID: YU097J6
+                        .cntr
+                          .cntf1(style="background:url('images/satya.jpg');background-size:cover;background-position:center top;")
+                          .cntf2
+                            strong G. Satya
+                            br
+                            |Subject: Computer Networks
+                            br
+                            |EID: LDK0097J6
+                        .cntr
+                          .cntf1(style="background:url('images/kumar.jpg');background-size:cover;background-position:center top;")
+                          .cntf2
+                            strong U.L.N. Kumar
+                            br
+                            |Subject: Bigdata Analytics
+                            br
+                            |EID: GH8818F4
+                        .cntr
+                          .cntf1(style="background:url('images/chandra.jpg');background-size:cover;background-position:center top;")
+                          .cntf2
+                            strong V. Chandrakumar
+                            br
+                            |Subject: E-Commerce
                             br
                             |EID: KP32AS412
-                          
 
                     #m12.dnt.slideInDown
-                      h4 MCA 1st year ADTP Faculty details
-                      
-
+                      h4 MCA · 1st Year · ADTP — Faculty Details
                     #m21.dnt.slideInDown
-                      h4 MCA 2nd year ACET Faculty details
-                      
-
+                      h4 MCA · 2nd Year · ACET — Faculty Details
                     #m22.dnt.slideInDown
-                      h4 MCA 2nd year ADTP Faculty details
-                      
-
+                      h4 MCA · 2nd Year · ADTP — Faculty Details
                     #m31.dnt.slideInDown
-                      h4 MCA 3rd year ACET Faculty details
-                      
-                      
+                      h4 MCA · 3rd Year · ACET — Faculty Details
                     #m32.dnt.slideInDown
-                      h4 MCA 3rd year ADTP Faculty details
-                      
-
+                      h4 MCA · 3rd Year · ADTP — Faculty Details
                     #b11.dnt.slideInDown
-                      h4 BCA 1st year ACET Faculty details
-                      
-
+                      h4 BCA · 1st Year · ACET — Faculty Details
                     #b12.dnt.slideInDown
-                      h4 BCA 1st year ADTP Faculty details
-                      
-
+                      h4 BCA · 1st Year · ADTP — Faculty Details
                     #b21.dnt.slideInDown
-                      h4 BCA 2nd year ACET Faculty details
-                      
-
+                      h4 BCA · 2nd Year · ACET — Faculty Details
                     #b22.dnt.slideInDown
-                      h4 BCA 2nd year ADTP Faculty details
-                      
-
+                      h4 BCA · 2nd Year · ADTP — Faculty Details
                     #b31.dnt.slideInDown
-                      h4 BCA 3rd year ACET Faculty details
-                      
-
+                      h4 BCA · 3rd Year · ACET — Faculty Details
                     #b32.dnt.slideInDown
-                      h4 BCA 3rd year ADTP Faculty details
-                      
-
+                      h4 BCA · 3rd Year · ADTP — Faculty Details
                     #a11.dnt.slideInDown
-                      h4 Animation 1st year ASCS - Faculty details
-                      
-
+                      h4 Animation · 1st Year · ASCS — Faculty Details
                     #a21.dnt.slideInDown
-                      h4 Animation 2nd year ASCS - Faculty details
-                      
-
+                      h4 Animation · 2nd Year · ASCS — Faculty Details
                     #a31.dnt.slideInDown
-                      h4  Animation 3rd year ASCS - Faculty details
+                      h4 Animation · 3rd Year · ASCS — Faculty Details
                       
               #help.tab-pane.fade.align
                 p.anim-typewriter Help tab
@@ -918,6 +939,7 @@ html
     // js placed at the end of the document so the pages load faster
     script(src='javascripts/jquery.js')
     script(src='javascripts/bootstrap.min.js')
+    script(src='javascripts/modernizr.custom.js')
     script(src='javascripts/jquery-ui-1.9.2.custom.min.js')
     script(src='javascripts/jquery.ui.touch-punch.min.js')
     script(src='javascripts/jquery.dcjqaccordion.2.7.js')

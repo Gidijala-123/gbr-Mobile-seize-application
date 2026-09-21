@@ -1,420 +1,322 @@
-/* General Demo Style */
+/* ================================================================
+   GBR Mobile Storage Application
+   default.css — Contact Staff / Faculty section styles
+   ================================================================ */
+
 @import url(http://fonts.googleapis.com/css?family=Lato:300,400,700);
 
-@font-face {
-  font-family: 'fontawesome';
-  src: url('../fonts/fontawesome.eot');
-  src: url('../fonts/fontawesome.eot?#iefix') format('embedded-opentype'),
-    url('../fonts/fontawesome.svg#fontawesome') format('svg'),
-    url('../fonts/fontawesome.woff') format('woff'),
-    url('../fonts/fontawesome.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
+/* ── Legacy container (kept for compatibility) ── */
+.containerr { margin-left: 0; width: 100%; }
+.main, .containerr > header { width: 100%; }
 
-.containerr {
-  margin-left: 0;
-  width: 100%;
-}
+/* ── Legacy clearfix ── */
+.clearfix::before, .clearfix::after { content: " "; display: table; }
+.clearfix::after { clear: both; }
 
-.main,
-.containerr>header {
-  width: 100%;
-}
+/* ── Old address/menu styles kept but hidden in new layout ── */
+.x1 { font-weight: 600; font-size: 14.5px; color: #334155; line-height: 1.7; }
+.x2 { text-align: center; }
+.x3 { border-radius: 8px; transition: background 0.2s ease, color 0.2s ease; }
+.bn { white-space: nowrap; border-right: 2px solid rgba(15,118,110,0.35); padding-right: 12px; color: #1e293b; }
+.ck::before { content: ' \261A'; padding-right: 12px; color: #0f766e; }
+.ck::after  { content: ' \261B'; color: #0f766e; }
+.contact-click-hint { font-size: 14px; font-weight: 600; color: #334155; text-align: center; margin-bottom: 12px; }
 
-.main {
-  width: 100%;
-  max-height: none;
-  padding: 24px 28px 28px;
-  border-radius: 14px;
-  margin-top: 16px;
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 50%, #eef2ff 100%);
-  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
-}
-
-.containerr>header span {
-  display: block;
-  font-size: 25px;
-  color: white;
-  max-width: 100%;
-  word-spacing: 8px;
-  margin-left: 0%;
-  margin-top: 5px;
-  text-shadow: 0px 0px 7px black;
-}
-
-header.clearfix {
-  background: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%);
-  border-radius: 12px;
-  font-size: 26px;
-  line-height: 1.3;
-  margin-top: 0px;
-  padding: 14px 20px;
-  color: #ffffff;
-  text-align: center;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  box-shadow: 0 6px 22px rgba(30, 58, 138, 0.25);
-}
-
-.clearfix:before,
-.clearfix:after {
-  content: " ";
-  display: table;
-}
-
-.clearfix:after {
-  clear: both;
-}
-
-#xyz {
-  background-color: transparent;
-  outline: none;
-  border: none;
-  font-size: 26px;
-  margin-left: -6px;
-  margin-top: -8px;
-  color: #ffffff;
-  transition: color 0.2s ease, transform 0.2s ease;
-  cursor: pointer;
-}
-
-#xyz:hover {
-  color: #fbbf24;
-  transform: scale(1.08);
-}
-
-.x1 {
-  font-weight: 600;
-  width: auto;
-  font-size: 14.5px;
-  float: left;
-  margin-left: 10px;
-  text-align: right;
-  line-height: 1.7;
-  color: #334155;
-}
-
-.x2 {
-  text-align: center;
-  margin-top: 0px;
-}
-
-.x3 {
-  border-radius: 8px;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.bn {
-  white-space: nowrap;
-  border-right: 2px solid rgba(15, 118, 110, 0.35);
-  padding-right: 12px;
-  color: #1e293b;
-}
-
-.ck:before {
-  content: ' \261A';
-  padding-right: 12px;
-  color: #0f766e;
-}
-
-.ck:after {
-  content: ' \261B';
-  color: #0f766e;
-}
-
-
+/* ── Faculty panels container ── */
 .asd {
-  height: 100%;
-  margin-top: 1%;
-  margin-bottom: 1vw;
+  width: 100%;
+  margin-top: 8px;
 }
 
-#m11 {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
+/* ── All faculty panel cards (m11, m12, b11 etc.) ── */
+#m11, #m12, #m21, #m22, #m31, #m32,
+#b11, #b12, #b21, #b22, #b31, #b32,
+#a11, #a21, #a31,
+#m11.dnt, #m12.dnt, #m21.dnt, #m22.dnt, #m31.dnt, #m32.dnt,
+#b11.dnt, #b12.dnt, #b21.dnt, #b22.dnt, #b31.dnt, #b32.dnt,
+#a11.dnt, #a21.dnt, #a31.dnt {
+  width: 100%;
   background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-  width: 81vw;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 4px 24px rgba(15,23,42,0.07);
 }
 
-#m12.dnt {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
+/* ── Panel section heading h4 ── */
+.asd h4 {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e3a8a;
+  margin: 0 0 24px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.02em;
+}
+.asd h4::before {
+  content: '\f0c0';
+  font-family: FontAwesome;
+  font-size: 14px;
+  color: #0f766e;
+  flex-shrink: 0;
+}
+
+/* ── Class teacher section (.cnt0) ── */
+.cnt0 {
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
+  background: linear-gradient(135deg, #f8fafc 0%, #f0fdfa 50%, #eef2ff 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 16px rgba(15,23,42,0.06);
+}
+
+/* Class teacher photo */
+.cnth1 {
+  flex: 0 0 180px;
+  height: 180px;
+  border-radius: 14px;
+  border: 3px solid #e2e8f0;
+  background-size: cover !important;
+  background-position: center top !important;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.12);
+  position: relative;
+  overflow: hidden;
+}
+.cnth1::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40%;
+  background: linear-gradient(to top, rgba(15,23,42,0.35), transparent);
+  border-radius: 0 0 11px 11px;
+}
+
+/* Class teacher info card */
+.cnth2 {
+  flex: 1;
   background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.04);
 }
 
-#m21.dnt {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
+/* Class teacher label */
+.mn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f766e;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #f0fdfa, #ecfdf5);
+  border-radius: 20px;
+  border: 1px solid rgba(15,118,110,0.2);
+  width: fit-content;
+}
+.mn::before {
+  content: '\f007';
+  font-family: FontAwesome;
+  font-size: 12px;
+}
+
+/* Teacher details two-column layout */
+.cnth2 > .cnthc1,
+.cnth2 > .cnthc2 {
+  float: none;
+  display: inline;
+}
+
+/* Overriding float layout — use CSS grid for teacher details */
+.cnth2 .teacher-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.cnthc1, .cnthc2 {
+  width: auto;
+  height: auto;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.9;
+  float: none !important;
+  text-align: left !important;
+  border: none !important;
+}
+.cnthc1 { color: #64748b; }
+.cnthc2 { color: #1e293b; font-weight: 600; }
+
+/* ── Faculty grid (.faculty-grid) ── */
+.faculty-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+}
+
+/* Ensure clean float reset */
+.cntf0::before, .cntf0::after { content: ""; display: table; clear: both; }
+
+/* Each faculty card */
+.faculty-grid .cntr {
+  display: flex;
+  flex-direction: column;
   background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(15,23,42,0.07);
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+  float: none !important;
+  flex: unset !important;
+  width: auto !important;
+  min-width: 0 !important;
+}
+.faculty-grid .cntr:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px rgba(15,23,42,0.14);
 }
 
-#m22.dnt {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
+/* Faculty photo */
+.cntf1 {
+  width: 100%;
+  height: 200px;
+  background-size: cover !important;
+  background-position: center top !important;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  position: relative;
+  flex-shrink: 0;
+  transition: none;
+}
+/* Subtle overlay gradient on photo */
+.cntf1::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40%;
+  background: linear-gradient(to top, rgba(15,23,42,0.28), transparent);
+}
+.cntf1:hover { transform: none !important; box-shadow: none !important; }
+
+/* Faculty info */
+.cntf2 {
+  flex: 1;
+  padding: 16px;
   background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+  border-top: 3px solid #e2e8f0;
+  border-radius: 0;
+  box-shadow: none;
+  color: #1e293b;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.7;
+  text-align: left;
+  min-height: auto;
+  height: auto;
+  letter-spacing: 0;
+  margin-top: 0;
+  position: relative;
+}
+/* Top accent line on info */
+.faculty-grid .cntr:nth-child(4n+1) .cntf2 { border-top-color: #1e3a8a; }
+.faculty-grid .cntr:nth-child(4n+2) .cntf2 { border-top-color: #0f766e; }
+.faculty-grid .cntr:nth-child(4n+3) .cntf2 { border-top-color: #7c3aed; }
+.faculty-grid .cntr:nth-child(4n+4) .cntf2 { border-top-color: #0891b2; }
+
+/* Name styling within cntf2 */
+.cntf2 br { display: none; }
+
+/* Faculty badge icon */
+.cntf2::before {
+  content: '\f007';
+  font-family: FontAwesome;
+  font-size: 11px;
+  color: #94a3b8;
+  display: block;
+  margin-bottom: 4px;
 }
 
-#m31.dnt {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .faculty-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .faculty-grid { grid-template-columns: 1fr; }
+  .cnt0 { flex-direction: column; }
+  .cnth1 { flex: 0 0 auto; width: 100%; height: 200px; }
 }
 
-#m32.dnt {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-}
-
-#b11.dnt {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-}
-
-#b12.dnt {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-}
-
-#b21.dnt {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-}
-
-#b22.dnt {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-}
-
-#b31.dnt {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-}
-
-#b32.dnt {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-}
-
-#a11.dnt {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-}
-
-#a21.dnt {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-}
-
-#a31.dnt {
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-}
-
+/* ── h4 global (contact panels only) ── */
 h4 {
   color: #1e3a8a;
   font-weight: 700;
-  text-align: center;
-  font-size: 18px;
+  font-size: 16px;
   letter-spacing: 0.3px;
 }
 
-.cnt0 {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  width: 100%;
-  height: auto;
-  min-height: 220px;
-  margin: 12px 0 0;
-  border-radius: 12px;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 16px;
-  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.16);
+/* ── Contact tab dark mode ── */
+body.home-body.dark-mode #m11,
+body.home-body.dark-mode #m12,
+body.home-body.dark-mode #m21,
+body.home-body.dark-mode #m22,
+body.home-body.dark-mode #m31,
+body.home-body.dark-mode #m32,
+body.home-body.dark-mode #b11,
+body.home-body.dark-mode #b12,
+body.home-body.dark-mode #b21,
+body.home-body.dark-mode #b22,
+body.home-body.dark-mode #b31,
+body.home-body.dark-mode #b32,
+body.home-body.dark-mode #a11,
+body.home-body.dark-mode #a21,
+body.home-body.dark-mode #a31 {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+body.home-body.dark-mode .cnt0 {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+body.home-body.dark-mode .cnth2 {
+  background: rgba(255,255,255,0.05) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+body.home-body.dark-mode .cnthc1 { color: #64748b !important; }
+body.home-body.dark-mode .cnthc2 { color: #e2e8f0 !important; }
+body.home-body.dark-mode .faculty-grid .cntr {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+body.home-body.dark-mode .cntf2 {
+  background: rgba(255,255,255,0.04) !important;
+  color: #e2e8f0 !important;
+}
+body.home-body.dark-mode .asd h4 {
+  color: #67e8f9 !important;
+  border-bottom-color: rgba(255,255,255,0.08) !important;
 }
 
-.cnth1 {
-  flex: 0 0 22%;
-  border: 2px solid rgba(34, 211, 238, 0.4);
-  height: 200px;
-  border-radius: 10px;
-  margin: 0 16px 0 0;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-  background-size: cover !important;
-  background-position: center !important;
-}
-
-.cnth2 {
-  flex: 1 1 auto;
-  min-width: 0;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 14px 18px;
-  margin: 0;
-  font-family: 'Lato', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: #e2e8f0;
-  line-height: 1.7;
-  border-radius: 10px;
-  backdrop-filter: blur(4px);
-}
-
-.mn {
-  width: auto;
-  display: inline-block;
-  margin: 0 auto 10px;
-  font-size: 17px;
-  white-space: nowrap;
-  color: #22d3ee;
-  font-weight: 700;
-  border-bottom: 2px solid rgba(251, 191, 36, 0.6);
-  padding-bottom: 3px;
-  letter-spacing: 0.3px;
-}
-
-.cnthc1,
-.cnthc2 {
-  height: auto;
-  min-height: 100px;
-  width: 45%;
-  padding: 10px 14px;
-  font-size: 13.5px;
-  line-height: 1.7;
-}
-
-.cnthc1 {
-  margin: 0;
-  text-align: right;
-  float: left;
-  border-right: 1px solid rgba(255, 255, 255, 0.12);
-  color: #94a3b8;
-}
-
-.cnthc2 {
-  margin: 0;
-  float: right;
-  text-align: left;
-  color: #f1f5f9;
-}
-
-.faculty-grid {
-  width: 100%;
-  height: auto;
-  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
-  margin: 12px 0 0;
-  border-radius: 12px;
-  padding: 18px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  justify-content: space-between;
-  align-items: flex-start;
-  border: 1px solid rgba(30, 58, 138, 0.1);
-  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
-}
-
-.cntf0:before,
-.cntf0:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-.faculty-grid .cntr {
-  margin: 0;
-  float: none;
-  flex: 0 1 calc(25% - 16px);
-  width: auto;
-  min-width: 180px;
-  display: flex;
-  flex-direction: column;
-}
-
-.cntf1 {
-  background: 100%;
-  height: 160px;
-  border-radius: 10px;
-  border: 2px solid rgba(15, 118, 110, 0.25);
-  background-size: cover !important;
-  background-position: center !important;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.cntf1:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 26px rgba(15, 118, 110, 0.18);
-}
-
-.cntf2 {
-  background: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%);
-  color: #ffffff;
-  font-size: 13px;
-  white-space: normal;
-  min-height: 90px;
-  height: auto;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  line-height: 1.55;
-  margin-top: 10px;
-  text-align: center;
-  padding: 10px 8px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.22);
-}
-
-/* Contact click hint */
-.contact-click-hint {
-  font-size: 14px;
-  font-weight: 600;
-  color: #334155;
-  text-align: center;
-  margin-bottom: 12px;
-}
-.contact-hand-emoji {
-  font-size: 20px;
-  display: inline-block;
-  margin-left: 4px;
-  animation: bounce-hand 1.2s ease-in-out infinite;
-}
-@keyframes bounce-hand {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(6px); }
-}
-
-/* Contact tab heading */
-h3.contact-h {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.02em;
-  display: inline;
-}
+/* ── Contact h4 (additional) ── */
+.contact-h { font-size: 22px; font-weight: 800; letter-spacing: 0.01em; }

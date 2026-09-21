@@ -219,7 +219,11 @@ router.post("/postlogin", async (req, res) => {
     if (!data.pwd.startsWith("pbkdf2$")) await signlogColl.update({ _id: data._id }, { $set: { pwd: await hashPassword(password) } });
     await new Promise((resolve, reject) => req.session.regenerate((err) => (err ? reject(err) : resolve())));
     req.session.user = { id: data._id, email: data.email };
-    await visitorsOfPage.insert({ name: req.body.uname, email, time: new Date() });
+    const visitorName =
+      typeof req.body.uname === "string" && req.body.uname.trim()
+        ? req.body.uname.trim()
+        : email.split("@")[0] || "Unknown";
+    await visitorsOfPage.insert({ name: visitorName, email, time: new Date() });
     res.sendStatus(204);
   } catch (err) {
     await recordError("login", email, err);

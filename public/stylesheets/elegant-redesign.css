@@ -1,0 +1,568 @@
+/* ================================================================
+   FINAL ELEGANT DASHBOARD REDESIGN — v5
+   Clean, professional, eye-catching polish for GBR Mobile Storage
+   ================================================================ */
+
+/* ── Remove: the old CSS-only pulse dots before stat labels (we now use real FA icons) ── */
+body.home-body #dboard .col-md-4:nth-child(1) .dd1 p.p1::before,
+body.home-body #dboard .col-md-4:nth-child(2) .dd1 p.p1::before,
+body.home-body #dboard .col-md-4:nth-child(3) .dd1 p.p1::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* ── Stat card icon styling ────────────────────────────────────── */
+body.home-body #dboard .dd1 .stat-ico {
+  font-size: 15px !important;
+  opacity: 0.85;
+  margin-right: 8px;
+  display: inline-block;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+body.home-body #dboard .stat-card--blue .stat-ico {
+  color: #93c5fd;
+}
+
+body.home-body #dboard .stat-card--green .stat-ico {
+  color: #6ee7b7;
+}
+
+body.home-body #dboard .stat-card--purple .stat-ico {
+  color: #c4b5fd;
+}
+
+/* ── Stat card layout: icon + label ───────────────────────────── */
+html body.home-body #dboard .dd1 p.p1 {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin: 0 0 18px 0 !important;
+  font-size: 11.5px !important;
+  letter-spacing: 0.11em !important;
+  white-space: nowrap !important;
+}
+
+html body.home-body #dboard .dd1 p.p1 a.stat-link {
+  font-size: 11.5px !important;
+  letter-spacing: 0.09em !important;
+  color: rgba(255, 255, 255, 0.82) !important;
+  text-transform: uppercase !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  word-spacing: 0.05em !important;
+}
+
+html body.home-body #dboard .dd1 p.p1 a.stat-link:hover {
+  color: #ffffff !important;
+}
+
+/* ── Stat number: slightly more compact and balanced ──────────── */
+body.home-body #dboard .dd1 .pp1 {
+  font-size: 52px !important;
+  line-height: 1 !important;
+  padding-left: 2px;
+}
+
+body.home-body #dboard .stat-card--blue .pp1 {
+  color: #ffffff;
+  text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+body.home-body #dboard .stat-card--green .pp1 {
+  color: #ffffff;
+  text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+body.home-body #dboard .stat-card--purple .pp1 {
+  color: #ffffff;
+  text-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+/* ── Stat card layout (flex column) ──────────────────────────── */
+html body.home-body #dboard .dd1 {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 28px 24px 24px !important;
+}
+
+/* ── Remove: the strange little accent bars before form labels ─── */
+html body.home-body #dboard #form form .col-md-4 label::before,
+html body.home-body #dboard #form form .col-md-12 label::before {
+  display: none !important;
+  content: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: none !important;
+}
+
+/* ── Clean, readable form labels ──────────────────────────────── */
+html body.home-body #dboard #form form label,
+html body.home-body #fmgrp label.lb {
+  font-size: 10.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  margin: 18px 0 7px 3px !important;
+  padding: 0 !important;
+  font-family: 'Lato', -apple-system, sans-serif !important;
+  line-height: 1.2 !important;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.65), rgba(34, 211, 238, 0.7));
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  display: block !important;
+  position: relative !important;
+}
+
+html body.home-body:not(.dark-mode) #dboard #form form label,
+html body.home-body:not(.dark-mode) #fmgrp label.lb {
+  background: linear-gradient(90deg, #475569, #0891b2);
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* ── Field-icon: position correction so icons align well ──────── */
+body.home-body #dboard #form .field-icon-wrap input,
+body.home-body #dboard #form .field-icon-wrap select {
+  padding-left: 44px !important;
+}
+
+body.home-body #dboard #form .field-icon {
+  left: 15px !important;
+  font-size: 14px !important;
+  opacity: 0.9;
+}
+
+/* ── Inputs: refined borders + smoother focus glow ────────────── */
+body.home-body #dboard #form form input.form-control,
+body.home-body #dboard #form form select.form-control {
+  height: 47px !important;
+  border-radius: 11px !important;
+  padding: 0 16px 0 44px !important;
+  letter-spacing: 0.01em;
+}
+
+body.home-body #dboard #form form select.form-control {
+  padding-right: 40px !important;
+}
+
+body.home-body:not(.dark-mode) #dboard #form form input.form-control,
+body.home-body:not(.dark-mode) #dboard #form form select.form-control,
+body.home-body:not(.dark-mode) #dboard #form form textarea.form-control {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+}
+
+body.home-body:not(.dark-mode) #dboard #form form input.form-control:focus,
+body.home-body:not(.dark-mode) #dboard #form form select.form-control:focus,
+body.home-body:not(.dark-mode) #dboard #form form textarea.form-control:focus {
+  background: #ffffff !important;
+  border-color: #0891b2 !important;
+  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.12), 0 2px 6px rgba(15, 23, 42, 0.06) !important;
+}
+
+/* ── Reason textarea ──────────────────────────────────────────── */
+body.home-body #dboard #form form textarea.form-control {
+  border-radius: 11px !important;
+  padding: 13px 16px !important;
+  line-height: 1.65 !important;
+}
+
+/* ── Form card header strip (re-styled) ───────────────────────── */
+html body.home-body #dboard #form form.form-group::before {
+  content: '\f234  Mobile Storage \00B7  New Entry Record' !important;
+  font-family: FontAwesome, 'Lato', sans-serif !important;
+  font-size: 13px !important;
+  letter-spacing: 0.06em !important;
+  padding: 17px 30px !important;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.85) 0%, rgba(30, 58, 138, 0.9) 50%, rgba(8, 145, 178, 0.85) 100%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  font-weight: 800 !important;
+}
+
+html body.home-body:not(.dark-mode) #dboard #form form.form-group::before {
+  background: linear-gradient(135deg, #0891b2 0%, #1e3a8a 100%) !important;
+  color: #ffffff !important;
+}
+
+/* ── Col-md-4 content area padding ────────────────────────────── */
+body.home-body #dboard #form form>center {
+  padding: 22px 10px 0 !important;
+}
+
+/* ── Reason + Submit row ──────────────────────────────────────── */
+body.home-body #dboard #form form .col-md-12 {
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding: 14px 30px 30px !important;
+}
+
+body.home-body:not(.dark-mode) #dboard #form form .col-md-12 {
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+/* ── Submit button: enhanced premium look ─────────────────────── */
+html body.home-body #dboard #form form .btn2 {
+  height: 54px !important;
+  min-width: 280px !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #06b6d4 0%, #0e7490 50%, #1e40af 100%) !important;
+  box-shadow:
+    0 12px 30px rgba(6, 182, 212, 0.38),
+    0 4px 10px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+  font-size: 14px !important;
+  letter-spacing: 0.08em !important;
+  font-weight: 800 !important;
+  gap: 10px !important;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.25s ease,
+    filter 0.2s ease !important;
+  text-transform: uppercase !important;
+}
+
+html body.home-body #dboard #form form .btn2:hover {
+  transform: translateY(-4px) scale(1.015) !important;
+  box-shadow:
+    0 22px 52px rgba(6, 182, 212, 0.48),
+    0 6px 14px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  filter: brightness(1.08) saturate(1.05) !important;
+}
+
+html body.home-body #dboard #form form .btn2:active {
+  transform: translateY(-1px) scale(0.995) !important;
+}
+
+/* ── Dashboard heading (DashBoard title) ──────────────────────── */
+html body.home-body #dboard>p.anim-typewriter {
+  font-size: 30px !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.015em !important;
+  margin: 0 0 26px 0 !important;
+  background: linear-gradient(135deg, #ffffff 0%, #67e8f9 60%, #a5f3fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+html body.home-body #dboard>p.anim-typewriter::after {
+  background: linear-gradient(90deg, #06b6d4 0%, #1e40af 100%) !important;
+  height: 4px !important;
+  width: 56px !important;
+  margin-top: 10px !important;
+  border-radius: 999px;
+}
+
+html body.home-body:not(.dark-mode) #dboard>p.anim-typewriter {
+  background: linear-gradient(135deg, #0f172a 0%, #0891b2 60%, #1e3a8a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Sidebar: clean logo border ──────────────────────────────── */
+body.home-body p.centered img.img-circle {
+  background: #0f172a !important;
+  border: 3px solid rgba(34, 211, 238, 0.25) !important;
+  box-shadow:
+    0 0 0 4px rgba(34, 211, 238, 0.08),
+    0 10px 30px rgba(0, 0, 0, 0.35) !important;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+body.home-body p.centered img.img-circle:hover {
+  transform: scale(1.04);
+  box-shadow:
+    0 0 0 5px rgba(34, 211, 238, 0.15),
+    0 16px 40px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.home-body .flip-box-front,
+body.home-body .flip-box-back {
+  background: #0f172a;
+}
+
+body.home-body .qw {
+  margin: 10px 0 18px 24px !important;
+  font-size: 10.5px !important;
+  letter-spacing: 0.16em !important;
+  color: rgba(255, 255, 255, 0.38) !important;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+}
+
+body.home-body .qw i.fa-mobile {
+  font-size: 14px !important;
+  color: #06b6d4 !important;
+  opacity: 0.8;
+}
+
+/* ── Sidebar menu items: cleaner highlight ─────────────────── */
+body.home-body ul.sidebar-menu li a {
+  padding: 11px 12px 11px 16px !important;
+  border-radius: 9px !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  margin: 2px 10px;
+  border-left: 3px solid transparent !important;
+  color: rgba(203, 213, 225, 0.82) !important;
+  transition: all 0.2s ease !important;
+}
+
+body.home-body ul.sidebar-menu li a span {
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  color: inherit !important;
+}
+
+body.home-body ul.sidebar-menu li a i {
+  color: rgba(103, 232, 249, 0.85) !important;
+  font-size: 14px !important;
+  width: 22px;
+  flex-shrink: 0;
+}
+
+body.home-body ul.sidebar-menu li.active a,
+body.home-body ul.sidebar-menu li a:hover {
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.16) 0%, rgba(30, 64, 175, 0.12) 100%) !important;
+  color: #ffffff !important;
+  border-left-color: #06b6d4 !important;
+  box-shadow: inset 0 0 0 1px rgba(6, 182, 212, 0.12) !important;
+}
+
+body.home-body ul.sidebar-menu li a:hover i {
+  color: #22d3ee !important;
+}
+
+body.home-body ul.sidebar-menu li.active a i {
+  color: #22d3ee !important;
+}
+
+/* ── Header: refined ──────────────────────────────────────── */
+body.home-body .header {
+  background: linear-gradient(135deg, #0c1729 0%, #1e293b 50%, #0e2438 100%) !important;
+  box-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.35),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  padding: 0 28px !important;
+}
+
+body.home-body .sidebar-toggle-box::after {
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em !important;
+  background: linear-gradient(90deg, #ffffff, #67e8f9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.home-body #date_time {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 10px !important;
+  padding: 7px 16px !important;
+  font-size: 12px !important;
+  color: rgba(226, 232, 240, 0.9) !important;
+  letter-spacing: 0.02em;
+  font-weight: 600 !important;
+}
+
+body.home-body .inner-width-neon {
+  padding: 8px 16px !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em;
+  transition: all 0.22s ease !important;
+}
+
+body.home-body .inner-width-neon:hover {
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  color: #0f172a !important;
+  border-color: transparent !important;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(245, 158, 11, 0.35) !important;
+}
+
+body.home-body .inner-width-neon:hover .btn-text {
+  color: #0f172a !important;
+}
+
+body.home-body .inner-width-neon .btn-text {
+  font-size: 12.5px !important;
+}
+
+#darkModeToggle {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  font-size: 15px !important;
+  transition: all 0.22s ease !important;
+}
+
+#darkModeToggle:hover {
+  transform: rotate(20deg) scale(1.08);
+  background: rgba(251, 191, 36, 0.2) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(251, 191, 36, 0.3) !important;
+}
+
+/* ── Background: enhanced subtle gradient mesh ─────────────── */
+body.home-body {
+  background:
+    radial-gradient(ellipse at top left, rgba(30, 58, 138, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(124, 58, 237, 0.14) 0%, transparent 55%),
+    linear-gradient(145deg, #0b1220 0%, #0f172a 40%, #0d2333 100%) !important;
+  background-attachment: fixed !important;
+}
+
+body.home-body:not(.dark-mode) {
+  background:
+    radial-gradient(ellipse at top left, rgba(56, 189, 248, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(99, 102, 241, 0.10) 0%, transparent 55%),
+    linear-gradient(145deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%) !important;
+  background-attachment: fixed !important;
+}
+
+/* ── Light-mode: form card polished ────────────────────────── */
+body.home-body:not(.dark-mode) #dboard #form {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow:
+    0 20px 50px rgba(15, 23, 42, 0.09),
+    0 4px 12px rgba(15, 23, 42, 0.05) !important;
+}
+
+body.home-body:not(.dark-mode) #dboard #form form input.form-control,
+body.home-body:not(.dark-mode) #dboard #form form select.form-control,
+body.home-body:not(.dark-mode) #dboard #form form textarea.form-control {
+  border-color: #e2e8f0 !important;
+}
+
+body.home-body:not(.dark-mode) #dboard #form form center>.col-md-4 {
+  border-right: 1px solid #f1f5f9 !important;
+}
+
+/* ── Stat cards: better gradients & balance ─────────────────── */
+html body.home-body #dboard .dd1.stat-card--blue,
+html body.home-body #dboard .col-md-4:nth-child(1) .dd1 {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.15) 0%, transparent 45%),
+    linear-gradient(135deg, #1e40af 0%, #1d4ed8 45%, #0891b2 100%) !important;
+  box-shadow:
+    0 18px 44px rgba(29, 78, 216, 0.42),
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+html body.home-body #dboard .dd1.stat-card--green,
+html body.home-body #dboard .col-md-4:nth-child(2) .dd1 {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.15) 0%, transparent 45%),
+    linear-gradient(135deg, #047857 0%, #059669 45%, #0891b2 100%) !important;
+  box-shadow:
+    0 18px 44px rgba(5, 150, 105, 0.42),
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+html body.home-body #dboard .dd1.stat-card--purple,
+html body.home-body #dboard .col-md-4:nth-child(3) .dd1 {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.15) 0%, transparent 45%),
+    linear-gradient(135deg, #5b21b6 0%, #7c3aed 45%, #0891b2 100%) !important;
+  box-shadow:
+    0 18px 44px rgba(124, 58, 237, 0.42),
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+html body.home-body #dboard .dd1 {
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+html body.home-body #dboard .dd1:hover {
+  transform: translateY(-7px) scale(1.022) !important;
+  box-shadow:
+    0 28px 64px rgba(0, 0, 0, 0.4),
+    0 8px 18px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+/* ── Tab panes (other tabs): glass look consistent ────────── */
+body.home-body .tab-pane.align>p.anim-typewriter,
+body.home-body #search-edit>p.anim-typewriter,
+body.home-body #help>p.anim-typewriter,
+body.home-body #contact>p.anim-typewriter {
+  color: #f8fafc !important;
+}
+
+body.home-body:not(.dark-mode) .tab-pane.align>p.anim-typewriter,
+body.home-body:not(.dark-mode) #search-edit>p.anim-typewriter,
+body.home-body:not(.dark-mode) #help>p.anim-typewriter,
+body.home-body:not(.dark-mode) #contact>p.anim-typewriter {
+  color: #0f172a !important;
+  background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── DataTables header: richer gradient ───────────────────── */
+body.home-body table.table thead tr th {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+  border-bottom: 2px solid #06b6d4 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.06em !important;
+  padding: 13px 14px !important;
+}
+
+/* ── Field validation hints: placement ─────────────────────── */
+.field-hint {
+  margin-top: 5px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding-left: 3px !important;
+}
+
+/* ── Responsive tweaks ───────────────────────────────────── */
+@media (max-width: 768px) {
+  body.home-body #dboard>p.anim-typewriter {
+    font-size: 22px !important;
+  }
+
+  body.home-body #dboard .dd1 .pp1 {
+    font-size: 40px !important;
+  }
+
+  body.home-body #dboard #form form .btn2 {
+    min-width: 100% !important;
+    width: 100% !important;
+  }
+
+  body.home-body #date_time {
+    font-size: 11px !important;
+  }
+}

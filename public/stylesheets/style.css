@@ -1275,18 +1275,43 @@ body.home-body #wrap.plunge input[type="text"] {
 
 body.home-body {
   min-height: 100vh;
-  background: #f8fafc;
   font-family: 'Lato', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  overflow-x: hidden;
-  overflow-y: auto;   /* Task 1: allow vertical scroll */
+  overflow: hidden;   /* body itself does NOT scroll — #main-content scrolls */
   color: #0f172a;
   margin: 0;
   padding: 0;
 }
-/* Task 1: main content must scroll independently, not clip */
+html:has(body.home-body) {
+  overflow: hidden;
+  height: 100%;
+}
+html {
+  scroll-behavior: auto;
+}
+/* THE SCROLL FIX: #main-content is the ONE scroll container */
 body.home-body #main-content {
-  overflow-y: visible;
-  height: auto;
+  position: fixed !important;
+  top: 64px !important;
+  left: 240px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  height: auto !important;
+  min-height: unset !important;
+  padding: 32px 32px 120px !important;  /* generous bottom so submit clears */
+  -webkit-overflow-scrolling: touch;
+}
+/* Ensure section#container does NOT create a scroll context */
+body.home-body section#container {
+  overflow: visible !important;
+  height: auto !important;
+}
+body.home-body section.wrapper,
+body.home-body .tab-content,
+body.home-body .tab-pane.active {
+  overflow: visible !important;
+  height: auto !important;
 }
 
 /* Hide rules - preserved exact */
@@ -1506,12 +1531,9 @@ body.home-body ul.sidebar-menu li a:hover i {
 }
 
 /* --- Main content wrapper --- */
+/* #main-content is position:fixed as scroll container — see base rules above */
 body.home-body #main-content {
-  margin-left: 240px;
-  margin-top: 64px;
-  padding: 28px 28px 48px;
-  min-height: calc(100vh - 64px);
-  background: #f8fafc;
+  background: transparent;
 }
 body.home-body .wrapper {
   padding: 0;
@@ -2047,11 +2069,14 @@ body.home-body * { max-width: 100%; }
 @media (max-width: 992px) {
   body.home-body ul.sidebar-menu li a span { font-size: 13px !important; }
   body.home-body #navbar ul { columns: 1; -webkit-columns: 1; }
-  body.home-body #main-content { margin-left: 220px; }
+  body.home-body #main-content { left: 220px !important; }
   body.home-body #sidebar.nav-collapse { width: 220px; }
 }
 @media (max-width: 768px) {
-  body.home-body #main-content { margin-left: 0; margin-top: 64px; padding: 20px 16px 32px; }
+  body.home-body #main-content {
+    left: 0 !important;
+    padding: 20px 16px 120px !important;
+  }
   body.home-body .app-header,
   body.home-body .header {
     height: auto;
@@ -2989,3 +3014,2016 @@ kbd {
   .confirm-modal-box { padding: 28px 20px 22px; }
   .smart-search-wrap input { font-size: 14px; height: 46px; }
 }
+
+
+/* ================================================================
+   FORM UI REDESIGN — Dashboard entry form & Edit form
+   Modern glassmorphism inputs with floating labels and icons
+   ================================================================ */
+
+/* ── Dashboard form: overall card ──────────────────────────────── */
+body.home-body #dboard #form {
+  border-radius: 20px !important;
+  overflow: visible !important;   /* must not clip floated col-md-12 */
+}
+
+/* ── Form field group: label + input together ──────────────────── */
+/* Wrap each label+input into a visual unit using CSS */
+body.home-body #dboard #form form .col-md-4 label,
+body.home-body #dboard #form form .col-md-12 label {
+  display: block !important;
+  font-size: 10.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: #475569 !important;
+  margin: 20px 0 5px 2px !important;
+  padding: 0 !important;
+  font-family: 'Lato', sans-serif !important;
+  line-height: 1 !important;
+  position: relative;
+}
+/* Accent bar on label */
+body.home-body #dboard #form form .col-md-4 label::before,
+body.home-body #dboard #form form .col-md-12 label::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 10px;
+  background: linear-gradient(135deg, #1e3a8a, #0f766e);
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* ── All inputs in dashboard form ────────────────────────────────── */
+body.home-body #dboard #form form input.form-control,
+body.home-body #dboard #form form select.form-control {
+  height: 46px !important;
+  padding: 0 16px 0 44px !important;   /* left padding for icon space */
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  background: #f8fafc !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  color: #0f172a !important;
+  width: 100% !important;
+  display: block !important;
+  transition: border-color 0.22s ease, background 0.22s ease,
+              box-shadow 0.22s ease, transform 0.15s ease !important;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.05) !important;
+  position: relative;
+}
+body.home-body #dboard #form form input.form-control:hover,
+body.home-body #dboard #form form select.form-control:hover {
+  border-color: #94a3b8 !important;
+  background: #ffffff !important;
+}
+body.home-body #dboard #form form input.form-control:focus,
+body.home-body #dboard #form form select.form-control:focus {
+  background: #ffffff !important;
+  border-color: #1e3a8a !important;
+  box-shadow: 0 0 0 4px rgba(30,58,138,0.1), 0 2px 8px rgba(15,23,42,0.08) !important;
+  outline: none !important;
+  transform: translateY(-1px) !important;
+}
+body.home-body #dboard #form form input.form-control[disabled] {
+  background: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #94a3b8 !important;
+  cursor: not-allowed;
+  opacity: 1;
+}
+body.home-body #dboard #form form input.form-control::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+  font-size: 13px;
+}
+
+/* Inject field icons via ::before on the wrapper div */
+body.home-body #dboard #form form .col-md-4 > div,
+body.home-body #dboard #form form .col-md-12 > div {
+  position: relative;
+}
+
+/* ── Icon mapping — use a pseudo-element on each input-group ──────
+   We target each input by id to apply the right Font Awesome icon
+   via CSS ::before on a generated .input-icon-wrap
+   ─────────────────────────────────────────────────────────────── */
+body.home-body #dboard #form form input,
+body.home-body #dboard #form form select {
+  position: relative;
+}
+/* Field icon — fixed top position so hint spans don't shift it */
+body.home-body #dboard #form .field-icon {
+  position: absolute;
+  left: 14px;
+  top: 23px;               /* half of 46px input height — always stays at input centre */
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.4);
+  font-size: 14px;
+  pointer-events: none;
+  z-index: 3;
+  transition: color 0.2s ease;
+}
+body.home-body #dboard #form .field-icon-wrap {
+  position: relative;
+  display: block;
+}
+/* Hint spans must not stretch the icon wrapper */
+body.home-body #dboard #form .field-icon-wrap .field-hint {
+  display: block;
+  position: relative;   /* out of flow so wrapper height = input height only */
+}
+body.home-body #dboard #form .field-icon-wrap input,
+body.home-body #dboard #form .field-icon-wrap select {
+  padding-left: 42px !important;
+}
+body.home-body #dboard #form .field-icon-wrap:focus-within .field-icon {
+  color: #22d3ee !important;
+}
+
+/* ── Textarea (Reason) ──────────────────────────────────────────── */
+body.home-body #dboard #form form textarea.form-control {
+  min-height: 110px !important;
+  padding: 14px 16px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  background: #f8fafc !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  color: #0f172a !important;
+  width: 100% !important;
+  resize: vertical !important;
+  display: block !important;
+  transition: border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease !important;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.05) !important;
+  line-height: 1.6 !important;
+}
+body.home-body #dboard #form form textarea.form-control:focus {
+  background: #ffffff !important;
+  border-color: #1e3a8a !important;
+  box-shadow: 0 0 0 4px rgba(30,58,138,0.1) !important;
+  outline: none !important;
+}
+body.home-body #dboard #form form textarea.form-control::placeholder {
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+/* ── Select arrow styling ──────────────────────────────────────── */
+body.home-body #dboard #form form select.form-control {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+  background-size: 12px !important;
+  padding-right: 36px !important;
+  cursor: pointer;
+}
+
+/* ── .col-md-12 clear + spacing ────────────────────────────────── */
+body.home-body #dboard #form form .col-md-12 {
+  clear: both !important;
+  float: none !important;
+  width: 100% !important;
+  padding: 4px 24px 32px !important;
+  margin-top: 4px !important;
+  display: block !important;
+}
+
+/* ── Submit button ──────────────────────────────────────────────── */
+body.home-body #dboard #form form center {
+  display: flex !important;
+  justify-content: center !important;
+  margin-top: 24px !important;
+}
+body.home-body #dboard #form form .btn2 {
+  min-width: 260px !important;
+  height: 54px !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 28px rgba(30,58,138,0.32) !important;
+  letter-spacing: 0.04em !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease !important;
+  color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  position: relative;
+  overflow: hidden;
+}
+body.home-body #dboard #form form .btn2::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+body.home-body #dboard #form form .btn2:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 18px 38px rgba(30,58,138,0.42) !important;
+  filter: brightness(1.06) !important;
+}
+body.home-body #dboard #form form .btn2:active {
+  transform: translateY(0) !important;
+}
+
+/* ── Column padding in form ──────────────────────────────────────── */
+body.home-body #dboard #form form .col-md-4 {
+  padding: 0 16px !important;
+}
+body.home-body #dboard #form form center > .col-md-4 {
+  padding: 0 10px !important;
+}
+
+/* ── Edit form inputs — same style ──────────────────────────────── */
+body.home-body #fmgrp input.inp.form-control,
+body.home-body #fmgrp select.inp.form-control {
+  height: 46px !important;
+  padding: 0 16px !important;
+  font-size: 14px !important;
+  background: #f8fafc !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  transition: border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease !important;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.05) !important;
+}
+body.home-body #fmgrp input.inp.form-control:focus,
+body.home-body #fmgrp select.inp.form-control:focus {
+  background: #ffffff !important;
+  border-color: #0891b2 !important;
+  box-shadow: 0 0 0 4px rgba(8,145,178,0.1) !important;
+  outline: none !important;
+}
+body.home-body #fmgrp select.inp.form-control {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+  background-size: 12px !important;
+  padding-right: 36px !important;
+  cursor: pointer;
+}
+
+/* ── Dark mode form overrides ────────────────────────────────────── */
+body.home-body.dark-mode #dboard #form form input.form-control,
+body.home-body.dark-mode #dboard #form form select.form-control,
+body.home-body.dark-mode #dboard #form form textarea.form-control {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+  box-shadow: none !important;
+}
+body.home-body.dark-mode #dboard #form form input.form-control:focus,
+body.home-body.dark-mode #dboard #form form select.form-control:focus,
+body.home-body.dark-mode #dboard #form form textarea.form-control:focus {
+  background: #1e293b !important;
+  border-color: #22d3ee !important;
+  box-shadow: 0 0 0 3px rgba(34,211,238,0.1) !important;
+}
+
+/* ── DataTables search input same style ──────────────────────────── */
+body.home-body .dataTables_filter input[type="search"] {
+  height: 38px !important;
+  padding: 0 14px !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  font-size: 13px !important;
+  background: #f8fafc !important;
+  transition: all 0.22s ease !important;
+}
+body.home-body .dataTables_filter input[type="search"]:focus {
+  border-color: #1e3a8a !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(30,58,138,0.1) !important;
+  outline: none !important;
+}
+
+/* ── Smart search input ──────────────────────────────────────────── */
+.smart-search-wrap input {
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+}
+.smart-search-wrap input:focus {
+  border-color: #1e3a8a !important;
+  box-shadow: 0 0 0 4px rgba(30,58,138,0.1) !important;
+}
+
+/* ── Responsive scroll fix ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  body.home-body #main-content {
+    margin-left: 0 !important;
+    padding: 20px 14px 80px !important;
+  }
+  body.home-body #dboard #form form .col-md-4 {
+    padding: 0 8px !important;
+  }
+  body.home-body #dboard #form form .col-md-12 {
+    padding: 0 8px 24px !important;
+  }
+}
+
+
+/* ================================================================
+   DASHBOARD ELEGANT REDESIGN — v4
+   Premium SaaS admin panel aesthetic
+   ================================================================ */
+
+body.home-body {
+  background: linear-gradient(145deg, #0f172a 0%, #1e293b 40%, #0f2438 100%) !important;
+  background-attachment: fixed !important;
+}
+/* #main-content is the scroll container set in base rules */
+body.home-body #main-content {
+  background: transparent !important;
+  padding: 32px 32px 140px !important;  /* 140px bottom ensures submit button always reachable */
+}
+
+/* ── Dashboard section heading ───────────────────────────────── */
+body.home-body #dboard > p.anim-typewriter {
+  font-size: 28px !important;
+  font-weight: 900 !important;
+  color: #f8fafc !important;
+  letter-spacing: -0.01em !important;
+  margin-bottom: 28px !important;
+}
+body.home-body #dboard > p.anim-typewriter::after {
+  background: linear-gradient(90deg, #22d3ee 0%, #10b981 100%) !important;
+  height: 3px !important;
+  width: 48px !important;
+  margin-top: 6px !important;
+}
+
+/* ── Form card: full glass redesign ──────────────────────────── */
+body.home-body #dboard #form {
+  background: rgba(255,255,255,0.04) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 24px !important;
+  box-shadow:
+    0 32px 64px rgba(0,0,0,0.4),
+    0 8px 24px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.1) !important;
+  overflow: visible !important;
+}
+
+/* Form header strip */
+body.home-body #dboard #form form.form-group::before {
+  content: '\f044  New Storage Entry' !important;
+  font-family: FontAwesome, 'Lato', sans-serif !important;
+  display: block !important;
+  background: linear-gradient(135deg, rgba(30,58,138,0.9) 0%, rgba(8,145,178,0.9) 100%) !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  padding: 16px 28px !important;
+  border-radius: 24px 24px 0 0 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+/* ── STAT CARDS — premium glass cards ──────────────────────── */
+body.home-body #dboard .dd1 {
+  border-radius: 20px !important;
+  padding: 26px 24px 22px !important;
+  margin-bottom: 28px !important;
+  min-height: 0 !important;
+  height: auto !important;
+  display: block !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+}
+
+/* Card 1 — Indigo blue */
+body.home-body #dboard .col-md-4:nth-child(1) .dd1 {
+  background: linear-gradient(135deg, #312e81 0%, #1e40af 50%, #1d4ed8 100%) !important;
+  box-shadow: 0 16px 40px rgba(29,78,216,0.4), 0 4px 12px rgba(0,0,0,0.2) !important;
+}
+/* Card 2 — Emerald green */
+body.home-body #dboard .col-md-4:nth-child(2) .dd1 {
+  background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #059669 100%) !important;
+  box-shadow: 0 16px 40px rgba(5,150,105,0.4), 0 4px 12px rgba(0,0,0,0.2) !important;
+}
+/* Card 3 — Violet purple */
+body.home-body #dboard .col-md-4:nth-child(3) .dd1 {
+  background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 50%, #7c3aed 100%) !important;
+  box-shadow: 0 16px 40px rgba(109,40,217,0.4), 0 4px 12px rgba(0,0,0,0.2) !important;
+}
+/* Hover lift with spring */
+body.home-body #dboard .dd1:hover {
+  transform: translateY(-6px) scale(1.02) !important;
+  box-shadow: 0 24px 56px rgba(0,0,0,0.35), 0 8px 16px rgba(0,0,0,0.15) !important;
+}
+
+/* Animated shine sweep on hover */
+body.home-body #dboard .dd1::after {
+  content: '' !important;
+  position: absolute !important;
+  top: -50% !important;
+  left: -100% !important;
+  width: 60% !important;
+  height: 200% !important;
+  background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%) !important;
+  transform: skewX(-20deg) !important;
+  transition: left 0.6s ease !important;
+  pointer-events: none !important;
+}
+body.home-body #dboard .dd1:hover::after {
+  left: 150% !important;
+}
+/* Glow orb stays */
+body.home-body #dboard .dd1::before {
+  content: '' !important;
+  position: absolute !important;
+  right: -20px !important;
+  bottom: -20px !important;
+  width: 100px !important;
+  height: 100px !important;
+  background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%) !important;
+  border-radius: 50% !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+/* Stat label */
+body.home-body #dboard .dd1 p.p1 {
+  float: none !important;
+  width: auto !important;
+  height: auto !important;
+  border: none !important;
+  background: transparent !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  color: rgba(255,255,255,0.65) !important;
+  margin: 0 0 14px 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+/* Pulse dot before label */
+body.home-body #dboard .col-md-4:nth-child(1) .dd1 p.p1::before {
+  content: '' !important;
+  width: 8px !important; height: 8px !important;
+  border-radius: 50% !important;
+  background: #60a5fa !important;
+  display: inline-block !important;
+  box-shadow: 0 0 8px #60a5fa !important;
+  animation: pulseOrb 2s ease-in-out infinite !important;
+  flex-shrink: 0 !important;
+}
+body.home-body #dboard .col-md-4:nth-child(2) .dd1 p.p1::before {
+  content: '' !important; width: 8px !important; height: 8px !important;
+  border-radius: 50% !important; background: #34d399 !important;
+  display: inline-block !important; box-shadow: 0 0 8px #34d399 !important;
+  animation: pulseOrb 2s ease-in-out infinite !important; flex-shrink: 0 !important;
+}
+body.home-body #dboard .col-md-4:nth-child(3) .dd1 p.p1::before {
+  content: '' !important; width: 8px !important; height: 8px !important;
+  border-radius: 50% !important; background: #c084fc !important;
+  display: inline-block !important; box-shadow: 0 0 8px #c084fc !important;
+  animation: pulseOrb 2s ease-in-out infinite !important; flex-shrink: 0 !important;
+}
+@keyframes pulseOrb {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50%       { transform: scale(1.4); opacity: 1; }
+}
+body.home-body #dboard .dd1 p.p1 a,
+body.home-body #dboard .dd1 p.p1 a.stat-link {
+  color: rgba(255,255,255,0.65) !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.14em !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  transition: color 0.2s ease !important;
+}
+body.home-body #dboard .dd1 p.p1 a:hover { color: #ffffff !important; }
+
+/* Stat number */
+body.home-body #dboard .dd1 .pp1 {
+  display: block !important;
+  float: none !important;
+  background: transparent !important;
+  font-size: 56px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  color: #ffffff !important;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
+  position: relative !important;
+  z-index: 1 !important;
+  margin: 0 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* ── Form fields: dark glass inputs ──────────────────────────── */
+/* Labels */
+body.home-body #dboard #form form label {
+  display: block !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: rgba(255,255,255,0.55) !important;
+  margin: 18px 0 6px 2px !important;
+  padding: 0 !important;
+  font-family: 'Lato', sans-serif !important;
+}
+
+/* Input & select glass style */
+body.home-body #dboard #form form input.form-control,
+body.home-body #dboard #form form select.form-control {
+  height: 48px !important;
+  padding: 0 16px 0 44px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  background: rgba(255,255,255,0.06) !important;
+  border: 1.5px solid rgba(255,255,255,0.1) !important;
+  border-radius: 12px !important;
+  color: #f1f5f9 !important;
+  width: 100% !important;
+  display: block !important;
+  transition: all 0.25s ease !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  backdrop-filter: blur(8px) !important;
+}
+body.home-body #dboard #form form input.form-control:hover,
+body.home-body #dboard #form form select.form-control:hover {
+  background: rgba(255,255,255,0.1) !important;
+  border-color: rgba(255,255,255,0.2) !important;
+}
+body.home-body #dboard #form form input.form-control:focus,
+body.home-body #dboard #form form select.form-control:focus {
+  background: rgba(255,255,255,0.12) !important;
+  border-color: #22d3ee !important;
+  box-shadow: 0 0 0 3px rgba(34,211,238,0.18), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+  outline: none !important;
+  color: #ffffff !important;
+}
+body.home-body #dboard #form form input.form-control[disabled] {
+  background: rgba(255,255,255,0.03) !important;
+  border-color: rgba(255,255,255,0.05) !important;
+  color: rgba(255,255,255,0.3) !important;
+  cursor: not-allowed;
+}
+body.home-body #dboard #form form input.form-control::placeholder {
+  color: rgba(255,255,255,0.3) !important;
+  font-size: 13px !important;
+}
+
+/* Select dark glass */
+body.home-body #dboard #form form select.form-control {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.5)' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+  background-size: 12px !important;
+  padding-right: 36px !important;
+  cursor: pointer;
+}
+body.home-body #dboard #form form select.form-control option {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+/* Textarea glass */
+body.home-body #dboard #form form textarea.form-control {
+  min-height: 110px !important;
+  padding: 14px 16px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  background: rgba(255,255,255,0.06) !important;
+  border: 1.5px solid rgba(255,255,255,0.1) !important;
+  border-radius: 12px !important;
+  color: #f1f5f9 !important;
+  width: 100% !important;
+  resize: vertical !important;
+  display: block !important;
+  transition: all 0.25s ease !important;
+  line-height: 1.6 !important;
+}
+body.home-body #dboard #form form textarea.form-control:focus {
+  background: rgba(255,255,255,0.12) !important;
+  border-color: #22d3ee !important;
+  box-shadow: 0 0 0 3px rgba(34,211,238,0.18) !important;
+  outline: none !important;
+}
+body.home-body #dboard #form form textarea.form-control::placeholder {
+  color: rgba(255,255,255,0.3) !important;
+  font-size: 13px !important;
+}
+
+/* Field icons for dark theme — same fixed top */
+body.home-body #dboard #form .field-icon {
+  top: 23px !important;
+  color: rgba(255,255,255,0.4) !important;
+}
+body.home-body #dboard #form .field-icon-wrap:focus-within .field-icon {
+  color: #22d3ee !important;
+}
+
+/* Column separator lines */
+body.home-body #dboard #form form center > .col-md-4 {
+  padding: 0 14px !important;
+  border-right: 1px solid rgba(255,255,255,0.06) !important;
+}
+body.home-body #dboard #form form center > .col-md-4:last-child {
+  border-right: none !important;
+}
+
+/* ── col-md-12 Reason row ────────────────────────────────────── */
+body.home-body #dboard #form form .col-md-12 {
+  clear: both !important;
+  float: none !important;
+  width: 100% !important;
+  padding: 8px 28px 32px !important;
+  margin-top: 0 !important;
+  display: block !important;
+  border-top: 1px solid rgba(255,255,255,0.06) !important;
+}
+body.home-body #dboard #form form .col-md-12 > label {
+  margin-top: 16px !important;
+}
+
+/* ── Submit button ───────────────────────────────────────────── */
+body.home-body #dboard #form form center {
+  display: flex !important;
+  justify-content: center !important;
+  margin-top: 24px !important;
+}
+body.home-body #dboard #form form .btn2 {
+  min-width: 260px !important;
+  height: 56px !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 50%, #0e7490 100%) !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  box-shadow: 0 12px 32px rgba(6,182,212,0.4), 0 4px 12px rgba(0,0,0,0.2) !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease, filter 0.2s ease !important;
+  color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+body.home-body #dboard #form form .btn2::before {
+  content: '\f02f' !important;  /* print icon */
+  font-family: FontAwesome !important;
+  font-size: 16px !important;
+}
+body.home-body #dboard #form form .btn2::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%) !important;
+  pointer-events: none !important;
+}
+body.home-body #dboard #form form .btn2:hover {
+  transform: translateY(-4px) scale(1.02) !important;
+  box-shadow: 0 20px 48px rgba(6,182,212,0.5), 0 6px 16px rgba(0,0,0,0.25) !important;
+  filter: brightness(1.08) !important;
+}
+
+/* ── Page-level glow orbs (decorative) ──────────────────────── */
+body.home-body #dboard.tab-pane::before {
+  content: '';
+  position: fixed;
+  top: -100px; left: -100px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(30,58,138,0.25) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+}
+body.home-body #dboard.tab-pane::after {
+  content: '';
+  position: fixed;
+  bottom: -80px; right: -80px;
+  width: 350px; height: 350px;
+  background: radial-gradient(circle, rgba(124,58,237,0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ── Sidebar on dark bg ──────────────────────────────────────── */
+body.home-body #sidebar.nav-collapse {
+  background: linear-gradient(180deg, #0d1117 0%, #161b27 100%) !important;
+  border-right: 1px solid rgba(255,255,255,0.05) !important;
+}
+body.home-body p.centered {
+  border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+}
+body.home-body ul.sidebar-menu li.active a,
+body.home-body ul.sidebar-menu li a:hover {
+  background: linear-gradient(90deg, rgba(6,182,212,0.2) 0%, rgba(30,58,138,0.15) 100%) !important;
+  border-left-color: #22d3ee !important;
+}
+
+/* ── Other tab panes on dark bg ─────────────────────────────── */
+body.home-body .tab-pane.align {
+  background: rgba(255,255,255,0.04) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.3) !important;
+}
+body.home-body .tab-pane.align > p.anim-typewriter {
+  color: #f8fafc !important;
+}
+
+/* ── Table on dark bg ────────────────────────────────────────── */
+body.home-body table.table {
+  background: transparent !important;
+}
+body.home-body table.table tbody tr td {
+  color: #cbd5e1 !important;
+  border-bottom-color: rgba(255,255,255,0.06) !important;
+}
+body.home-body table.table tbody tr:nth-child(even) td {
+  background: rgba(255,255,255,0.03) !important;
+}
+body.home-body table.table tbody tr:hover td {
+  background: rgba(34,211,238,0.06) !important;
+}
+
+/* ── DataTables controls on dark ─────────────────────────────── */
+body.home-body .dataTables_wrapper {
+  color: #94a3b8 !important;
+}
+body.home-body .dataTables_filter input[type="search"] {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1.5px solid rgba(255,255,255,0.1) !important;
+  border-radius: 10px !important;
+  color: #f1f5f9 !important;
+}
+body.home-body .dataTables_filter input[type="search"]:focus {
+  background: rgba(255,255,255,0.1) !important;
+  border-color: #22d3ee !important;
+  box-shadow: 0 0 0 3px rgba(34,211,238,0.15) !important;
+}
+body.home-body .dt-button {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px !important;
+  color: #94a3b8 !important;
+}
+body.home-body .dt-button:hover {
+  background: rgba(6,182,212,0.2) !important;
+  border-color: #22d3ee !important;
+  color: #22d3ee !important;
+  box-shadow: 0 4px 12px rgba(6,182,212,0.2) !important;
+}
+body.home-body .dataTables_paginate .paginate_button {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 6px !important;
+  color: #94a3b8 !important;
+}
+body.home-body .dataTables_paginate .paginate_button.current,
+body.home-body .dataTables_paginate .paginate_button:hover {
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 12px rgba(6,182,212,0.3) !important;
+}
+
+/* ── Search tab + Help tab on dark ──────────────────────────── */
+body.home-body #search-edit.tab-pane,
+body.home-body #help.tab-pane,
+body.home-body #contact.tab-pane {
+  background: rgba(255,255,255,0.04) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.3) !important;
+}
+body.home-body #search-edit.tab-pane > p.anim-typewriter,
+body.home-body #help.tab-pane > p.anim-typewriter,
+body.home-body #contact.tab-pane > p.anim-typewriter {
+  color: #f8fafc !important;
+}
+body.home-body p.rr { color: #e2e8f0 !important; }
+body.home-body #navbar ul li a.g2 {
+  background: rgba(255,255,255,0.05) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+  color: #cbd5e1 !important;
+}
+body.home-body #navbar ul li a.g2:hover {
+  background: rgba(34,211,238,0.1) !important;
+  border-color: #22d3ee !important;
+  color: #f8fafc !important;
+}
+body.home-body .gg {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+  color: #cbd5e1 !important;
+}
+/* Smart search bar dark */
+.smart-search-wrap input {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #f1f5f9 !important;
+}
+.smart-search-wrap input::placeholder { color: rgba(255,255,255,0.3) !important; }
+.smart-search-wrap input:focus {
+  background: rgba(255,255,255,0.1) !important;
+  border-color: #22d3ee !important;
+  box-shadow: 0 0 0 4px rgba(34,211,238,0.15) !important;
+}
+.smart-search-icon { color: rgba(255,255,255,0.4) !important; }
+
+/* ── Edit form dark ──────────────────────────────────────────── */
+body.home-body #fmgrp {
+  background: rgba(255,255,255,0.04) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 20px !important;
+}
+body.home-body #fmgrp label.lb { color: rgba(255,255,255,0.55) !important; }
+body.home-body #fmgrp input.inp.form-control,
+body.home-body #fmgrp select.inp.form-control,
+body.home-body #fmgrp textarea.inp.form-control {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1.5px solid rgba(255,255,255,0.1) !important;
+  color: #f1f5f9 !important;
+}
+body.home-body #fmgrp input.inp.form-control:focus,
+body.home-body #fmgrp select.inp.form-control:focus {
+  background: rgba(255,255,255,0.1) !important;
+  border-color: #22d3ee !important;
+  box-shadow: 0 0 0 3px rgba(34,211,238,0.15) !important;
+}
+
+/* ── Toast dark theme ────────────────────────────────────────── */
+.gbr-toast {
+  background: rgba(15,23,42,0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  color: #e2e8f0 !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+}
+.toast-close { color: rgba(255,255,255,0.4) !important; }
+.toast-close:hover { color: #f8fafc !important; }
+
+/* ── Confirm modal dark ──────────────────────────────────────── */
+.confirm-modal-box {
+  background: rgba(15,23,42,0.98) !important;
+  backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: #e2e8f0 !important;
+}
+.confirm-modal-box h3 { color: #f8fafc !important; }
+.confirm-modal-box p { color: #94a3b8 !important; }
+.confirm-btn-cancel {
+  background: rgba(255,255,255,0.08) !important;
+  color: #94a3b8 !important;
+}
+.confirm-btn-cancel:hover { background: rgba(255,255,255,0.14) !important; }
+
+/* ── Session warning dark ────────────────────────────────────── */
+.session-warning-box {
+  background: rgba(15,23,42,0.98) !important;
+  backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: #e2e8f0 !important;
+}
+.session-warning-box h3 { color: #f8fafc !important; }
+.session-warning-box p { color: #94a3b8 !important; }
+
+/* ── Scrollbar dark ──────────────────────────────────────────── */
+body.home-body ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03) !important; }
+body.home-body ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15) !important; }
+body.home-body ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25) !important; }
+
+/* ── Responsive dark bg ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  body.home-body #main-content { padding: 20px 16px 140px !important; }
+  body.home-body #dboard .dd1 { margin-bottom: 16px !important; }
+  body.home-body #dboard #form form center > .col-md-4 { border-right: none !important; }
+}
+
+
+/* ================================================================
+   SCROLL FIX — DEFINITIVE FINAL (overrides all previous rules)
+   This block must be LAST in the file.
+   ================================================================ */
+
+/* 1. Body scrolls normally */
+html, body.home-body {
+  overflow: auto !important;
+  height: auto !important;
+  min-height: 100% !important;
+}
+
+/* 2. Main content: normal block, scroll via body */
+body.home-body #main-content {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  margin-left: 240px !important;
+  margin-top: 64px !important;
+  overflow: visible !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  padding: 28px 28px 220px !important; /* 220px bottom — submit always visible */
+}
+
+/* 3. Every ancestor of the form must NOT clip height */
+body.home-body section#container,
+body.home-body section.wrapper,
+body.home-body .tab-content,
+body.home-body .tab-pane,
+body.home-body .col-md-12,
+body.home-body .col-md-13 {
+  overflow: visible !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+/* 4. The dboard tab pane itself */
+body.home-body #dboard.tab-pane,
+body.home-body #dboard.tab-pane.fade {
+  overflow: visible !important;
+  height: auto !important;
+}
+
+/* 5. The form card and form itself */
+body.home-body #dboard #form,
+body.home-body #dboard #form form.form-group {
+  overflow: visible !important;
+  height: auto !important;
+}
+
+/* 6. Responsive */
+@media (max-width: 992px) {
+  body.home-body #main-content {
+    margin-left: 220px !important;
+  }
+}
+@media (max-width: 768px) {
+  body.home-body #main-content {
+    margin-left: 0 !important;
+    padding: 16px 14px 220px !important;
+  }
+}
+
+
+/* ================================================================
+   FINAL FIXES — Scrollbars + Edit form text color
+   ================================================================ */
+
+/* ── Fix 1: Only ONE scrollbar — hide sidebar and sub-element bars ── */
+
+/* Body: the single scroll container */
+html, body.home-body {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  height: auto !important;
+  scrollbar-width: thin !important;          /* Firefox */
+  scrollbar-color: rgba(100,116,139,0.5) transparent !important;
+}
+
+/* Sidebar: NO visible scrollbar (it's fixed height, content rarely overflows) */
+body.home-body #sidebar.nav-collapse {
+  overflow-y: auto !important;
+  scrollbar-width: none !important;          /* Firefox — hide scrollbar */
+}
+body.home-body #sidebar.nav-collapse::-webkit-scrollbar {
+  display: none !important;                  /* Chrome — hide scrollbar */
+}
+
+/* Main content: NO independent scrollbar — inherits from body */
+body.home-body #main-content {
+  overflow: visible !important;
+  scrollbar-width: none !important;
+}
+body.home-body #main-content::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Tab content and panes: no independent scrollbar */
+body.home-body .tab-content,
+body.home-body .tab-pane,
+body.home-body section.wrapper,
+body.home-body section#container {
+  overflow: visible !important;
+  scrollbar-width: none !important;
+}
+
+/* Tables keep their own horizontal scroll but no extra vertical bar */
+body.home-body .table-responsive {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(100,116,139,0.4) transparent !important;
+}
+body.home-body .table-responsive::-webkit-scrollbar {
+  height: 5px !important;
+  width: 0 !important;
+}
+body.home-body .table-responsive::-webkit-scrollbar-thumb {
+  background: rgba(100,116,139,0.45) !important;
+  border-radius: 4px !important;
+}
+
+/* Single thin page scrollbar style */
+body.home-body::-webkit-scrollbar {
+  width: 5px !important;
+}
+body.home-body::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+body.home-body::-webkit-scrollbar-thumb {
+  background: rgba(100,116,139,0.45) !important;
+  border-radius: 4px !important;
+}
+body.home-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(100,116,139,0.7) !important;
+}
+
+/* ── Fix 2: Edit form (#fmgrp) text always readable ─────────────── */
+
+/* Light theme — dark text on light background */
+body.home-body #fmgrp input.inp.form-control,
+body.home-body #fmgrp select.inp.form-control,
+body.home-body #fmgrp textarea.inp.form-control,
+body.home-body #fmgrp input.form-control,
+body.home-body #fmgrp select.form-control,
+body.home-body #fmgrp textarea.form-control {
+  color: #0f172a !important;
+  background: #f8fafc !important;
+  border: 1.5px solid #e2e8f0 !important;
+  -webkit-text-fill-color: #0f172a !important; /* overrides webkit autofill */
+}
+body.home-body #fmgrp input.inp.form-control::placeholder,
+body.home-body #fmgrp input.form-control::placeholder {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+}
+body.home-body #fmgrp input.inp.form-control:focus,
+body.home-body #fmgrp select.inp.form-control:focus,
+body.home-body #fmgrp textarea.inp.form-control:focus {
+  color: #0f172a !important;
+  background: #ffffff !important;
+  border-color: #22d3ee !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+/* ── Fix 3: Search tab result table text readable in light theme ─── */
+#smart-results-table tbody td {
+  color: #0f172a !important;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+#smart-results-table tbody tr:nth-child(even) td {
+  background: #f8fafc !important;
+}
+#smart-results-table tbody tr:hover td {
+  background: #f0fdfa !important;
+}
+#smart-results-table thead th {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+  color: #f8fafc !important;
+  border-bottom: 2px solid #22d3ee !important;
+}
+/* Highlight mark readable */
+.hl {
+  background: #fde68a !important;
+  color: #92400e !important;
+  border-radius: 3px;
+  padding: 1px 3px;
+}
+
+/* ── Fix 4: Search tab existing table also readable ──────────────── */
+body.home-body #search-edit table.table tbody tr td {
+  color: #334155 !important;
+  background: #ffffff;
+}
+body.home-body #search-edit table.table tbody tr:nth-child(even) td {
+  background: #f8fafc !important;
+}
+body.home-body #search-edit table.table tbody tr:hover td {
+  background: #f0fdfa !important;
+  color: #0f172a !important;
+}
+
+/* ── Keep dark mode overrides for edit form ──────────────────────── */
+body.home-body.dark-mode #fmgrp input.inp.form-control,
+body.home-body.dark-mode #fmgrp select.inp.form-control,
+body.home-body.dark-mode #fmgrp textarea.inp.form-control,
+body.home-body.dark-mode #fmgrp input.form-control,
+body.home-body.dark-mode #fmgrp select.form-control,
+body.home-body.dark-mode #fmgrp textarea.form-control {
+  color: #f1f5f9 !important;
+  -webkit-text-fill-color: #f1f5f9 !important;
+  background: rgba(255,255,255,0.07) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+body.home-body.dark-mode #smart-results-table tbody td {
+  color: #e2e8f0 !important;
+  background: #1e293b !important;
+}
+body.home-body.dark-mode #smart-results-table tbody tr:nth-child(even) td {
+  background: #0f172a !important;
+}
+
+
+/* ================================================================
+   TABLE REDESIGN — Overall List & all data tables
+   Fix text visibility + Status badge + Action buttons
+   ================================================================ */
+
+/* ── 1. Table text — always readable in light theme ─────────────── */
+body.home-body table.table {
+  background: #ffffff !important;
+  color: #1e293b !important;
+}
+body.home-body table.table tbody tr td {
+  color: #1e293b !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  padding: 11px 14px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  vertical-align: middle !important;
+  line-height: 1.5 !important;
+  background: #ffffff !important;
+}
+body.home-body table.table tbody tr:nth-child(even) td {
+  background: #f8fafc !important;
+  color: #1e293b !important;
+}
+body.home-body table.table tbody tr:hover td {
+  background: #f0f9ff !important;
+  color: #0f172a !important;
+}
+/* Remove the misscoped dark-theme colour that was bleeding into light mode */
+body.home-body:not(.dark-mode) table.table tbody tr td {
+  color: #1e293b !important;
+  border-bottom-color: #f1f5f9 !important;
+}
+
+/* ── 2. Table header ─────────────────────────────────────────────── */
+body.home-body table.table thead tr th {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+  color: #f8fafc !important;
+  font-weight: 700 !important;
+  font-size: 11.5px !important;
+  padding: 13px 14px !important;
+  text-align: left !important;
+  border: none !important;
+  border-bottom: 2px solid #22d3ee !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+}
+
+/* ── 3. Status column — pill badges ──────────────────────────────── */
+
+/* Intercept click.js inline styles — At_office = green */
+body.home-body td[style*="85FD2D"],
+body.home-body td[style*="85fd2d"],
+body.home-body td[style*="rgb(133, 253, 45)"],
+body.home-body td[style*="rgb(133,253,45)"] {
+  background: transparent !important;
+  color: transparent !important;
+  padding: 8px 10px !important;
+}
+body.home-body td[style*="85FD2D"]::before,
+body.home-body td[style*="85fd2d"]::before,
+body.home-body td[style*="rgb(133, 253, 45)"]::before,
+body.home-body td[style*="rgb(133,253,45)"]::before {
+  content: '● At Office';
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(5,150,105,0.3);
+  white-space: nowrap;
+}
+
+/* Intercept click.js inline styles — Returned = red */
+body.home-body td[style*="FD052E"],
+body.home-body td[style*="fd052e"],
+body.home-body td[style*="rgb(253, 5, 46)"],
+body.home-body td[style*="rgb(253,5,46)"] {
+  background: transparent !important;
+  color: transparent !important;
+  padding: 8px 10px !important;
+}
+body.home-body td[style*="FD052E"]::before,
+body.home-body td[style*="fd052e"]::before,
+body.home-body td[style*="rgb(253, 5, 46)"]::before,
+body.home-body td[style*="rgb(253,5,46)"]::before {
+  content: '● Returned';
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(220,38,38,0.3);
+  white-space: nowrap;
+}
+
+/* Fallback: style by raw text content when JS runs but doesn't apply inline bg yet */
+body.home-body table.table td.status-at-office,
+body.home-body table.table td.status-returned {
+  background: transparent !important;
+}
+
+/* ── 4. Action column buttons — redesigned ───────────────────────── */
+
+/* Transfer button */
+body.home-body .bbb {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 32px !important;
+  padding: 0 14px !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 10px rgba(8,145,178,0.3) !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+  white-space: nowrap !important;
+}
+body.home-body .bbb::before {
+  content: '\f021';
+  font-family: FontAwesome;
+  font-size: 11px;
+}
+body.home-body .bbb:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 18px rgba(8,145,178,0.4) !important;
+}
+
+/* Edit button */
+body.home-body .edit {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 32px !important;
+  padding: 0 14px !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 10px rgba(109,40,217,0.3) !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+  white-space: nowrap !important;
+}
+body.home-body .edit::before {
+  content: '\f044';
+  font-family: FontAwesome;
+  font-size: 11px;
+}
+body.home-body .edit:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 18px rgba(109,40,217,0.4) !important;
+}
+
+/* Delete button */
+body.home-body .del-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 10px rgba(239,68,68,0.28) !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+  margin-left: 4px !important;
+}
+body.home-body .del-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 18px rgba(239,68,68,0.4) !important;
+}
+
+/* Print button */
+body.home-body .print-row-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 10px rgba(109,40,217,0.28) !important;
+  transition: transform 0.18s ease !important;
+  margin-left: 4px !important;
+}
+body.home-body .print-row-btn:hover { transform: translateY(-1px) !important; }
+
+/* Action cell — no extra clipping */
+body.home-body table.table tbody tr td:last-child {
+  white-space: nowrap !important;
+  width: 1px !important;
+  display: table-cell !important;
+}
+/* Gap between action buttons */
+body.home-body table.table .bbb + .del-btn,
+body.home-body table.table .bbb + .edit {
+  margin-left: 4px;
+}
+
+/* ── 5. Table container card ─────────────────────────────────────── */
+body.home-body .tab-pane.align .table-responsive {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.06) !important;
+  border: 1px solid #e2e8f0 !important;
+  overflow-x: auto !important;
+}
+
+/* ── 6. DataTables pagination redesign ───────────────────────────── */
+body.home-body .dataTables_paginate {
+  margin-top: 16px !important;
+}
+body.home-body .dataTables_paginate .paginate_button {
+  display: inline-block !important;
+  padding: 6px 12px !important;
+  border-radius: 8px !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  border: 1.5px solid #e2e8f0 !important;
+  background: #ffffff !important;
+  color: #475569 !important;
+  margin: 0 2px !important;
+  transition: all 0.18s ease !important;
+}
+body.home-body .dataTables_paginate .paginate_button.current {
+  background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 10px rgba(30,58,138,0.28) !important;
+}
+body.home-body .dataTables_paginate .paginate_button:hover:not(.current) {
+  background: #f0f9ff !important;
+  border-color: #0891b2 !important;
+  color: #0891b2 !important;
+}
+
+/* ── 7. Dark mode table overrides (properly scoped) ──────────────── */
+body.home-body.dark-mode table.table tbody tr td {
+  color: #cbd5e1 !important;
+  background: transparent !important;
+  border-bottom-color: rgba(255,255,255,0.05) !important;
+}
+body.home-body.dark-mode table.table tbody tr:nth-child(even) td {
+  background: rgba(255,255,255,0.025) !important;
+}
+body.home-body.dark-mode table.table tbody tr:hover td {
+  background: rgba(34,211,238,0.06) !important;
+  color: #f1f5f9 !important;
+}
+body.home-body.dark-mode .tab-pane.align .table-responsive {
+  border-color: rgba(255,255,255,0.08) !important;
+  box-shadow: none !important;
+}
+
+
+/* ── Status badges via JS-added classes (most reliable approach) ── */
+body.home-body table.table td.status-at-office {
+  background: transparent !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+body.home-body table.table td.status-at-office::before {
+  content: '● At Office';
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  padding: 4px 12px;
+  border-radius: 20px;
+  box-shadow: 0 3px 8px rgba(5,150,105,0.28);
+  display: inline-block;
+  white-space: nowrap;
+}
+body.home-body table.table td.status-returned {
+  background: transparent !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+body.home-body table.table td.status-returned::before {
+  content: '● Returned';
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  padding: 4px 12px;
+  border-radius: 20px;
+  box-shadow: 0 3px 8px rgba(220,38,38,0.28);
+  display: inline-block;
+  white-space: nowrap;
+}
+
+
+/* ================================================================
+   SINGLE SCROLLBAR — ABSOLUTE FINAL (supersedes all previous)
+   Only html/body scrolls. Everything else is overflow:visible.
+   No secondary scroll containers anywhere.
+   ================================================================ */
+
+/* ── html: no scroll ── */
+html {
+  overflow: hidden !important;
+  height: 100% !important;
+}
+
+/* ── body: THE ONLY scroll container ── */
+body.home-body {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  /* hide the scrollbar track visually but keep scrolling */
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(148,163,184,0.4) transparent !important;
+}
+body.home-body::-webkit-scrollbar { width: 4px !important; }
+body.home-body::-webkit-scrollbar-track { background: transparent !important; }
+body.home-body::-webkit-scrollbar-thumb {
+  background: rgba(148,163,184,0.45) !important;
+  border-radius: 4px !important;
+}
+
+/* ── #main-content: static block, NO overflow, NO fixed ── */
+body.home-body #main-content {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  margin-left: 240px !important;
+  margin-top: 64px !important;
+  overflow: visible !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  padding: 28px 28px 200px !important;
+  scrollbar-width: none !important;
+}
+body.home-body #main-content::-webkit-scrollbar { display: none !important; }
+
+/* ── section#container: static, no overflow ── */
+body.home-body section#container {
+  overflow: visible !important;
+  height: auto !important;
+  min-height: 100% !important;
+}
+
+/* ── sidebar: scrollable but hidden scrollbar ── */
+body.home-body #sidebar.nav-collapse {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-width: none !important;
+}
+body.home-body #sidebar.nav-collapse::-webkit-scrollbar { display: none !important; }
+
+/* ── Everything else inside main: NO overflow ── */
+body.home-body section.wrapper,
+body.home-body .tab-content,
+body.home-body .tab-pane,
+body.home-body #dboard,
+body.home-body #dboard #form,
+body.home-body #dboard #form form,
+body.home-body .col-md-12,
+body.home-body .col-md-13 {
+  overflow: visible !important;
+  height: auto !important;
+}
+
+/* ── Responsive ── */
+@media (max-width: 992px) {
+  body.home-body #main-content {
+    margin-left: 220px !important;
+  }
+}
+@media (max-width: 768px) {
+  body.home-body #main-content {
+    margin-left: 0 !important;
+    margin-top: 64px !important;
+    padding: 16px 14px 200px !important;
+  }
+}
+
+
+/* ================================================================
+   LIGHT THEME COLOUR FIXES — Final override
+   Fixes all dark-theme rules that bleed into light mode.
+   Must be last in file.
+   ================================================================ */
+
+/* ── Tables: readable dark text on white bg ── */
+body.home-body:not(.dark-mode) table.table {
+  background: #ffffff !important;
+}
+body.home-body:not(.dark-mode) table.table tbody tr td {
+  color: #1e293b !important;
+  border-bottom-color: #f1f5f9 !important;
+  background: #ffffff !important;
+}
+body.home-body:not(.dark-mode) table.table tbody tr:nth-child(even) td {
+  background: #f8fafc !important;
+}
+body.home-body:not(.dark-mode) table.table tbody tr:hover td {
+  background: #f0f9ff !important;
+  color: #0f172a !important;
+}
+
+/* ── DataTables controls: readable in light ── */
+body.home-body:not(.dark-mode) .dataTables_wrapper {
+  color: #475569 !important;
+}
+body.home-body:not(.dark-mode) .dataTables_filter input[type="search"] {
+  background: #f8fafc !important;
+  border: 1.5px solid #e2e8f0 !important;
+  color: #0f172a !important;
+}
+body.home-body:not(.dark-mode) .dt-button {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  color: #475569 !important;
+}
+body.home-body:not(.dark-mode) .dt-button:hover {
+  background: #f0f9ff !important;
+  border-color: #0891b2 !important;
+  color: #0891b2 !important;
+  box-shadow: none !important;
+}
+body.home-body:not(.dark-mode) .dataTables_paginate .paginate_button {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  color: #475569 !important;
+}
+body.home-body:not(.dark-mode) .dataTables_paginate .paginate_button.current {
+  background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+body.home-body:not(.dark-mode) .dataTables_paginate .paginate_button:hover:not(.current) {
+  background: #f0f9ff !important;
+  border-color: #0891b2 !important;
+  color: #0891b2 !important;
+}
+body.home-body:not(.dark-mode) .dataTables_info,
+body.home-body:not(.dark-mode) .dataTables_length label,
+body.home-body:not(.dark-mode) .dataTables_filter label {
+  color: #64748b !important;
+}
+body.home-body:not(.dark-mode) .dataTables_length select {
+  color: #0f172a !important;
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* ── Tab panes: opaque white bg, dark text ── */
+body.home-body:not(.dark-mode) .tab-pane.align,
+body.home-body:not(.dark-mode) #search-edit.tab-pane,
+body.home-body:not(.dark-mode) #help.tab-pane,
+body.home-body:not(.dark-mode) #contact.tab-pane {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 24px rgba(15,23,42,0.07) !important;
+}
+body.home-body:not(.dark-mode) .tab-pane > p.anim-typewriter {
+  color: #1e293b !important;
+}
+
+/* ── p.rr heading in Help tab ── */
+body.home-body:not(.dark-mode) p.rr {
+  color: #1e293b !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+}
+
+/* ── Help FAQ links (#navbar .g2) ── */
+body.home-body:not(.dark-mode) #navbar ul li a.g2 {
+  background: #f8fafc !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-left: 3px solid #0f766e !important;
+  color: #1e293b !important;
+}
+body.home-body:not(.dark-mode) #navbar ul li a.g2::before {
+  color: #0f766e !important;
+}
+body.home-body:not(.dark-mode) #navbar ul li a.g2:hover {
+  background: #f0fdfa !important;
+  border-color: #22d3ee !important;
+  border-left-color: #22d3ee !important;
+  color: #0f172a !important;
+}
+
+/* ── Help answers (.gg boxes) ── */
+body.home-body:not(.dark-mode) .gg {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-left: 3px solid #1e3a8a !important;
+  color: #1e293b !important;
+}
+body.home-body:not(.dark-mode) .gg p {
+  color: #334155 !important;
+}
+
+/* ── Smart search bar: light ── */
+body.home-body:not(.dark-mode) .smart-search-wrap input {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+body.home-body:not(.dark-mode) .smart-search-wrap input::placeholder {
+  color: #94a3b8 !important;
+}
+body.home-body:not(.dark-mode) .smart-search-icon {
+  color: #94a3b8 !important;
+}
+body.home-body:not(.dark-mode) #smart-results-table tbody td {
+  color: #1e293b !important;
+  background: #ffffff !important;
+}
+body.home-body:not(.dark-mode) #smart-results-table thead th {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+  color: #f8fafc !important;
+}
+
+/* ── Edit form (#fmgrp): light readable ── */
+body.home-body:not(.dark-mode) #fmgrp {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  border: 1px solid #e2e8f0 !important;
+}
+body.home-body:not(.dark-mode) #fmgrp label.lb {
+  color: #475569 !important;
+}
+body.home-body:not(.dark-mode) #fmgrp input.inp.form-control,
+body.home-body:not(.dark-mode) #fmgrp select.inp.form-control,
+body.home-body:not(.dark-mode) #fmgrp textarea.inp.form-control,
+body.home-body:not(.dark-mode) #fmgrp input.form-control,
+body.home-body:not(.dark-mode) #fmgrp select.form-control {
+  background: #f8fafc !important;
+  border: 1.5px solid #e2e8f0 !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+body.home-body:not(.dark-mode) #fmgrp input::placeholder,
+body.home-body:not(.dark-mode) #fmgrp textarea::placeholder {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+}
+
+/* ── Contact tab: light ── */
+body.home-body:not(.dark-mode) .main,
+body.home-body:not(.dark-mode) .containerr {
+  background: #ffffff !important;
+  color: #1e293b !important;
+}
+body.home-body:not(.dark-mode) .x1,
+body.home-body:not(.dark-mode) .bn {
+  color: #334155 !important;
+}
+body.home-body:not(.dark-mode) h4 {
+  color: #1e3a8a !important;
+}
+
+/* ── Search tab: override dark search input ── */
+body.home-body:not(.dark-mode) #wrap form input[type="text"] {
+  background: #ffffff !important;
+  border: 2px solid #e2e8f0 !important;
+  color: #0f172a !important;
+}
+body.home-body:not(.dark-mode) #wrap form input[type="text"]::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* ── anim-typewriter headings: always dark in light mode ── */
+body.home-body:not(.dark-mode) p.anim-typewriter {
+  color: #1e293b !important;
+}
+
+/* ── Dashboard form card: white bg ── */
+body.home-body:not(.dark-mode) #dboard #form {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 24px rgba(15,23,42,0.07) !important;
+}
+body.home-body:not(.dark-mode) #dboard #form form label {
+  color: #475569 !important;
+}
+body.home-body:not(.dark-mode) #dboard #form form input.form-control,
+body.home-body:not(.dark-mode) #dboard #form form select.form-control {
+  background: #f8fafc !important;
+  border: 1.5px solid #e2e8f0 !important;
+  color: #0f172a !important;
+}
+body.home-body:not(.dark-mode) #dboard #form form textarea.form-control {
+  background: #f8fafc !important;
+  border: 1.5px solid #e2e8f0 !important;
+  color: #0f172a !important;
+}
+body.home-body:not(.dark-mode) #dboard #form .field-icon {
+  color: #94a3b8 !important;
+}
+body.home-body:not(.dark-mode) #dboard #form .field-icon-wrap:focus-within .field-icon {
+  color: #1e3a8a !important;
+}
+body.home-body:not(.dark-mode) #dboard #form form select.form-control option {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+
+/* ================================================================
+   CONTACT TAB — Complete UI Redesign
+   ================================================================ */
+
+/* ── Hide legacy dl-menu (it's still in DOM for click.js compat) ── */
+.contact-legacy-hidden {
+  display: none !important;
+}
+
+/* ── Hero card ── */
+.contact-hero {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%);
+  border-radius: 18px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 12px 32px rgba(30,58,138,0.25);
+  flex-wrap: wrap;
+}
+.contact-hero-icon {
+  width: 56px; height: 56px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.contact-hero-icon .fa {
+  font-size: 26px;
+  color: #ffffff;
+}
+.contact-hero-text {
+  flex: 1;
+  min-width: 200px;
+}
+.contact-hero-text h2.contact-inst-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+  letter-spacing: 0.01em;
+}
+.contact-hero-text .contact-inst-tagline {
+  font-size: 13px;
+  color: rgba(255,255,255,0.72);
+  margin: 0;
+  font-style: italic;
+}
+.contact-hero-address {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.contact-address-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+  font-weight: 500;
+}
+.contact-address-item .fa {
+  color: #a5f3fc;
+  font-size: 13px;
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ── Selector section ── */
+.contact-selector-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.contact-selector-label .fa {
+  color: #0f766e;
+  font-size: 16px;
+}
+
+/* ── Department card grid ── */
+.contact-dept-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 8px;
+}
+@media (max-width: 768px) {
+  .contact-dept-grid { grid-template-columns: 1fr; }
+  .contact-hero { flex-direction: column; align-items: flex-start; }
+}
+
+.dept-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px 18px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.05);
+}
+.dept-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(15,23,42,0.1);
+  border-color: #22d3ee;
+}
+.dept-card-icon {
+  width: 46px; height: 46px;
+  background: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px;
+}
+.dept-card-icon .fa {
+  font-size: 20px;
+  color: #ffffff;
+}
+.dept-card-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 14px;
+  letter-spacing: 0.02em;
+}
+.dept-years {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.year-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 13px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: 'Lato', sans-serif;
+  white-space: nowrap;
+}
+.year-btn:hover {
+  background: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 10px rgba(30,58,138,0.25);
+}
+.year-btn--active {
+  background: linear-gradient(135deg, #0f766e 0%, #22d3ee 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 10px rgba(15,118,110,0.3) !important;
+}
+
+/* ── Faculty panels container ── */
+.faculty-panels-container {
+  display: none;
+}
+.contact-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e3a8a;
+  background: #f0f9ff;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: 'Lato', sans-serif;
+}
+.contact-back-btn:hover {
+  background: #1e3a8a;
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(30,58,138,0.25);
+}
+
+/* ── Faculty panel heading ── */
+body.home-body .asd h4 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1e3a8a;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+body.home-body .asd h4::before {
+  content: '\f0c0';
+  font-family: FontAwesome;
+  font-size: 14px;
+  color: #0f766e;
+}
+
+/* ── Dark mode contact ── */
+body.home-body.dark-mode .dept-card {
+  background: rgba(255,255,255,0.05) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+body.home-body.dark-mode .dept-card-name { color: #e2e8f0 !important; }
+body.home-body.dark-mode .year-btn {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #cbd5e1 !important;
+}
+body.home-body.dark-mode .contact-selector-label { color: #94a3b8 !important; }
+body.home-body.dark-mode .contact-back-btn {
+  background: rgba(255,255,255,0.05) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #67e8f9 !important;
+}
+body.home-body.dark-mode .asd h4 { color: #67e8f9 !important; border-bottom-color: rgba(255,255,255,0.08) !important; }

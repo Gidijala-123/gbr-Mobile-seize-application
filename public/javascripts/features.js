@@ -317,13 +317,15 @@ $(document).ready(function () {
   var $form = $('form[action="/hh"]');
 
   function setFieldState($input, isValid, msg) {
-    var $wrap = $input.closest('.form-field-wrap, div, td');
+    var $wrap = $input.closest('.field-icon-wrap');
+    var $target = $wrap.length ? $wrap : $input; // place hint after wrapper, not inside it
+    // Remove any existing hints after the target
+    $target.siblings('.field-hint').remove();
     $input.toggleClass('field-valid', isValid).toggleClass('field-invalid', !isValid);
-    $input.siblings('.field-hint').remove();
     if (!isValid && msg) {
-      $input.after('<span class="field-hint field-hint--error"><i class="fa fa-exclamation-circle"></i> ' + msg + '</span>');
+      $target.after('<span class="field-hint field-hint--error"><i class="fa fa-exclamation-circle"></i> ' + msg + '</span>');
     } else if (isValid) {
-      $input.after('<span class="field-hint field-hint--ok"><i class="fa fa-check-circle"></i></span>');
+      $target.after('<span class="field-hint field-hint--ok"><i class="fa fa-check-circle"></i></span>');
     }
   }
 
@@ -569,4 +571,140 @@ $(document).ready(function () {
       '</div>';
     $('.smart-search-bar').after(smartHtml);
   }
+});
+
+
+/* ============================================================
+   FORM ICON INJECTION
+   Wraps each dashboard form input with icon containers
+   ============================================================ */
+$(document).ready(function () {
+  /* Map field id → Font Awesome icon class */
+  var FIELD_ICONS = {
+    dat2:  'fa-calendar',
+    tim2:  'fa-clock-o',
+    snm2:  'fa-user',
+    pnm2:  'fa-users',
+    enm2:  'fa-id-badge',
+    clg2:  'fa-university',
+    brc2:  'fa-code-fork',
+    yr2:   'fa-graduation-cap',
+    sec2:  'fa-th-large',
+    spn2:  'fa-phone',
+    ppn2:  'fa-phone-square',
+    epn2:  'fa-mobile',
+    rno2:  'fa-id-card',
+    gid2:  'fa-barcode',
+    eid2:  'fa-tag',
+    mdl2:  'fa-mobile',
+    mcl2:  'fa-paint-brush',
+    ime2:  'fa-hashtag',
+    rsn2:  'fa-comment',
+    /* Edit form */
+    Date:  'fa-calendar',
+    Time:  'fa-clock-o',
+    sname: 'fa-user',
+    pname: 'fa-users',
+    ename: 'fa-id-badge',
+    clg:   'fa-university',
+    brch:  'fa-code-fork',
+    year:  'fa-graduation-cap',
+    sec:   'fa-th-large',
+    spno:  'fa-phone',
+    ppno:  'fa-phone-square',
+    epno:  'fa-mobile',
+    rno:   'fa-id-card',
+    _id:   'fa-barcode',
+    eid:   'fa-tag',
+    mmodel:'fa-mobile',
+    mclr:  'fa-paint-brush',
+    imei:  'fa-hashtag',
+    rsn:   'fa-comment'
+  };
+
+  function wrapWithIcon($input, iconClass) {
+    if ($input.closest('.field-icon-wrap').length) return; // already wrapped
+    $input.wrap('<div class="field-icon-wrap"></div>');
+    $input.before('<i class="fa ' + iconClass + ' field-icon"></i>');
+  }
+
+  /* Wrap dashboard form inputs */
+  Object.keys(FIELD_ICONS).forEach(function (id) {
+    var $el = $('#' + id);
+    if ($el.length && $el.is('input, select')) {
+      wrapWithIcon($el, FIELD_ICONS[id]);
+    }
+  });
+});
+
+
+/* ============================================================
+   CONTACT TAB — New department card + year button navigation
+   ============================================================ */
+$(document).ready(function () {
+
+  /* Year buttons trigger the same panels as click.js legacy handlers */
+  var btnToPanel = {
+    m11:'#m11', m12:'#m12', m21:'#m21', m22:'#m22', m31:'#m31', m32:'#m32',
+    b11:'#b11', b12:'#b12', b21:'#b21', b22:'#b22', b31:'#b31', b32:'#b32',
+    a11:'#a11', a21:'#a21', a31:'#a31'
+  };
+
+  /* Also map to legacy click.js IDs for the hidden dl-menu compatibility */
+  var btnToLegacy = {
+    m11:'#cntm11', m12:'#cntm12', m21:'#cntm21', m22:'#cntm22', m31:'#cntm31', m32:'#cntm32',
+    b11:'#cntb11', b12:'#cntb12', b21:'#cntb21', b22:'#cntb22', b31:'#cntb31', b32:'#cntb32',
+    a11:'#cnta11', a21:'#cnta21', a31:'#cnta31'
+  };
+
+  $(document).on('click', '.year-btn', function () {
+    var target = $(this).data('target');
+
+    /* Hide department selector, show faculty panels */
+    $('.contact-dept-grid').hide();
+    $('.contact-selector-label').hide();
+    $('.faculty-panels-container').show();
+    $('#contact-back-btn').show();
+
+    /* Trigger the legacy click.js handler for the matching hidden dl-menu item */
+    var legacyId = btnToLegacy[target];
+    if (legacyId && $(legacyId).length) {
+      $(legacyId).trigger('click');
+    } else {
+      /* Fallback: directly show the panel */
+      $('.main').hide();
+      var panelId = btnToPanel[target];
+      if (panelId) {
+        $(panelId).show();
+        if (window.GBR && GBR.toast) GBR.toast.info('Showing faculty for ' + target.toUpperCase());
+      }
+    }
+
+    /* Highlight active button */
+    $('.year-btn').removeClass('year-btn--active');
+    $(this).addClass('year-btn--active');
+  });
+
+  /* Back button */
+  $(document).on('click', '#contact-back-btn', function () {
+    /* Hide all faculty panels */
+    $('.asd .dnt').hide();
+    /* Show main contact layout */
+    $('.contact-dept-grid').show();
+    $('.contact-selector-label').show();
+    $('.faculty-panels-container').hide();
+    $(this).hide();
+    $('.year-btn').removeClass('year-btn--active');
+    /* Show .main for legacy click.js */
+    $('.main').show();
+  });
+
+  /* Ensure faculty panels container is hidden on contact tab open */
+  $('[data-toggle="tab"][href="#contact"]').on('shown.bs.tab', function () {
+    $('.faculty-panels-container').hide();
+    $('#contact-back-btn').hide();
+    $('.contact-dept-grid').show();
+    $('.contact-selector-label').show();
+    $('.year-btn').removeClass('year-btn--active');
+  });
 });
