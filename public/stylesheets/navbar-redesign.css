@@ -1,0 +1,496 @@
+/* =============================================================
+   NAVBAR REDESIGN — GBR Mobile Storage Application
+   Fully vertically centered, professional, modern look
+   ============================================================= */
+
+/* ── Reset floats and override old header layout ───────────── */
+body.home-body header.header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 9999 !important;
+  height: 62px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 20px 0 16px !important;
+  background: linear-gradient(135deg, #080f1e 0%, #0f1e38 50%, #091628 100%) !important;
+  border-bottom: 1px solid rgba(6, 182, 212, 0.18) !important;
+  box-shadow:
+    0 2px 20px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(6, 182, 212, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  gap: 12px !important;
+}
+
+/* ── Kill all old float-based positioning ───────────────────── */
+body.home-body header.header > *,
+body.home-body header.header a,
+body.home-body header.header button,
+body.home-body header.header #date_time {
+  float: none !important;
+  position: static !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ── Hamburger toggle ───────────────────────────────────────── */
+body.home-body header.header .sidebar-toggle-box {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 9px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  transition: background 0.2s ease, border-color 0.2s ease !important;
+}
+
+body.home-body header.header .sidebar-toggle-box:hover {
+  background: rgba(6, 182, 212, 0.15) !important;
+  border-color: rgba(6, 182, 212, 0.35) !important;
+}
+
+body.home-body header.header .sidebar-toggle-box .fa-bars {
+  font-size: 16px !important;
+  color: rgba(203, 213, 225, 0.9) !important;
+  line-height: 1 !important;
+}
+
+/* ── Brand name (after the hamburger) ──────────────────────── */
+body.home-body header.header .sidebar-toggle-box::after {
+  content: 'Mobile Storage Application' !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  margin-left: 14px !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em !important;
+  white-space: nowrap !important;
+  background: linear-gradient(90deg, #ffffff 0%, #67e8f9 60%, #22d3ee 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  line-height: 1 !important;
+  /* Don't pull it out of the toggle box */
+  position: absolute !important;
+  left: 66px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+/* Make toggle box relative so brand label positions correctly */
+body.home-body header.header .sidebar-toggle-box {
+  position: relative !important;
+}
+
+/* Spacer to push right-side items to the right */
+body.home-body header.header #date_time {
+  margin-left: auto !important;
+}
+
+/* ── Date/Time pill ─────────────────────────────────────────── */
+body.home-body header.header #date_time {
+  display: flex !important;
+  align-items: center !important;
+  height: 38px !important;
+  padding: 0 14px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 9px !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: rgba(203, 213, 225, 0.88) !important;
+  letter-spacing: 0.025em !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  line-height: 1.3 !important;
+  text-align: center !important;
+  font-family: 'Lato', sans-serif !important;
+}
+
+/* ── Logout and Help buttons ────────────────────────────────── */
+body.home-body header.header a.inner-width-neon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 38px !important;
+  padding: 0 16px !important;
+  border-radius: 9px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  color: rgba(226, 232, 240, 0.9) !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  cursor: pointer !important;
+  /* Kill old span-based fake button */
+  overflow: hidden !important;
+}
+
+body.home-body header.header a.inner-width-neon .bg-width {
+  display: none !important;
+}
+
+body.home-body header.header a.inner-width-neon .btn-text {
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  color: inherit !important;
+  letter-spacing: 0.04em !important;
+  line-height: 1 !important;
+}
+
+/* Logout — red accent on hover */
+body.home-body header.header a.inner-width-neon:first-of-type:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4) !important;
+}
+
+body.home-body header.header a.inner-width-neon:first-of-type:hover .btn-text {
+  color: #ffffff !important;
+}
+
+/* Help — cyan accent on hover */
+body.home-body header.header a.inner-width-neon:last-of-type:hover {
+  background: linear-gradient(135deg, #0891b2, #0e7490) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(8, 145, 178, 0.4) !important;
+}
+
+body.home-body header.header a.inner-width-neon:last-of-type:hover .btn-text {
+  color: #ffffff !important;
+}
+
+/* ── Dark mode toggle button ────────────────────────────────── */
+body.home-body header.header #darkModeToggle,
+body.home-body header.header button.dark-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 9px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  font-size: 15px !important;
+  color: rgba(203, 213, 225, 0.85) !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  transition: all 0.22s ease !important;
+  padding: 0 !important;
+}
+
+body.home-body header.header #darkModeToggle:hover,
+body.home-body header.header button.dark-toggle:hover {
+  background: rgba(251, 191, 36, 0.18) !important;
+  border-color: rgba(251, 191, 36, 0.35) !important;
+  color: #fbbf24 !important;
+  transform: rotate(22deg) scale(1.1) !important;
+}
+
+/* ── Thin accent line at very top of navbar ─────────────────── */
+body.home-body header.header::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 2px !important;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(6, 182, 212, 0.7) 20%,
+    rgba(99, 102, 241, 0.6) 50%,
+    rgba(6, 182, 212, 0.6) 80%,
+    transparent 100%) !important;
+  pointer-events: none !important;
+}
+
+/* ── Push main content below the fixed navbar ───────────────── */
+body.home-body #container #main-content,
+body.home-body section#main-content {
+  margin-top: 62px !important;
+}
+
+body.home-body #container aside {
+  top: 62px !important;
+}
+
+/* ── Light mode overrides ───────────────────────────────────── */
+body.home-body:not(.dark-mode) header.header {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f2340 100%) !important;
+}
+
+/* ── Separator between date and buttons ─────────────────────── */
+body.home-body header.header #date_time::before {
+  content: '' !important;
+  display: block !important;
+  width: 1px !important;
+  height: 22px !important;
+  background: rgba(255, 255, 255, 0.10) !important;
+  margin-right: 14px !important;
+}
+
+/* ── Responsive: collapse date on small screens ─────────────── */
+@media (max-width: 768px) {
+  body.home-body header.header #date_time {
+    display: none !important;
+  }
+
+  body.home-body header.header a.inner-width-neon {
+    padding: 0 10px !important;
+    font-size: 11.5px !important;
+  }
+
+  body.home-body header.header a.inner-width-neon .btn-text {
+    font-size: 11.5px !important;
+  }
+}
+
+/* =============================================================
+   FIX 1 — Remove border/box around DataTables + export buttons
+   ============================================================= */
+
+/* The white card wrapper around tables */
+body.home-body .wrapper,
+body.home-body section.wrapper,
+body.home-body .tab-content,
+body.home-body .tab-pane,
+body.home-body .align {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* DataTables wrapper box */
+body.home-body .dataTables_wrapper,
+body.home-body div.dataTables_wrapper {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Export buttons row (dt-buttons) */
+body.home-body .dt-buttons,
+body.home-body div.dt-buttons {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 0 10px 0 !important;
+  display: flex !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+}
+
+/* Individual export buttons */
+body.home-body .dt-button,
+body.home-body a.dt-button,
+body.home-body button.dt-button {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-radius: 7px !important;
+  color: rgba(203, 213, 225, 0.88) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  padding: 6px 14px !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  transition: all 0.18s ease !important;
+}
+
+body.home-body .dt-button:hover,
+body.home-body a.dt-button:hover,
+body.home-body button.dt-button:hover {
+  background: rgba(6, 182, 212, 0.18) !important;
+  border-color: rgba(6, 182, 212, 0.40) !important;
+  color: #22d3ee !important;
+  box-shadow: none !important;
+}
+
+/* Light mode */
+body.home-body:not(.dark-mode) .dt-button,
+body.home-body:not(.dark-mode) a.dt-button,
+body.home-body:not(.dark-mode) button.dt-button {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #475569 !important;
+}
+
+body.home-body:not(.dark-mode) .dt-button:hover,
+body.home-body:not(.dark-mode) a.dt-button:hover,
+body.home-body:not(.dark-mode) button.dt-button:hover {
+  background: #e0f2fe !important;
+  border-color: #0891b2 !important;
+  color: #0891b2 !important;
+}
+
+/* Any outer white panel / card wrapping the tab content */
+body.home-body #main-content .col-md-12 > div,
+body.home-body #main-content .tab-content > .tab-pane > div:not(.table-responsive):not(.smart-search-bar):not(.srcbar):not(.form-card):not(#form):not(.stat-card--blue):not(.stat-card--green):not(.stat-card--purple):not(.dd1):not(.contact-hero):not(.contact-selector-section) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* The big white rounded box visible in screenshot */
+body.home-body .wrapper > .col-md-12,
+body.home-body section.wrapper > .col-md-12 {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 20px 28px !important;
+}
+
+/* =============================================================
+   FIX 2 — Navbar overlap: brand name overlapping date/time
+   ============================================================= */
+
+/* The brand name is positioned absolutely from sidebar-toggle-box.
+   On narrow screens it overlaps the date. Fix by limiting its width
+   and giving it proper truncation. Also increase left offset to
+   account for the toggle box width. */
+body.home-body header.header .sidebar-toggle-box::after {
+  left: 54px !important;
+  max-width: 220px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 13.5px !important;
+}
+
+/* Add a spacer element between brand and right-side items
+   so they never overlap — achieved by giving the toggle box
+   a min-width that includes brand text space */
+body.home-body header.header .sidebar-toggle-box {
+  min-width: 280px !important;
+  flex-shrink: 0 !important;
+}
+
+/* On small screens, shrink the brand area */
+@media (max-width: 900px) {
+  body.home-body header.header .sidebar-toggle-box {
+    min-width: 44px !important;
+  }
+  body.home-body header.header .sidebar-toggle-box::after {
+    display: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  body.home-body header.header #date_time {
+    display: none !important;
+  }
+}
+
+/* =============================================================
+   FIX 3 — Remove white card box from ALL tab panes (tables)
+   These override the !important rules in style.css
+   ============================================================= */
+
+body.home-body .tab-pane.align,
+body.home-body #search-edit.tab-pane,
+body.home-body #help.tab-pane,
+body.home-body #contact.tab-pane,
+body.home-body #totallist.tab-pane,
+body.home-body #officelist.tab-pane,
+body.home-body #returnedlist.tab-pane,
+body.home-body #dboard.tab-pane {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 20px 4px !important;
+}
+
+/* Keep the dashboard form card white box */
+body.home-body #dboard #form,
+body.home-body #dboard #form form.form-group {
+  background: rgba(15, 28, 52, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+/* Light mode: keep form card white */
+body.home-body:not(.dark-mode) #dboard #form,
+body.home-body:not(.dark-mode) #dboard #form form.form-group {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.07) !important;
+}
+
+/* Dashboard stat pane itself — transparent */
+body.home-body #dboard.tab-pane.fade.in.active {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 20px 4px !important;
+}
+
+/* =============================================================
+   FIX 4 — Export buttons (Copy/CSV/Excel/PDF/Print) styling
+   ============================================================= */
+
+/* Remove any inherited white box from DT button wrapper */
+body.home-body .dataTables_wrapper .dt-buttons,
+body.home-body div.DTFC_LeftWrapper ~ .dataTables_wrapper .dt-buttons {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 0 12px 0 !important;
+}
+
+/* Export button style from style.css overridden */
+body.home-body .dataTables_wrapper .dt-buttons .dt-button,
+body.home-body .dataTables_wrapper .dt-buttons a.dt-button,
+body.home-body .dataTables_wrapper .dt-buttons button.dt-button {
+  background: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 7px !important;
+  color: rgba(203, 213, 225, 0.9) !important;
+  box-shadow: none !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  padding: 6px 14px !important;
+  text-shadow: none !important;
+  transition: all 0.18s ease !important;
+}
+
+body.home-body .dataTables_wrapper .dt-buttons .dt-button:hover,
+body.home-body .dataTables_wrapper .dt-buttons a.dt-button:hover,
+body.home-body .dataTables_wrapper .dt-buttons button.dt-button:hover {
+  background: rgba(6, 182, 212, 0.2) !important;
+  border-color: rgba(6, 182, 212, 0.45) !important;
+  color: #22d3ee !important;
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.18) !important;
+}
+
+/* Light mode export buttons */
+body.home-body:not(.dark-mode) .dataTables_wrapper .dt-buttons .dt-button {
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+}
+
+body.home-body:not(.dark-mode) .dataTables_wrapper .dt-buttons .dt-button:hover {
+  background: #e0f2fe !important;
+  border-color: #0891b2 !important;
+  color: #0891b2 !important;
+  box-shadow: 0 3px 8px rgba(8, 145, 178, 0.15) !important;
+}
