@@ -1306,6 +1306,7 @@ body.home-body #main-content {
 body.home-body section#container {
   overflow: visible !important;
   height: auto !important;
+  background: transparent !important;
 }
 body.home-body section.wrapper,
 body.home-body .tab-content,
@@ -1514,6 +1515,97 @@ body.home-body ul.sidebar-menu li a span {
   color: #e2e8f0 !important;
   font-family: 'Lato', sans-serif !important;
   font-weight: 500 !important;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Ensure sidebar menu spans are always visible when sidebar is expanded */
+body.home-body #container:not(.sidebar-close):not(.sidebar-closed) #sidebar .sidebar-menu li a span,
+body.home-body #sidebar .sidebar-menu li a span {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #e2e8f0 !important;
+}
+
+/* Override any potential display: none from other CSS files */
+body.home-body #sidebar .sidebar-menu li a span {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Force text visibility for all sidebar menu items when sidebar is NOT collapsed */
+body.home-body #container:not(.sidebar-close):not(.sidebar-closed) #sidebar .sidebar-menu li a span {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #e2e8f0 !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Additional specificity to ensure text is visible */
+body.home-body:not(.sidebar-close):not(.sidebar-closed) #sidebar .sidebar-menu li a span {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #e2e8f0 !important;
+}
+
+/* Force text visibility for normal (non-collapsed) sidebar state */
+body.home-body #sidebar.nav-collapse .sidebar-menu li a span {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #e2e8f0 !important;
+}
+
+/* Most specific rule to force sidebar text visibility */
+body.home-body section#container aside#sidebar.nav-collapse ul#nav-accordion.sidebar-menu li a span {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #e2e8f0 !important;
+  position: relative !important;
+  z-index: 100 !important;
+}
+
+/* Ultra-specific rule for sidebar spans - highest specificity */
+body.home-body section#container#container aside#sidebar.nav-collapse ul#nav-accordion.sidebar-menu li.sub-menu a span,
+body.home-body section#container#container aside#sidebar.nav-collapse ul#nav-accordion.sidebar-menu li.active a span {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #e2e8f0 !important;
+  position: relative !important;
+  z-index: 1000 !important;
+}
+
+/* Force all sidebar spans to be visible - inline style override equivalent */
+#sidebar.nav-collapse .sidebar-menu li a span {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #e2e8f0 !important;
+}
+
+body.home-body #sidebar.nav-collapse .sidebar-menu li a span {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #e2e8f0 !important;
+}
+
+/* Final attempt - attribute selector approach */
+body.home-body aside#sidebar ul.sidebar-menu li a span {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #e2e8f0 !important;
 }
 body.home-body ul.sidebar-menu li.active a,
 body.home-body ul.sidebar-menu li a:hover {
@@ -1547,12 +1639,15 @@ body.home-body p.anim-typewriter {
   font-family: 'Lato', sans-serif;
   font-size: 24px;
   font-weight: 800;
-  color: #1e293b;
+  color: #0f172a;
   margin: 0 0 24px 0 !important;
   padding: 0;
   letter-spacing: 0.02em;
   position: relative;
   display: inline-block;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 body.home-body p.anim-typewriter::after {
   content: '';
@@ -1579,10 +1674,10 @@ body.home-body #dboard #form form.form-group {
 /* Dashboard tab pane base */
 body.home-body #dboard.tab-pane {
   padding: 24px;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
-  border: 1px solid #e2e8f0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
 }
 
 body.home-body .dd1 {
@@ -1783,7 +1878,7 @@ body.home-body table.table thead tr th {
   color: #f8fafc !important;
   font-weight: 700 !important;
   font-size: 12px !important;
-  padding: 12px 14px !important;
+  padding: 13px 16px !important;
   text-align: left;
   border: none !important;
   border-bottom: 2px solid #22d3ee !important;
@@ -1798,7 +1893,7 @@ body.home-body table.table thead tr th:last-child {
   border-top-right-radius: 10px;
 }
 body.home-body table.table tbody tr td {
-  padding: 10px 14px !important;
+  padding: 12px 16px !important;
   border: none !important;
   border-bottom: 1px solid #e2e8f0 !important;
   vertical-align: middle;
@@ -1854,7 +1949,7 @@ body.home-body td[style*="height:2vw"] {
 
 /* DataTables wrapper & buttons */
 body.home-body .dataTables_wrapper {
-  padding: 0;
+  padding: 16px 20px;
   font-family: 'Lato', sans-serif;
   color: #475569;
   font-size: 13px;
@@ -1889,7 +1984,7 @@ body.home-body .dataTables_filter {
 body.home-body .dataTables_filter input[type="search"] {
   border: 1.5px solid #cbd5e1;
   border-radius: 8px;
-  padding: 6px 12px;
+  padding: 0;
   font-size: 13px;
   margin-left: 8px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -2116,7 +2211,7 @@ body.home-body .tab-content > .tab-pane.active {
 
 /* ── Page background ─────────────────────────────────────────── */
 body.home-body { background: #eef2f7 !important; }
-body.home-body #main-content { background: #eef2f7 !important; }
+body.home-body #main-content { background: transparent !important; }
 
 /* ── Custom scrollbar ────────────────────────────────────────── */
 body.home-body ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -2147,6 +2242,16 @@ body.home-body #dboard.tab-pane.fade {
   border: none !important;
   box-shadow: none !important;
   padding: 0 !important;
+}
+
+/* Ensure the dashboard heading has no background */
+body.home-body #dboard > p.anim-typewriter {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 0 24px 0 !important;
+  display: block !important;
 }
 
 /* ── Stat cards ─────────────────────────────────────────────── */
@@ -2452,6 +2557,27 @@ body.home-body #contact.tab-pane {
 /* ── Table panes — section heading strips ─────────────────────── */
 body.home-body .tab-pane.align > p.anim-typewriter,
 body.home-body #search-edit > p.anim-typewriter {
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  margin-bottom: 20px !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #0f172a !important;
+  background: transparent !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Force table tab headings to be visible */
+body.home-body #totallist > p.anim-typewriter,
+body.home-body #officelist > p.anim-typewriter,
+body.home-body #returnedlist > p.anim-typewriter {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #0f172a !important;
+  background: transparent !important;
   font-size: 20px !important;
   font-weight: 800 !important;
   margin-bottom: 20px !important;
@@ -4170,7 +4296,7 @@ body.home-body table.table tbody tr td {
   color: #1e293b !important;
   font-size: 13px !important;
   font-weight: 500 !important;
-  padding: 11px 14px !important;
+  padding: 12px 16px !important;
   border-bottom: 1px solid #f1f5f9 !important;
   vertical-align: middle !important;
   line-height: 1.5 !important;
@@ -4196,7 +4322,7 @@ body.home-body table.table thead tr th {
   color: #f8fafc !important;
   font-weight: 700 !important;
   font-size: 11.5px !important;
-  padding: 13px 14px !important;
+  padding: 14px 16px !important;
   text-align: left !important;
   border: none !important;
   border-bottom: 2px solid #22d3ee !important;
@@ -4655,7 +4781,7 @@ body.home-body:not(.dark-mode) #contact.tab-pane {
   box-shadow: 0 4px 24px rgba(15,23,42,0.07) !important;
 }
 body.home-body:not(.dark-mode) .tab-pane > p.anim-typewriter {
-  color: #1e293b !important;
+  color: #0f172a !important;
 }
 
 /* ── p.rr heading in Help tab ── */
@@ -4765,7 +4891,7 @@ body.home-body:not(.dark-mode) #wrap form input[type="text"]::placeholder {
 
 /* ── anim-typewriter headings: always dark in light mode ── */
 body.home-body:not(.dark-mode) p.anim-typewriter {
-  color: #1e293b !important;
+  color: #0f172a !important;
 }
 
 /* ── Dashboard form card: white bg ── */
@@ -5027,3 +5153,310 @@ body.home-body.dark-mode .contact-back-btn {
   color: #67e8f9 !important;
 }
 body.home-body.dark-mode .asd h4 { color: #67e8f9 !important; border-bottom-color: rgba(255,255,255,0.08) !important; }
+
+
+/* ================================================================
+   VISUAL CONSISTENCY FIX
+   Remove double-box effect: tab pane cards on grey background
+   Make the entire content area one seamless surface
+   ================================================================ */
+
+/* ── Page background: pure white — same as cards, no contrast ── */
+body.home-body:not(.dark-mode) {
+  background: #f8fafc !important;
+}
+body.home-body:not(.dark-mode) #main-content {
+  background: #f8fafc !important;
+}
+
+/* ── Tab panes: remove card boxing in light mode ── */
+/* Tables and content panes should look flush, not boxed */
+body.home-body:not(.dark-mode) .tab-pane.align {
+  background: #ffffff !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 0 28px 0 !important;
+}
+body.home-body:not(.dark-mode) #search-edit.tab-pane,
+body.home-body:not(.dark-mode) #help.tab-pane,
+body.home-body:not(.dark-mode) #contact.tab-pane {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 0 28px 0 !important;
+}
+
+/* ── Table container: clean bordered box only, no shadow card ── */
+body.home-body:not(.dark-mode) .tab-pane.align .table-responsive {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  overflow-x: auto !important;
+  box-shadow: 0 1px 4px rgba(15,23,42,0.06) !important;
+}
+
+/* ── DataTables export buttons + search: clean, no extra boxing ── */
+body.home-body:not(.dark-mode) .dataTables_wrapper {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  margin-bottom: 16px;
+}
+
+/* ── Dashboard: remove the outer white card around everything ── */
+body.home-body:not(.dark-mode) #dboard.tab-pane,
+body.home-body:not(.dark-mode) #dboard.tab-pane.fade {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* ── Dashboard form card: clean white card with subtle shadow ── */
+body.home-body:not(.dark-mode) #dboard #form {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.06) !important;
+  overflow: visible !important;
+}
+
+/* ── Dashboard form card header strip ── */
+body.home-body:not(.dark-mode) #dboard #form form.form-group::before {
+  border-radius: 14px 14px 0 0 !important;
+}
+
+/* ── Stat cards: no double border, clean ── */
+body.home-body:not(.dark-mode) #dboard .col-md-4 {
+  padding: 0 8px !important;
+}
+body.home-body:not(.dark-mode) #dboard .dd1 {
+  border: none !important;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.12) !important;
+}
+
+/* ── Help, Contact, Search: flush layout, no card boxing ── */
+body.home-body:not(.dark-mode) #help.tab-pane .conta-fluid,
+body.home-body:not(.dark-mode) #help.tab-pane .col-md-12 {
+  background: transparent !important;
+}
+body.home-body:not(.dark-mode) #navbar ul li a.g2 {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-left: 3px solid #0f766e !important;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.04) !important;
+}
+body.home-body:not(.dark-mode) .gg {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-left: 3px solid #1e3a8a !important;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.04) !important;
+}
+
+/* ── Heading underline bar ── */
+body.home-body:not(.dark-mode) p.anim-typewriter {
+  color: #0f172a !important;
+}
+body.home-body:not(.dark-mode) p.anim-typewriter::after {
+  background: linear-gradient(90deg, #1e3a8a 0%, #0f766e 100%);
+}
+
+/* ── Main section: consistent padding ── */
+body.home-body:not(.dark-mode) #main-content {
+  padding: 28px 32px 140px !important;
+}
+
+/* ── Search tab: flush layout ── */
+body.home-body:not(.dark-mode) #search-edit.tab-pane .srcbar {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+  margin-bottom: 16px;
+}
+body.home-body:not(.dark-mode) #search-edit.tab-pane .table-responsive {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 1px 4px rgba(15,23,42,0.06) !important;
+}
+
+/* ── Edit form (#fmgrp) ── */
+body.home-body:not(.dark-mode) #fmgrp {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.06) !important;
+}
+
+/* ── Contact page ── */
+body.home-body:not(.dark-mode) #contact.tab-pane .faculty-panels-container {
+  background: transparent !important;
+}
+
+/* ── Dark mode: keep glass effect ── */
+body.home-body.dark-mode .tab-pane.align {
+  background: rgba(255,255,255,0.04) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 20px 48px rgba(0,0,0,0.28) !important;
+  padding: 24px !important;
+}
+body.home-body.dark-mode #search-edit.tab-pane,
+body.home-body.dark-mode #help.tab-pane,
+body.home-body.dark-mode #contact.tab-pane {
+  background: rgba(255,255,255,0.04) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 20px !important;
+  padding: 24px !important;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  body.home-body:not(.dark-mode) #main-content {
+    padding: 16px 16px 160px !important;
+  }
+}
+
+
+/* ================================================================
+   THREE-FIX PATCH
+   1. Hamburger not working + overlapping project name
+   2. White box behind DashBoard heading
+   3. Sharp top corners on New Entry Record header strip
+   ================================================================ */
+
+/* ── FIX 1: Hamburger — move project name OUT of toggle box ──── */
+/* The ::after on .sidebar-toggle-box was pushing the icon out of
+   click area and competing with the bars icon visually.
+   Move project name to a separate sibling span in the header. */
+
+/* Remove project name from the toggle pseudo-element */
+body.home-body .sidebar-toggle-box::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* The sidebar toggle box: just the icon, nothing else */
+body.home-body .sidebar-toggle-box {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  padding: 8px 12px !important;
+  cursor: pointer !important;
+  border-radius: 8px !important;
+  flex-shrink: 0 !important;
+  width: auto !important;
+}
+body.home-body .sidebar-toggle-box .fa-bars {
+  font-size: 20px !important;
+  color: #ffffff !important;
+  display: block !important;
+  line-height: 1 !important;
+  pointer-events: none;
+}
+
+/* Project name: shown in the header via #date_time sibling approach.
+   We inject it via the header's own layout — keep it in the clock area */
+body.home-body .header-brand {
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+/* ── FIX 2: Remove white background box behind "DashBoard" ────── */
+/* p.anim-typewriter is `display: inline-block` which causes the
+   browser to render a background if the parent has one.
+   Force it to be transparent. */
+body.home-body p.anim-typewriter {
+  background: transparent !important;
+  background-color: transparent !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+body.home-body #dboard > p.anim-typewriter {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #0f172a !important;
+  display: block !important;         /* block so no inline white box */
+  -webkit-text-fill-color: #0f172a !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* ── FIX 3: Rounded top corners on New Entry Record strip ──────── */
+/* The form header ::before strip must have the same border-radius
+   as the parent #form card at top, and the #form card must not
+   clip it due to overflow:hidden on #form. */
+
+/* Remove overflow:hidden from #form so border-radius shows */
+body.home-body #dboard #form {
+  overflow: visible !important;
+}
+
+/* The header strip: full 16px radius at top, 0 at bottom */
+body.home-body #dboard #form form.form-group::before {
+  content: '\f1c0  MOBILE STORAGE · NEW ENTRY RECORD' !important;
+  font-family: FontAwesome, 'Lato', sans-serif !important;
+  display: block !important;
+  background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%) !important;
+  color: #f8fafc !important;
+  font-size: 12.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  padding: 14px 24px !important;
+  border-radius: 16px 16px 0 0 !important;  /* matches parent card radius */
+  border-bottom: 2px solid rgba(34,211,238,0.5) !important;
+  margin: 0 !important;
+}
+
+/* Ensure the card itself has matching border-radius */
+body.home-body:not(.dark-mode) #dboard #form {
+  border-radius: 16px !important;
+  overflow: hidden !important;    /* clip card but strip uses padding-top workaround */
+}
+
+/* Override the overflow for the strip to show corners */
+body.home-body #dboard #form form.form-group {
+  overflow: hidden !important;     /* THIS clips the strip to the card's radius */
+  border-radius: 16px !important;
+  background: #ffffff !important;
+}
+
+/* ── Dark mode: same fixes ─────────────────────────────────────── */
+body.home-body.dark-mode p.anim-typewriter {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+body.home-body.dark-mode #dboard > p.anim-typewriter {
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  body.home-body .sidebar-toggle-box::after { content: none !important; display: none !important; }
+  body.home-body .header-brand { display: none; }
+}

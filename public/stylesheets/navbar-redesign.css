@@ -35,56 +35,48 @@ body.home-body header.header #date_time {
 }
 
 /* ── Hamburger toggle ───────────────────────────────────────── */
-body.home-body header.header .sidebar-toggle-box {
+body.home-body header.header button.sidebar-toggle-box {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   width: 38px !important;
+  min-width: 38px !important;
   height: 38px !important;
   border-radius: 9px !important;
   background: rgba(255, 255, 255, 0.06) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   cursor: pointer !important;
-  flex-shrink: 0 !important;
-  transition: background 0.2s ease, border-color 0.2s ease !important;
+  flex: 0 0 38px !important;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease !important;
 }
 
-body.home-body header.header .sidebar-toggle-box:hover {
+body.home-body header.header button.sidebar-toggle-box:hover {
   background: rgba(6, 182, 212, 0.15) !important;
   border-color: rgba(6, 182, 212, 0.35) !important;
 }
 
-body.home-body header.header .sidebar-toggle-box .fa-bars {
+body.home-body header.header button.sidebar-toggle-box .fa-bars {
   font-size: 16px !important;
   color: rgba(203, 213, 225, 0.9) !important;
   line-height: 1 !important;
 }
 
-/* ── Brand name (after the hamburger) ──────────────────────── */
-body.home-body header.header .sidebar-toggle-box::after {
-  content: 'Mobile Storage Application' !important;
+/* Keep the project name in the header's flex flow, separate from the button. */
+body.home-body header.header .header-brand {
   display: inline-flex !important;
   align-items: center !important;
-  margin-left: 14px !important;
+  margin: 0 !important;
   font-size: 14px !important;
   font-weight: 800 !important;
   letter-spacing: 0.02em !important;
   white-space: nowrap !important;
-  background: linear-gradient(90deg, #ffffff 0%, #67e8f9 60%, #22d3ee 100%) !important;
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  line-height: 1 !important;
-  /* Don't pull it out of the toggle box */
-  position: absolute !important;
-  left: 66px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-}
-
-/* Make toggle box relative so brand label positions correctly */
-body.home-body header.header .sidebar-toggle-box {
-  position: relative !important;
+  color: #ffffff !important;
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
 /* Spacer to push right-side items to the right */
@@ -109,7 +101,7 @@ body.home-body header.header #date_time {
   flex-shrink: 0 !important;
   line-height: 1.3 !important;
   text-align: center !important;
-  font-family: 'Lato', sans-serif !important;
+  font-family: "Lato", sans-serif !important;
 }
 
 /* ── Logout and Help buttons ────────────────────────────────── */
@@ -202,18 +194,20 @@ body.home-body header.header button.dark-toggle:hover {
 
 /* ── Thin accent line at very top of navbar ─────────────────── */
 body.home-body header.header::before {
-  content: '' !important;
+  content: "" !important;
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
   height: 2px !important;
-  background: linear-gradient(90deg,
+  background: linear-gradient(
+    90deg,
     transparent 0%,
     rgba(6, 182, 212, 0.7) 20%,
     rgba(99, 102, 241, 0.6) 50%,
     rgba(6, 182, 212, 0.6) 80%,
-    transparent 100%) !important;
+    transparent 100%
+  ) !important;
   pointer-events: none !important;
 }
 
@@ -227,6 +221,126 @@ body.home-body #container aside {
   top: 62px !important;
 }
 
+/* Collapsed navigation keeps an icon rail; only labels and branding disappear. */
+body.home-body #container.sidebar-close #sidebar,
+body.home-body #container.sidebar-closed #sidebar {
+  left: 0 !important;
+  width: 58px !important;
+  min-width: 58px !important;
+  margin-left: 0 !important;
+  transform: none !important;
+}
+
+body.home-body #container.sidebar-close #sidebar > ul,
+body.home-body #container.sidebar-closed #sidebar > ul {
+  display: block !important;
+}
+
+body.home-body #container.sidebar-close #sidebar .centered,
+body.home-body #container.sidebar-close #sidebar .qw,
+body.home-body #container.sidebar-closed #sidebar .centered,
+body.home-body #container.sidebar-closed #sidebar .qw {
+  display: none !important;
+}
+
+/* Only hide text spans when sidebar is collapsed */
+body.home-body #container.sidebar-close #sidebar .sidebar-menu li a span,
+body.home-body #container.sidebar-closed #sidebar .sidebar-menu li a span {
+  display: none !important;
+}
+
+/* Hide the entire centered logo section when collapsed */
+body.home-body #container.sidebar-close #sidebar .centered,
+body.home-body #container.sidebar-closed #sidebar .centered {
+  display: none !important;
+}
+
+/* Add a compact user icon placeholder when sidebar is collapsed */
+body.home-body #container.sidebar-close #sidebar::before,
+body.home-body #container.sidebar-closed #sidebar::before {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 32px;
+  margin: 8px auto 12px;
+  background: url('../images/mobilelogo.jpg') center/cover;
+  border-radius: 50%;
+  border: 2px solid rgba(34, 211, 238, 0.3);
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.1);
+}
+
+/* Add a small icon-only logo placeholder when collapsed */
+body.home-body #container.sidebar-close #sidebar,
+body.home-body #container.sidebar-closed #sidebar {
+  padding-top: 12px !important;
+}
+
+/* Active state for collapsed sidebar icons */
+body.home-body #container.sidebar-close #sidebar .sidebar-menu li.active a i,
+body.home-body #container.sidebar-closed #sidebar .sidebar-menu li.active a i {
+  color: #ffffff !important;
+  text-shadow: 0 0 8px rgba(6, 182, 212, 0.6) !important;
+}
+
+/* Better spacing for collapsed sidebar menu items */
+body.home-body #container.sidebar-close #sidebar .sidebar-menu li,
+body.home-body #container.sidebar-closed #sidebar .sidebar-menu li {
+  margin: 4px 8px !important;
+}
+
+body.home-body #container.sidebar-close #sidebar .sidebar-menu li,
+body.home-body #container.sidebar-closed #sidebar .sidebar-menu li {
+  margin: 4px 6px !important;
+}
+
+body.home-body #container.sidebar-close #sidebar .sidebar-menu li a,
+body.home-body #container.sidebar-closed #sidebar .sidebar-menu li a {
+  justify-content: center !important;
+  padding: 12px 0 !important;
+  margin: 0 !important;
+  border-left-width: 0 !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+  background: transparent !important;
+}
+
+body.home-body #container.sidebar-close #sidebar .sidebar-menu li a:hover,
+body.home-body #container.sidebar-closed #sidebar .sidebar-menu li a:hover {
+  background: rgba(6, 182, 212, 0.15) !important;
+}
+
+body.home-body #container.sidebar-close #sidebar .sidebar-menu li a i,
+body.home-body #container.sidebar-closed #sidebar .sidebar-menu li a i {
+  width: auto !important;
+  padding: 0 !important;
+  font-size: 18px !important;
+  color: #67e8f9 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+body.home-body #container.sidebar-close #main-content,
+body.home-body #container.sidebar-closed #main-content {
+  margin-left: 58px !important;
+}
+
+@media (max-width: 768px) {
+  body.home-body #container.sidebar-close #sidebar,
+  body.home-body #container.sidebar-closed #sidebar {
+    top: 62px !important;
+    height: calc(100vh - 62px) !important;
+    transform: none !important;
+  }
+
+  body.home-body #container.sidebar-close #main-content,
+  body.home-body #container.sidebar-closed #main-content {
+    margin-left: 58px !important;
+    width: calc(100% - 58px) !important;
+  }
+}
+
 /* ── Light mode overrides ───────────────────────────────────── */
 body.home-body:not(.dark-mode) header.header {
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f2340 100%) !important;
@@ -234,16 +348,20 @@ body.home-body:not(.dark-mode) header.header {
 
 /* ── Separator between date and buttons ─────────────────────── */
 body.home-body header.header #date_time::before {
-  content: '' !important;
+  content: "" !important;
   display: block !important;
   width: 1px !important;
   height: 22px !important;
-  background: rgba(255, 255, 255, 0.10) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
   margin-right: 14px !important;
 }
 
 /* ── Responsive: collapse date on small screens ─────────────── */
 @media (max-width: 768px) {
+  body.home-body header.header .header-brand {
+    font-size: 12px !important;
+  }
+
   body.home-body header.header #date_time {
     display: none !important;
   }
@@ -274,13 +392,23 @@ body.home-body .align {
   border-radius: 0 !important;
 }
 
+body.home-body #main-content,
+body.home-body #main-content .wrapper,
+body.home-body #main-content .wrapper > .col-md-12,
+body.home-body #main-content .tab-content,
+body.home-body #dboard.tab-pane {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
 /* DataTables wrapper box */
 body.home-body .dataTables_wrapper,
 body.home-body div.dataTables_wrapper {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  padding: 0 !important;
+  /* padding: 0 !important; */
 }
 
 /* Export buttons row (dt-buttons) */
@@ -289,9 +417,9 @@ body.home-body div.dt-buttons {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  padding: 0 0 10px 0 !important;
+  padding: 0 !important;
   display: flex !important;
-  gap: 6px !important;
+  gap: 8px !important;
   flex-wrap: wrap !important;
 }
 
@@ -300,12 +428,12 @@ body.home-body .dt-button,
 body.home-body a.dt-button,
 body.home-body button.dt-button {
   background: rgba(255, 255, 255, 0.06) !important;
-  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 7px !important;
   color: rgba(203, 213, 225, 0.88) !important;
   font-size: 12px !important;
   font-weight: 600 !important;
-  padding: 6px 14px !important;
+  padding: 8px 16px !important;
   box-shadow: none !important;
   text-shadow: none !important;
   transition: all 0.18s ease !important;
@@ -315,7 +443,7 @@ body.home-body .dt-button:hover,
 body.home-body a.dt-button:hover,
 body.home-body button.dt-button:hover {
   background: rgba(6, 182, 212, 0.18) !important;
-  border-color: rgba(6, 182, 212, 0.40) !important;
+  border-color: rgba(6, 182, 212, 0.4) !important;
   color: #22d3ee !important;
   box-shadow: none !important;
 }
@@ -339,7 +467,15 @@ body.home-body:not(.dark-mode) button.dt-button:hover {
 
 /* Any outer white panel / card wrapping the tab content */
 body.home-body #main-content .col-md-12 > div,
-body.home-body #main-content .tab-content > .tab-pane > div:not(.table-responsive):not(.smart-search-bar):not(.srcbar):not(.form-card):not(#form):not(.stat-card--blue):not(.stat-card--green):not(.stat-card--purple):not(.dd1):not(.contact-hero):not(.contact-selector-section) {
+body.home-body
+  #main-content
+  .tab-content
+  > .tab-pane
+  > div:not(.table-responsive):not(.smart-search-bar):not(.srcbar):not(.form-card):not(#form):not(
+    .stat-card--blue
+  ):not(.stat-card--green):not(.stat-card--purple):not(.dd1):not(.contact-hero):not(
+    .contact-selector-section
+  ) {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
@@ -363,30 +499,18 @@ body.home-body section.wrapper > .col-md-12 {
    On narrow screens it overlaps the date. Fix by limiting its width
    and giving it proper truncation. Also increase left offset to
    account for the toggle box width. */
-body.home-body header.header .sidebar-toggle-box::after {
-  left: 54px !important;
-  max-width: 220px !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  font-size: 13.5px !important;
+body.home-body header.header button.sidebar-toggle-box {
+  min-width: 38px !important;
+  flex: 0 0 38px !important;
 }
 
-/* Add a spacer element between brand and right-side items
-   so they never overlap — achieved by giving the toggle box
-   a min-width that includes brand text space */
-body.home-body header.header .sidebar-toggle-box {
-  min-width: 280px !important;
-  flex-shrink: 0 !important;
+body.home-body header.header .header-brand {
+  flex: 0 1 280px !important;
 }
 
-/* On small screens, shrink the brand area */
 @media (max-width: 900px) {
-  body.home-body header.header .sidebar-toggle-box {
-    min-width: 44px !important;
-  }
-  body.home-body header.header .sidebar-toggle-box::after {
-    display: none !important;
+  body.home-body header.header .header-brand {
+    flex-basis: auto !important;
   }
 }
 
@@ -421,8 +545,10 @@ body.home-body #dboard #form,
 body.home-body #dboard #form form.form-group {
   background: rgba(15, 28, 52, 0.85) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 18px !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
   backdrop-filter: blur(12px) !important;
+  overflow: hidden !important;
 }
 
 /* Light mode: keep form card white */
@@ -430,7 +556,9 @@ body.home-body:not(.dark-mode) #dboard #form,
 body.home-body:not(.dark-mode) #dboard #form form.form-group {
   background: #ffffff !important;
   border: 1px solid #e2e8f0 !important;
+  border-radius: 18px !important;
   box-shadow: 0 4px 24px rgba(15, 23, 42, 0.07) !important;
+  overflow: hidden !important;
 }
 
 /* Dashboard stat pane itself — transparent */
@@ -452,7 +580,7 @@ body.home-body div.DTFC_LeftWrapper ~ .dataTables_wrapper .dt-buttons {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  padding: 0 0 12px 0 !important;
+  padding: 0 !important;
 }
 
 /* Export button style from style.css overridden */

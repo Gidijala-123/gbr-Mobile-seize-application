@@ -54,21 +54,41 @@ html
 
           .input-group
             span.input-icon.fa.fa-envelope
-            input#loginname(type="email" ng-model="log.email" placeholder="Email address" required autocomplete="off")
+            input#loginname(type="email" ng-model="log.email" placeholder="Email address" required autocomplete="off" ng-disabled="loginLoading")
 
           .input-group
             span.input-icon.fa.fa-lock
-            input#password3(type="password" ng-model="log.pwd" placeholder="Password (min 10 chars)" required minlength="10" autocomplete="off")
+            input#password3(type="password" ng-model="log.pwd" placeholder="Password (min 10 chars)" required minlength="10" autocomplete="off" ng-disabled="loginLoading")
             span.pw-toggle.fa.fa-eye.toggle-password(toggle="#password3")
+
+          //- Error message only (below inputs, not as floating bar)
+          p.login-error-msg(ng-show="loginStatus === 'error'")
+            i.fa.fa-exclamation-circle
+            |  {{loginMsg}}
 
           .form-links
             a.forgot-link(href="/forgot")
               i.fa.fa-key
               |  Forgot password?
 
-          button.submit-btn(type="submit")
-            span Login
-            i.fa.fa-arrow-right
+          //- Button: 3 states — default / loading / success
+          button.submit-btn.login-btn(
+            type="submit"
+            ng-disabled="loginLoading || loginStatus === 'success'"
+            ng-class="{'login-btn--loading': loginStatus === 'loading', 'login-btn--success': loginStatus === 'success'}"
+          )
+            //- Default state
+            span.login-btn-default(ng-show="!loginStatus || loginStatus === 'error'")
+              | Login
+              i.fa.fa-arrow-right
+            //- Loading state
+            span.login-btn-loading(ng-show="loginStatus === 'loading'")
+              span.login-spinner
+              | Signing in...
+            //- Success state
+            span.login-btn-success(ng-show="loginStatus === 'success'")
+              i.fa.fa-check
+              | Redirecting...
 
           .mobile-switch
             | New here?&nbsp;
@@ -198,12 +218,49 @@ html
     });
 
     app.controller('loginController', function ($scope, $http, $window) {
+      $scope.loginLoading = false;
+      $scope.loginStatus = '';
+      $scope.loginMsg = '';
+
       $scope.login = function (log) {
-        $http({ method: 'POST', url: '/postlogin',
-          data: { email: log.email, pwd: log.pwd }
+        if ($scope.loginLoading || $scope.loginStatus === 'success') return;
+
+        if (!log || !log.email || !log.pwd) {
+          $scope.loginStatus = 'error';
+          $scope.loginMsg = 'Please enter your email and password.';
+          return;
+        }
+
+        $scope.loginLoading = true;
+        $scope.loginStatus = 'loading';
+        $scope.loginMsg = '';
+
+        var wakeTimer = setTimeout(function () {
+          $scope.$apply(function () { $scope.loginMsg = 'Waking up server\u2026'; });
+        }, 4000);
+
+        var longTimer = setTimeout(function () {
+          $scope.$apply(function () { $scope.loginMsg = 'Almost there\u2026'; });
+        }, 12000);
+
+        $http({
+          method: 'POST',
+          url: '/postlogin',
+          data: { uname: log.uname, email: log.email, pwd: log.pwd },
+          timeout: 60000
         }).then(function () {
-          alert('Welcome! \uD83D\uDCF1\nRedirecting to dashboard...');
-          $window.location.href = '/home';
-        }, function (res) { $scope.log = {}; alert(res.data || 'Invalid credentials.'); });
+          clearTimeout(wakeTimer);
+          clearTimeout(longTimer);
+          $scope.loginLoading = false;
+          $scope.loginStatus = 'success';
+          setTimeout(function () { $window.location.href = '/home'; }, 1000);
+        }, function (res) {
+          clearTimeout(wakeTimer);
+          clearTimeout(longTimer);
+          $scope.loginLoading = false;
+          $scope.loginStatus = 'error';
+          $scope.loginMsg = res.data || 'Invalid credentials. Please try again.';
+          if ($scope.log) $scope.log.pwd = '';
+        });
       };
     });

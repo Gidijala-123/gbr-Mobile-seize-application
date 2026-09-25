@@ -560,3 +560,118 @@ a.forgot-link:hover { color: #059669; text-decoration: underline; }
 @media (max-width: 480px) {
   .forgot-card { padding: 28px 20px; border-radius: 18px; }
 }
+
+
+/* ── Login button — 3 states: default / loading / success ─── */
+
+/* Error message (small, below inputs) */
+.login-error-msg {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ef4444;
+  margin: -4px 0 10px 2px;
+  line-height: 1.4;
+  animation: loginErrIn 0.25s ease;
+}
+@keyframes loginErrIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.login-error-msg .fa { font-size: 13px; flex-shrink: 0; }
+
+/* ── The button itself ── */
+.login-btn {
+  position: relative;
+  overflow: hidden;
+  transition: background 0.35s ease, box-shadow 0.25s ease, transform 0.2s ease !important;
+}
+
+/* Default state spans */
+.login-btn-default,
+.login-btn-loading,
+.login-btn-success {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  transition: opacity 0.2s ease;
+}
+
+/* Loading state — pulse the background slightly */
+.login-btn--loading {
+  background: linear-gradient(135deg, #059669 0%, #0a7652 100%) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: 0 8px 24px rgba(16,185,129,0.35) !important;
+}
+
+/* Custom spinner — three dots pulsing */
+.login-spinner {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 2px;
+}
+.login-spinner::before,
+.login-spinner::after,
+.login-btn-loading::before {
+  content: none;
+}
+
+/* Use CSS-only dot spinner */
+.login-btn-loading .login-spinner {
+  position: relative;
+  width: 20px;
+  height: 14px;
+}
+.login-btn-loading .login-spinner::before {
+  content: '●●●';
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.9);
+  animation: dotPulse 1.2s ease-in-out infinite;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.4; letter-spacing: 2px; }
+  50%       { opacity: 1;   letter-spacing: 4px; }
+}
+
+/* Success state — green to teal sweep */
+.login-btn--success {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #10b981 100%) !important;
+  background-size: 200% 100% !important;
+  animation: successSweep 0.6s ease forwards !important;
+  cursor: default !important;
+  box-shadow: 0 8px 28px rgba(16,185,129,0.45) !important;
+}
+@keyframes successSweep {
+  0%   { background-position: 100% 0; }
+  100% { background-position: 0% 0;   }
+}
+.login-btn-success .fa.fa-check {
+  font-size: 15px;
+  animation: checkPop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes checkPop {
+  from { transform: scale(0) rotate(-30deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0deg);   opacity: 1; }
+}
+
+/* Disabled state for inputs during loading/success */
+.input-group input:disabled {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+}
+
+/* Remove old status bar styles */
+.login-status-bar { display: none !important; }
+.submit-btn--loading { }
+

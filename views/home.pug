@@ -5,7 +5,7 @@ html
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     link(type='image/jpg', href='1.jpg', rel='icon')
     link(rel='stylesheet', href='stylesheets/buttons.dataTables.min.css')
-    link(rel='stylesheet', href='stylesheets/jquery.dataTables.min.css')    
+    link(rel='stylesheet', href='stylesheets/jquery.dataTables.min.css')
     link(rel='stylesheet', href='stylesheets/dataTables.bootstrap.css')
     link(rel='stylesheet', href='stylesheets/bootstrap.min.css')
     link(rel='stylesheet', href='stylesheets/component.css')
@@ -21,19 +21,20 @@ html
   body.home-body
     section#container
       header.header
-        .sidebar-toggle-box
-          .fa.fa-bars.tooltips(data-placement='right', data-original-title='Toggle Navigation')
+        button.sidebar-toggle-box(type='button', aria-label='Toggle navigation', aria-expanded='true')
+          i.fa.fa-bars.tooltips(data-placement='right', data-original-title='Toggle Navigation', aria-hidden='true')
+        span.header-brand Mobile Storage Application
         #date_time
         a.inner-width-neon(href='/logout')
           span.bg-width
-          span.btn-text Logout 
+          span.btn-text Logout
         a.inner-width-neon(data-toggle='tab', href='#help')
           span.bg-width
           span.btn-text Help
         //- Dark mode toggle (Task 4)
         button#darkModeToggle.dark-toggle(title="Toggle dark mode")
           i.fa.fa-moon-o
-  
+
       aside
         #sidebar.nav-collapse
           ul#nav-accordion.sidebar-menu
@@ -46,8 +47,8 @@ html
                     .flip-box-back
                       img.img-circle(src='images/gbr.jpg')
 
-            
-              p.qw Mobile Storage      
+
+              p.qw Mobile Storage
                 i.fa.fa-mobile.fa-spin
             li.active
               a(data-toggle='tab', href='#dboard')
@@ -70,16 +71,16 @@ html
                 i.fa.fa-search
                 span Search
             li.sub-menu
-            
+
               a(data-toggle='tab', href='#contact')
-                i.fa.fa-phone 
+                i.fa.fa-phone
                 span Contact Staff
- 
+
       section#main-content
         section.wrapper
           .col-md-12
             .tab-content
-              
+
               #dboard.tab-pane.fade.in.active
                 p.anim-typewriter DashBoard
                 #form.form-card
@@ -132,7 +133,7 @@ html
                             p.p1
                               i.fa.fa-building-o.stat-ico
                               a.stat-link(data-toggle='tab',href=".tolist") Mobiles at Office
-                            
+
                             .pp1 #{count1}
                           label Branch
                           br
@@ -154,7 +155,7 @@ html
                             option II
                             option III
                           br
-                          br 
+                          br
                           label Student Mobile number
                           br
                           input.form-control#spn2(type="number" name="spno" required="" )
@@ -174,7 +175,7 @@ html
                             p.p1
                               i.fa.fa-check-circle-o.stat-ico
                               a.stat-link(data-toggle='tab',href=".trlist") Returned Mobiles
-                            
+
                             .pp1 #{count2}
                           label Roll number
                           br
@@ -201,7 +202,7 @@ html
                           input.form-control#mcl2(type="text" name="mclr" required="" )
                           br
                           br
-                          label IMEI number 
+                          label IMEI number
                           br
                           input.form-control#ime2(type="number" name="imei" placeholder="Press *#06# for IMEI number" required="" )
                         .col-md-12
@@ -243,7 +244,7 @@ html
                     tbody
                       each member in data
                         tr
-                          td #{member.Date} 
+                          td #{member.Date}
                           td #{member.Time}
                           td #{member._id}
                           td #{member.rno}
@@ -265,10 +266,10 @@ html
                           td #{member.status}
                           td
                             button.bbb(value=member.rno) Transfer
-                            |  
+                            |
                             button.del-btn(data-rno=member.rno data-name=member.sname title="Delete record")
                               i.fa.fa-trash
-                           
+
               #officelist.tab-pane.fade.align.tolist
                 p.anim-typewriter List of Mobiles at Office
                 .table-responsive
@@ -443,9 +444,9 @@ html
                           td #{member.ename}
                           td #{member.epno}
                           td #{member.eid}
-                          td    
+                          td
                             button.edit(onClick="toggle();" value=member.rno) Edit
-                              
+
                   form.form-group#fmgrp.dontdisplay(action='/update',method='post')
                     .slideInDown
                       .col-md-4
@@ -505,7 +506,7 @@ html
                           option II
                           option III
                         br
-                        br 
+                        br
                         label.lb Student Mobile number
                         br
                         input.inp#spno.form-control(type="number" name="spno" )
@@ -545,7 +546,7 @@ html
                         input.inp#mclr.form-control(type="text" name="mclr" )
                         br
                         br
-                        label.lb IMEI number 
+                        label.lb IMEI number
                         br
                         input.inp#imei.form-control(type="number" name="imei" placeholder="Press *#06# for IMEI number" )
                       .col-md-12
@@ -786,7 +787,7 @@ html
                       h4 Animation · 2nd Year · ASCS — Faculty Details
                     #a31.dnt.slideInDown
                       h4 Animation · 3rd Year · ASCS — Faculty Details
-                      
+
               #help.tab-pane.fade.align
                 p.anim-typewriter Help tab
                 .conta-fluid
@@ -816,7 +817,7 @@ html
                             br
                       .conta.dontshow
                         #link1.gg
-                          p Check for errors in click.js folder at Template/public/javascripts/click.js 
+                          p Check for errors in click.js folder at Template/public/javascripts/click.js
 
                         #link2.gg
                           p a)Check if you missed any ID for that particular field any check the same in index.js folder
@@ -848,7 +849,7 @@ html
                           br
                           p To solve this problem open task manager>goto services tab>find mongodb>right click on it and click on start.Now reopen the shell and will works fine.
                         #link7.gg
-                          p 
+                          p
                           |1)cls
                           br
                           |To clear the screen
@@ -1078,7 +1079,7 @@ html
       $( ".field p" ).remove();
       $("#wrap").removeClass("plunge");
       }, 4000);
-      }); 
+      });
 
      //these 2 script links must be placed at bottom only, else fails to work
     script.
@@ -1095,17 +1096,17 @@ html
            fmgrp.style.display = 'block';
            document.getElementById('example5').style.display = 'none';
           }
-        } 
+        }
     script.
       $(function() {
       $( '#dl-menu' ).dlmenu({
-      animationClasses : 
-      { 
-       classin : 'dl-animate-in-3', classout : 'dl-animate-out-3' 
+      animationClasses :
+      {
+       classin : 'dl-animate-in-3', classout : 'dl-animate-out-3'
       }
       });
       });
-   
+
       //should be placed here only to run seconds in real time(dont save in click.js)
     script.
       window.onload = date_time('date_time');
@@ -1141,7 +1142,7 @@ html
         return true;
         }
 
-    script.
+    //- script.
       window.addEventListener('load', function() {
       document.addEventListener("contextmenu", function(e){
       e.preventDefault();
@@ -1168,18 +1169,17 @@ html
       return false;
       }
       };
-      
-    script.
-      document.onkeydown = function(e) 
+
+    //- script.
+      document.onkeydown = function(e)
       {
-        if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 73 || e.keyCode === 85 || e.keyCode === 117)) 
+        if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 73 || e.keyCode === 85 || e.keyCode === 117))
           {
             alert('Too smart!\nBut you are not allowed for this action');
             return false;
-          } 
-        else 
+          }
+        else
           {
             return true;
           }
       };
-    

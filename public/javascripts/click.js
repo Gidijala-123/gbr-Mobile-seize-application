@@ -1,5 +1,25 @@
 $(document).ready(function()
 {
+    // Force sidebar menu spans to be visible
+    $('#sidebar .sidebar-menu li a span').css({
+        'display': 'inline-block',
+        'visibility': 'visible',
+        'opacity': '1',
+        'color': '#e2e8f0'
+    });
+
+    // Force table tab headings to be visible
+    $('.tab-pane.align > p.anim-typewriter, #totallist > p.anim-typewriter, #officelist > p.anim-typewriter, #returnedlist > p.anim-typewriter').css({
+        'display': 'block',
+        'visibility': 'visible',
+        'opacity': '1',
+        'color': '#1e293b',
+        'background': 'transparent',
+        'font-size': '20px',
+        'font-weight': '800',
+        'margin-bottom': '20px'
+    });
+
 // for status > transfer button
     $('.bbb').click(function()
     {
