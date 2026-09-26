@@ -3,20 +3,19 @@ html
     title GBR's Mobile Storage Application
     //vh=*16.9% of px(top,bottom),vw=7.8% of px(left,right)
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    link(type='image/jpg', href='1.jpg', rel='icon')
-    link(rel='stylesheet', href='stylesheets/buttons.dataTables.min.css')
-    link(rel='stylesheet', href='stylesheets/jquery.dataTables.min.css')
-    link(rel='stylesheet', href='stylesheets/dataTables.bootstrap.css')
-    link(rel='stylesheet', href='stylesheets/bootstrap.min.css')
-    link(rel='stylesheet', href='stylesheets/component.css')
-    link(rel='stylesheet', href='stylesheets/default.css')
-    link(rel='stylesheet', href='stylesheets/style.css')
-    link(rel='stylesheet', href='stylesheets/elegant-redesign.css')
-    link(rel='stylesheet', href='stylesheets/navbar-redesign.css')
+    link(type='image/jpg', href='1.jpg?v=20260925-02', rel='icon')
+    link(rel='stylesheet', href='stylesheets/buttons.dataTables.min.css?v=20260925-02')
+    link(rel='stylesheet', href='stylesheets/jquery.dataTables.min.css?v=20260925-02')
+    link(rel='stylesheet', href='stylesheets/dataTables.bootstrap.css?v=20260925-02')
+    link(rel='stylesheet', href='stylesheets/bootstrap.min.css?v=20260925-02')
+    link(rel='stylesheet', href='stylesheets/component.css?v=20260925-02')
+    link(rel='stylesheet', href='stylesheets/style.css?v=20260925-02')
+    link(rel='stylesheet', href='stylesheets/elegant-redesign.css?v=20260925-02')
+    link(rel='stylesheet', href='stylesheets/navbar-redesign.css?v=20260925-02')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
     link(href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet")
     link(href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet")
-    link(rel='shortcut icon' href='../favicon.ico')
+    link(rel='shortcut icon', href='../favicon.ico?v=20260925-02')
 
   body.home-body
     section#container
@@ -37,44 +36,49 @@ html
 
       aside
         #sidebar.nav-collapse
+          //- Sidebar brand (no image — clean icon + text)
+          .sidebar-brand
+            .sidebar-brand-icon
+              i.fa.fa-mobile
+            .sidebar-brand-text
+              span.sidebar-brand-name MSA
+              span.sidebar-brand-sub Mobile Storage
+
+          //- Nav divider label
+          .sidebar-section-label
+            span Navigation
+
           ul#nav-accordion.sidebar-menu
-            p.centered
-              a(href='#')
-                .flip-box
-                  .flip-box-inner
-                    .flip-box-front
-                      img.img-circle(src='images/mobilelogo.jpg')
-                    .flip-box-back
-                      img.img-circle(src='images/gbr.jpg')
-
-
-              p.qw Mobile Storage
-                i.fa.fa-mobile.fa-spin
             li.active
-              a(data-toggle='tab', href='#dboard')
-                i.fa.fa-address-card
-                span Dashboard
+              a(data-toggle='tab', href='#dboard', data-tooltip='Dashboard')
+                .nav-icon-wrap
+                  i.fa.fa-tachometer
+                span.nav-text Dashboard
             li.sub-menu
-              a(data-toggle='tab', href='#totallist')
-                i.fa.fa-building
-                span Over-all list
+              a(data-toggle='tab', href='#totallist', data-tooltip='Over-all List')
+                .nav-icon-wrap
+                  i.fa.fa-list-alt
+                span.nav-text Over-all List
             li.sub-menu
-              a(data-toggle='tab', href='#officelist')
-                i.fa.fa-list-ul
-                span Mobiles at office
+              a(data-toggle='tab', href='#officelist', data-tooltip='Mobiles at Office')
+                .nav-icon-wrap
+                  i.fa.fa-building
+                span.nav-text Mobiles at Office
             li.sub-menu
-              a(data-toggle='tab', href='#returnedlist')
-                i.fa.fa-refresh
-                span Mobiles Returned
+              a(data-toggle='tab', href='#returnedlist', data-tooltip='Mobiles Returned')
+                .nav-icon-wrap
+                  i.fa.fa-check-circle
+                span.nav-text Mobiles Returned
             li.sub-menu
-              a(data-toggle='tab', href='#search-edit')
-                i.fa.fa-search
-                span Search
+              a(data-toggle='tab', href='#search-edit', data-tooltip='Search')
+                .nav-icon-wrap
+                  i.fa.fa-search
+                span.nav-text Search
             li.sub-menu
-
-              a(data-toggle='tab', href='#contact')
-                i.fa.fa-phone
-                span Contact Staff
+              a(data-toggle='tab', href='#contact', data-tooltip='Contact Staff')
+                .nav-icon-wrap
+                  i.fa.fa-users
+                span.nav-text Contact Staff
 
       section#main-content
         section.wrapper
@@ -376,28 +380,24 @@ html
 
               #search-edit.tab-pane.fade.align
                 p.anim-typewriter Search & Editing
-                //- Smart live search bar (Task 6)
                 .smart-search-bar
-                  .smart-search-wrap
-                    i.fa.fa-search.smart-search-icon
-                    input#smartSearch(type="text" placeholder="Live search across all fields — name, roll no, mobile, IMEI, college..." autocomplete="off")
-                    button#smartSearchClear.smart-clear(type="button" title="Clear")
-                      i.fa.fa-times
-                .srcbar
-                  #wrap
-                    .field
-                    form.srch
-                      input#myInput(autocomplete="off" placeholder="Search using RollNo only" type="text")
-                      .btnwrap
-                        .spark
-                        .spark
-                        .spark
-                        .spark
-                        .spark
-                        .spark
-                        b Search
-                        .blob
+                  .srcbar
+                    #wrap
+                      .field
+                      form.srch(action="#" method="get")
+                        input#smartSearch(type="text" placeholder="Live search across all fields — name, roll no, mobile, IMEI, college..." autocomplete="off")
+                        .btnwrap
+                          .spark
+                          .spark
+                          .spark
+                          .spark
+                          .spark
+                          .spark
+                          b Search
+                          .blob
                         input(type="submit" value="Search")
+                        button#smartSearchClear.smart-clear(type="button" title="Clear")
+                          i.fa.fa-times
                 .table-responsive
                   table#example5.table.table-striped(style="display:none;")
                     thead
@@ -939,29 +939,29 @@ html
 
     #warning-message This website is only viewable in landscape mode
     // js placed at the end of the document so the pages load faster
-    script(src='javascripts/jquery.js')
-    script(src='javascripts/bootstrap.min.js')
-    script(src='javascripts/modernizr.custom.js')
-    script(src='javascripts/jquery-ui-1.9.2.custom.min.js')
-    script(src='javascripts/jquery.ui.touch-punch.min.js')
-    script(src='javascripts/jquery.dcjqaccordion.2.7.js')
-    script(src='javascripts/jquery.dlmenu.js')
-    script(src='javascripts/jquery.scrollTo.min.js')
-    script(src='javascripts/jquery.nicescroll.js')
-    script(src='javascripts/common-scripts.js')
-    script(src='javascripts/jquery.dataTables.min.js')
-    script(src='javascripts/dataTables.buttons.min.js')
-    script(src='javascripts/buttons.flash.min.js')
-    script(src='javascripts/jszip.min.js')
-    script(src='javascripts/pdfmake.min.js')
-    script(src='javascripts/vfs_fonts.js')
-    script(src='javascripts/buttons.html5.min.js')
-    script(src='javascripts/buttons.print.min.js')
-    script(src='javascripts/jspdf.min.js')
-    script(src='javascripts/pdf.js')
+    script(src='javascripts/jquery.js?v=20260925-02')
+    script(src='javascripts/bootstrap.min.js?v=20260925-02')
+    script(src='javascripts/modernizr.custom.js?v=20260925-02')
+    script(src='javascripts/jquery-ui-1.9.2.custom.min.js?v=20260925-02')
+    script(src='javascripts/jquery.ui.touch-punch.min.js?v=20260925-02')
+    script(src='javascripts/jquery.dcjqaccordion.2.7.js?v=20260925-02')
+    script(src='javascripts/jquery.dlmenu.js?v=20260925-02')
+    script(src='javascripts/jquery.scrollTo.min.js?v=20260925-02')
+    script(src='javascripts/jquery.nicescroll.js?v=20260925-02')
+    script(src='javascripts/common-scripts.js?v=20260925-02')
+    script(src='javascripts/jquery.dataTables.min.js?v=20260925-02')
+    script(src='javascripts/dataTables.buttons.min.js?v=20260925-02')
+    script(src='javascripts/buttons.flash.min.js?v=20260925-02')
+    script(src='javascripts/jszip.min.js?v=20260925-02')
+    script(src='javascripts/pdfmake.min.js?v=20260925-02')
+    script(src='javascripts/vfs_fonts.js?v=20260925-02')
+    script(src='javascripts/buttons.html5.min.js?v=20260925-02')
+    script(src='javascripts/buttons.print.min.js?v=20260925-02')
+    script(src='javascripts/jspdf.min.js?v=20260925-02')
+    script(src='javascripts/pdf.js?v=20260925-02')
     script(src="https://unpkg.com/splitting@1.0.5/dist/splitting.min.js")
-    script(src='javascripts/click.js')
-    script(src='javascripts/features.js')
+    script(src='javascripts/click.js?v=20260925-02')
+    script(src='javascripts/features.js?v=20260925-02')
     script.
       $(document).ready(function () {
       $('#example2').dataTable({
@@ -1044,43 +1044,6 @@ html
         ]
       });
       });
-    script.
-      Splitting();
-      $('.srch').submit(function(event){
-      var input, filter, table, tr, td, i, txtValue;
-      document.getElementById("example5").style.display = 'block';
-      input = document.getElementById("myInput");
-      filter = input.value.toUpperCase();
-      table = document.getElementById("example5");
-      tr = table.getElementsByTagName("tr");
-      for (i = 0; i < tr.length; i++)
-      {
-      td = tr[i].getElementsByTagName("td")[3];
-      if (td)
-      {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1)
-      {
-      tr[i].style.display = "";
-      }
-      else
-      {
-      tr[i].style.display = "none";
-      }
-      }
-      }
-      event.preventDefault();
-      var emailText = $('#myInput').val();
-      $(".field").append("<p data-splitting='chars'>" + emailText + "</p>");
-      Splitting();
-      $("#wrap").addClass("plunge");
-      setTimeout(function(){
-      $('#myInput').val('');
-      $( ".field p" ).remove();
-      $("#wrap").removeClass("plunge");
-      }, 4000);
-      });
-
      //these 2 script links must be placed at bottom only, else fails to work
     script.
       function toggle()

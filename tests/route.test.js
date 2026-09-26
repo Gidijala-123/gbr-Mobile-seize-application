@@ -2,6 +2,7 @@ const { describe, test, beforeEach } = require("node:test");
 const assert = require("node:assert/strict");
 const Module = require("node:module");
 
+process.env.NODE_ENV = "test";
 process.env.MONGODB_URI = "mongodb://localhost:27017/testdb";
 process.env.SESSION_SECRET = "test-session-secret";
 process.env.GMAIL_USER = "demo@example.com";
@@ -69,6 +70,27 @@ function makeCollection(name) {
       }
 
       return { ok: 1 };
+    },
+    remove: async (filter = {}) => {
+      if (name === "registration_coll") {
+        if (Object.keys(filter).length === 0) {
+          const count = appState.users.size;
+          appState.users.clear();
+          return { deletedCount: count };
+        }
+        return { deletedCount: 0 };
+      }
+
+      if (name === "student_data") {
+        if (Object.keys(filter).length === 0) {
+          const count = appState.records.length;
+          appState.records = [];
+          return { deletedCount: count };
+        }
+        return { deletedCount: 0 };
+      }
+
+      return { deletedCount: 0 };
     },
   };
 }

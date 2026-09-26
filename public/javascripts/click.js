@@ -1,12 +1,20 @@
 $(document).ready(function()
 {
-    // Force sidebar menu spans to be visible
-    $('#sidebar .sidebar-menu li a span').css({
-        'display': 'inline-block',
-        'visibility': 'visible',
-        'opacity': '1',
-        'color': '#e2e8f0'
-    });
+    function syncSidebarTextVisibility() {
+        var collapsed = $('#container').hasClass('sidebar-close');
+        $('#sidebar .sidebar-menu li a .nav-text').css({
+            'display': collapsed ? 'none' : 'inline-block',
+            'visibility': collapsed ? 'hidden' : 'visible',
+            'opacity': collapsed ? 0 : 1,
+            'width': collapsed ? 0 : 'auto',
+            'overflow': 'hidden',
+            'color': '#e2e8f0'
+        });
+    }
+
+    syncSidebarTextVisibility();
+    $(window).on('resize', syncSidebarTextVisibility);
+    $(document).on('click', '.sidebar-toggle-box', syncSidebarTextVisibility);
 
     // Force table tab headings to be visible
     $('.tab-pane.align > p.anim-typewriter, #totallist > p.anim-typewriter, #officelist > p.anim-typewriter, #returnedlist > p.anim-typewriter').css({

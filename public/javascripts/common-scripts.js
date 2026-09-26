@@ -25,15 +25,32 @@ var Script = (function () {
 
   //    sidebar toggle
 
+  function syncSidebarState() {
+    var isMobile = $(window).width() <= 768;
+    var isCollapsed = $("#container").hasClass("sidebar-close");
+
+    $("#sidebar > ul").show();
+    $("#sidebar").css("margin-left", "0");
+    $("#sidebar").css("width", isCollapsed ? "72px" : "230px");
+    $("#main-content").css("margin-left", isCollapsed ? "72px" : (isMobile ? "230px" : "230px"));
+    $("#sidebar .sidebar-menu li a .nav-text").css({
+      display: isCollapsed ? "none" : "inline-block",
+      visibility: isCollapsed ? "hidden" : "visible",
+      opacity: isCollapsed ? 0 : 1,
+      width: isCollapsed ? "0" : "auto",
+      overflow: "hidden",
+      transition: "all 0.2s ease"
+    });
+
+    $("#sidebar .sidebar-brand-text, #sidebar .sidebar-section-label").toggle(!isCollapsed);
+    $(".sidebar-toggle-box").attr("aria-expanded", String(!isCollapsed));
+  }
+
   $(function () {
     function responsiveView() {
       var isMobile = $(window).width() <= 768;
-      // On mobile: start collapsed (icons only), on desktop: start expanded
       $("#container").toggleClass("sidebar-close", isMobile).toggleClass("sidebar-closed", false);
-      $("#sidebar > ul").show();
-      $("#sidebar").css("margin-left", "0");
-      $("#main-content").css("margin-left", isMobile ? "58px" : "210px");
-      $(".sidebar-toggle-box").attr("aria-expanded", String(!isMobile));
+      syncSidebarState();
     }
     responsiveView();
     $(window).on("load", responsiveView);
@@ -42,26 +59,8 @@ var Script = (function () {
 
   $(".sidebar-toggle-box").on("click", function () {
     var isCollapsed = $("#container").hasClass("sidebar-close");
-    var isMobile = $(window).width() <= 768;
-    
-    // Toggle the collapsed state - when isCollapsed is true, we want to expand (remove sidebar-close)
-    // When isCollapsed is false, we want to collapse (add sidebar-close)
     $("#container").toggleClass("sidebar-close", !isCollapsed).removeClass("sidebar-closed");
-    
-    // Always show the sidebar ul (we want icons visible in collapsed state)
-    $("#sidebar > ul").show();
-    $("#sidebar").css("margin-left", "0");
-    
-    // Adjust main content margin based on new state
-    if (!isCollapsed) {
-      // We're collapsing it now - show only icons (58px width)
-      $("#main-content").css("margin-left", "58px");
-    } else {
-      // We're expanding it now - show full sidebar
-      $("#main-content").css("margin-left", isMobile ? "58px" : "210px");
-    }
-    
-    $(this).attr("aria-expanded", String(isCollapsed));
+    syncSidebarState();
   });
 
   // custom scrollbar

@@ -41,7 +41,12 @@ app.disable("x-powered-by");
 app.use(express.json({ limit: "100kb" }));
 app.use(express.urlencoded({ extended: false, limit: "100kb", parameterLimit: 100 }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public"), { maxAge: "7d", etag: true }));
+app.use(
+  express.static(path.join(__dirname, "public"), {
+    maxAge: process.env.NODE_ENV === "production" ? "7d" : 0,
+    etag: true,
+  })
+);
 
 app.use(
   session({

@@ -3,6 +3,40 @@
    Fully vertically centered, professional, modern look
    ============================================================= */
 
+body.home-body {
+  --navy-950: #081421;
+  --navy-900: #0d1b2a;
+  --navy-800: #13263e;
+  --navy-700: #1b3354;
+  --navy-600: #234f8d;
+  --orange-700: #b5621a;
+  --orange-600: #cf6d1d;
+  --orange-500: #ec8b2c;
+  --orange-400: #f4a65d;
+  --orange-300: #f9c58a;
+  --slate-50: #f3f6fb;
+  --slate-100: #ebf0f7;
+  --slate-200: #dfe7f2;
+  --slate-500: #6b7a90;
+  --text-dark: #12213d;
+  --shadow-soft: rgba(15, 23, 42, 0.12);
+  background: linear-gradient(135deg, #edf2f7 0%, #e7edf7 100%) !important;
+  color: var(--text-dark) !important;
+}
+
+/* Theme shell */
+body.home-body #container {
+  background: transparent !important;
+}
+
+body.home-body #main-content {
+  background: transparent !important;
+}
+
+body.home-body #main-content .wrapper {
+  background: transparent !important;
+}
+
 /* ── Reset floats and override old header layout ───────────── */
 body.home-body header.header {
   position: fixed !important;
@@ -221,14 +255,90 @@ body.home-body #container aside {
   top: 62px !important;
 }
 
-/* Collapsed navigation keeps an icon rail; only labels and branding disappear. */
+body.home-body #sidebar {
+  background: linear-gradient(180deg, rgba(8, 18, 33, 0.98), rgba(14, 23, 37, 0.96)) !important;
+  border-right: 1px solid rgba(124, 140, 165, 0.18) !important;
+}
+
+body.home-body #sidebar .sidebar-brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 18px 18px 14px !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12) !important;
+}
+
+body.home-body #sidebar .sidebar-brand-icon {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.18), rgba(244, 166, 93, 0.22)) !important;
+  border: 1px solid rgba(123, 214, 255, 0.22) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 20px rgba(20, 184, 166, 0.08) !important;
+}
+
+body.home-body #sidebar .sidebar-brand-icon i {
+  font-size: 18px !important;
+  color: #f5b66d !important;
+  line-height: 1 !important;
+}
+
+body.home-body #sidebar .sidebar-brand-text {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  line-height: 1.15 !important;
+}
+
+body.home-body #sidebar .sidebar-brand-name {
+  display: block !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+  color: #edf5ff !important;
+}
+
+body.home-body #sidebar .sidebar-brand-sub {
+  display: block !important;
+  margin-top: 4px !important;
+  font-size: 11px !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: rgba(184, 203, 224, 0.72) !important;
+}
+
+body.home-body #sidebar .sidebar-section-label {
+  display: flex !important;
+  align-items: center !important;
+  padding: 16px 18px 10px !important;
+  color: rgba(170, 190, 214, 0.8) !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+}
+
+body.home-body #sidebar .sidebar-section-label span {
+  opacity: 0.9 !important;
+}
+
+/* Premium compact icon rail when collapsed */
 body.home-body #container.sidebar-close #sidebar,
 body.home-body #container.sidebar-closed #sidebar {
   left: 0 !important;
-  width: 58px !important;
-  min-width: 58px !important;
+  width: 80px !important;
+  min-width: 80px !important;
   margin-left: 0 !important;
   transform: none !important;
+  padding-top: 10px !important;
+  background: linear-gradient(180deg, rgba(7,16,31,0.96), rgba(11,22,38,0.94)) !important;
+  border-right: 1px solid rgba(148, 163, 184, 0.15) !important;
+  box-shadow: inset -1px 0 0 rgba(255,255,255,0.03) !important;
 }
 
 body.home-body #container.sidebar-close #sidebar > ul,
@@ -236,77 +346,78 @@ body.home-body #container.sidebar-closed #sidebar > ul {
   display: block !important;
 }
 
-body.home-body #container.sidebar-close #sidebar .centered,
-body.home-body #container.sidebar-close #sidebar .qw,
-body.home-body #container.sidebar-closed #sidebar .centered,
-body.home-body #container.sidebar-closed #sidebar .qw {
+body.home-body #container.sidebar-close #sidebar .sidebar-brand,
+body.home-body #container.sidebar-close #sidebar .sidebar-section-label,
+body.home-body #container.sidebar-closed #sidebar .sidebar-brand,
+body.home-body #container.sidebar-closed #sidebar .sidebar-section-label {
   display: none !important;
 }
 
-/* Only hide text spans when sidebar is collapsed */
-body.home-body #container.sidebar-close #sidebar .sidebar-menu li a span,
-body.home-body #container.sidebar-closed #sidebar .sidebar-menu li a span {
+body.home-body #container.sidebar-close #sidebar .sidebar-brand-icon,
+body.home-body #container.sidebar-closed #sidebar .sidebar-brand-icon {
+  width: 36px !important;
+  height: 36px !important;
+  margin: 0 auto 12px !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, rgba(34,211,238,0.18), rgba(59,130,246,0.12)) !important;
+  border: 1px solid rgba(34,211,238,0.24) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.home-body #container.sidebar-close #sidebar .sidebar-brand-text,
+body.home-body #container.sidebar-close #sidebar .nav-text,
+body.home-body #container.sidebar-closed #sidebar .sidebar-brand-text,
+body.home-body #container.sidebar-closed #sidebar .nav-text {
   display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  max-width: 0 !important;
 }
 
-/* Hide the entire centered logo section when collapsed */
-body.home-body #container.sidebar-close #sidebar .centered,
-body.home-body #container.sidebar-closed #sidebar .centered {
-  display: none !important;
-}
-
-/* Add a compact user icon placeholder when sidebar is collapsed */
-body.home-body #container.sidebar-close #sidebar::before,
-body.home-body #container.sidebar-closed #sidebar::before {
-  content: '';
-  display: block;
-  width: 32px;
-  height: 32px;
-  margin: 8px auto 12px;
-  background: url('../images/mobilelogo.jpg') center/cover;
-  border-radius: 50%;
-  border: 2px solid rgba(34, 211, 238, 0.3);
-  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.1);
-}
-
-/* Add a small icon-only logo placeholder when collapsed */
-body.home-body #container.sidebar-close #sidebar,
-body.home-body #container.sidebar-closed #sidebar {
-  padding-top: 12px !important;
-}
-
-/* Active state for collapsed sidebar icons */
-body.home-body #container.sidebar-close #sidebar .sidebar-menu li.active a i,
-body.home-body #container.sidebar-closed #sidebar .sidebar-menu li.active a i {
-  color: #ffffff !important;
-  text-shadow: 0 0 8px rgba(6, 182, 212, 0.6) !important;
-}
-
-/* Better spacing for collapsed sidebar menu items */
-body.home-body #container.sidebar-close #sidebar .sidebar-menu li,
-body.home-body #container.sidebar-closed #sidebar .sidebar-menu li {
-  margin: 4px 8px !important;
+body.home-body #container.sidebar-close #sidebar .sidebar-menu,
+body.home-body #container.sidebar-closed #sidebar .sidebar-menu {
+  padding: 0 6px !important;
 }
 
 body.home-body #container.sidebar-close #sidebar .sidebar-menu li,
 body.home-body #container.sidebar-closed #sidebar .sidebar-menu li {
-  margin: 4px 6px !important;
+  margin: 6px 0 !important;
 }
 
 body.home-body #container.sidebar-close #sidebar .sidebar-menu li a,
 body.home-body #container.sidebar-closed #sidebar .sidebar-menu li a {
   justify-content: center !important;
-  padding: 12px 0 !important;
-  margin: 0 !important;
+  align-items: center !important;
+  width: 54px !important;
+  min-width: 54px !important;
+  height: 54px !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
   border-left-width: 0 !important;
-  border-radius: 8px !important;
-  transition: all 0.2s ease !important;
-  background: transparent !important;
+  border-radius: 16px !important;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+  background: rgba(15, 23, 42, 0.2) !important;
+  border: 1px solid transparent !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03) !important;
 }
 
 body.home-body #container.sidebar-close #sidebar .sidebar-menu li a:hover,
 body.home-body #container.sidebar-closed #sidebar .sidebar-menu li a:hover {
-  background: rgba(6, 182, 212, 0.15) !important;
+  background: linear-gradient(135deg, rgba(34,211,238,0.12), rgba(59,130,246,0.09)) !important;
+  border-color: rgba(34,211,238,0.18) !important;
+  box-shadow: 0 10px 22px rgba(14, 165, 233, 0.12) !important;
+  transform: translateY(-1px) !important;
+}
+
+body.home-body #container.sidebar-close #sidebar .sidebar-menu li.active a,
+body.home-body #container.sidebar-closed #sidebar .sidebar-menu li.active a {
+  background: linear-gradient(135deg, rgba(34,211,238,0.18), rgba(59,130,246,0.14)) !important;
+  border-color: rgba(34,211,238,0.32) !important;
+  box-shadow: 0 10px 26px rgba(14, 165, 233, 0.2), inset 0 0 0 1px rgba(255,255,255,0.05) !important;
 }
 
 body.home-body #container.sidebar-close #sidebar .sidebar-menu li a i,
@@ -314,16 +425,37 @@ body.home-body #container.sidebar-closed #sidebar .sidebar-menu li a i {
   width: auto !important;
   padding: 0 !important;
   font-size: 18px !important;
-  color: #67e8f9 !important;
+  color: #dfeeff !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   text-align: center !important;
+  line-height: 1 !important;
+}
+
+body.home-body #container.sidebar-close #sidebar .sidebar-menu li.active a i,
+body.home-body #container.sidebar-closed #sidebar .sidebar-menu li.active a i {
+  color: #ffffff !important;
+  text-shadow: 0 0 10px rgba(34,211,238,0.72) !important;
 }
 
 body.home-body #container.sidebar-close #main-content,
 body.home-body #container.sidebar-closed #main-content {
-  margin-left: 58px !important;
+  margin-left: 80px !important;
+}
+
+@media (max-width: 768px) {
+  body.home-body #container.sidebar-close #sidebar,
+  body.home-body #container.sidebar-closed #sidebar {
+    width: 72px !important;
+    min-width: 72px !important;
+  }
+
+  body.home-body #container.sidebar-close #main-content,
+  body.home-body #container.sidebar-closed #main-content {
+    margin-left: 72px !important;
+    width: calc(100% - 72px) !important;
+  }
 }
 
 @media (max-width: 768px) {

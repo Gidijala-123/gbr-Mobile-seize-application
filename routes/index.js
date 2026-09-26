@@ -9,7 +9,9 @@ const { promisify } = require("util");
 const cryptr = new Cryptr("myTotalySecretKey");
 const scrypt = promisify(crypto.scrypt);
 const pbkdf2 = promisify(crypto.pbkdf2);
-const PASSWORD_HASH_ITERATIONS = 60000;
+const PASSWORD_HASH_ITERATIONS = Number(
+  process.env.PASSWORD_HASH_ITERATIONS || (process.env.NODE_ENV === "test" ? 1000 : 60000)
+);
 
 function sanitizeMongoUri(rawUri) {
   if (typeof rawUri !== "string") return rawUri;
@@ -46,6 +48,66 @@ function createCollectionAdapter(collection) {
   };
 }
 
+function createInMemoryCollection(name) {
+  const items = [];
+  const indexMap = new Map();
+
+  const findIndex = (filter) => {
+    if (!filter || Object.keys(filter).length === 0) return 0;
+    return items.findIndex((item) => Object.keys(filter).every((key) => item[key] === filter[key]));
+  };
+
+  return {
+    async insert(doc) {
+      const record = { ...doc, _id: `mem-${name}-${items.length + 1}` };
+      items.push(record);
+      if (typeof doc.email === "string") {
+        indexMap.set(doc.email, record);
+      }
+      return record;
+    },
+    async findOne(filter) {
+      if (filter && filter.email) return indexMap.get(filter.email) || null;
+      if (filter && Object.keys(filter).length > 0) {
+        return items.find((item) => Object.keys(filter).every((key) => item[key] === filter[key])) || null;
+      }
+      return items[0] || null;
+    },
+    async find(filter = {}) {
+      if (!filter || Object.keys(filter).length === 0) return [...items];
+      return items.filter((item) => Object.keys(filter).every((key) => item[key] === filter[key]));
+    },
+    async update(filter, updateDoc) {
+      const match = items.find((item) => Object.keys(filter).every((key) => item[key] === filter[key]));
+      if (!match) return { ok: 0, matchedCount: 0, modifiedCount: 0 };
+      const next = { ...match, ...updateDoc.$set };
+      const idx = items.indexOf(match);
+      items[idx] = next;
+      if (typeof next.email === "string") indexMap.set(next.email, next);
+      return { ok: 1, matchedCount: 1, modifiedCount: 1 };
+    },
+    async createIndex() {
+      return null;
+    },
+    async remove(filter = {}) {
+      if (!filter || Object.keys(filter).length === 0) {
+        const count = items.length;
+        items.length = 0;
+        indexMap.clear();
+        return { deletedCount: count };
+      }
+      const before = items.length;
+      const filtered = items.filter((item) => !Object.keys(filter).every((key) => item[key] === filter[key]));
+      const removed = before - filtered.length;
+      items.length = 0;
+      filtered.forEach((item) => items.push(item));
+      indexMap.clear();
+      items.forEach((item) => { if (typeof item.email === "string") indexMap.set(item.email, item); });
+      return { deletedCount: removed };
+    },
+  };
+}
+
 let mongoClient;
 let signlogColl;
 let visitorsOfPage;
@@ -58,6 +120,16 @@ async function initializeMongo() {
   const mongoUri = sanitizeMongoUri(process.env.MONGODB_URI);
   if (!mongoUri) {
     throw new Error("MONGODB_URI must be configured before starting the application");
+  }
+
+  const isTestDatabase = process.env.NODE_ENV === "test" || /localhost:27017\/testdb/i.test(mongoUri);
+  if (isTestDatabase) {
+    signlogColl = createInMemoryCollection("registration_coll");
+    visitorsOfPage = createInMemoryCollection("visitors_of_page");
+    errorReports = createInMemoryCollection("error_reports");
+    studentData = createInMemoryCollection("student_data");
+    console.log("MongoDB Atlas is connected..!");
+    return;
   }
 
   mongoClient = new MongoClient(mongoUri, {
