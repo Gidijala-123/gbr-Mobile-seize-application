@@ -189,7 +189,7 @@ GMAIL_USER=your-email@example.com
 GMAIL_PASS=your-app-password
 ```
 
-For Render, open the web service's **Environment** settings and add `MONGODB_URI`, `SESSION_SECRET`, `GMAIL_USER`, and `GMAIL_PASS`. Set `NODE_ENV` to `production` if it is not already set; Render provides `PORT` automatically. Generate `SESSION_SECRET` with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` and paste the output as the value. Keep the secret stable between deploys so existing sessions remain valid. After saving the variables, redeploy the service.
+Render does not receive your local `.env` file (`.env` is gitignored). Open the web service's **Environment** settings and add `MONGODB_URI`, `SESSION_SECRET`, `GMAIL_USER`, and `GMAIL_PASS` there. Set `NODE_ENV` to `production` if it is not already set; Render provides `PORT` automatically. Generate `SESSION_SECRET` with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` and paste the output as the value. Keep the secret stable between deploys so existing sessions remain valid. After saving the variables, redeploy the service.
 
 Gmail requires an app password when two-step verification is enabled. Never commit real credentials, database connection strings, or app passwords to source control. Rotate any credentials that were previously present in a local or public `.env` file.
 

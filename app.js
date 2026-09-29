@@ -37,7 +37,7 @@ app.set("trust proxy", 1);
 
 if (process.env.NODE_ENV === "production" && !sessionSecret) {
   throw new Error(
-    "SESSION_SECRET is required in production. Set it in Render Dashboard > your service > Environment, then redeploy.",
+    "SESSION_SECRET is required in production. Render does not read your local .env file; add SESSION_SECRET in Render Dashboard > your service > Environment, then redeploy.",
   );
 }
 
