@@ -36,7 +36,9 @@ const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
 app.set("trust proxy", 1);
 
 if (process.env.NODE_ENV === "production" && !sessionSecret) {
-  throw new Error("SESSION_SECRET must be configured in production");
+  throw new Error(
+    "SESSION_SECRET is required in production. Set it in Render Dashboard > your service > Environment, then redeploy.",
+  );
 }
 
 app.use(logger("dev"));

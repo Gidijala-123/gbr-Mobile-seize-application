@@ -7,7 +7,8 @@ const crypto = require("crypto");
 const { promisify } = require("util");
 const pbkdf2 = promisify(crypto.pbkdf2);
 const PASSWORD_HASH_ITERATIONS = Number(
-  process.env.PASSWORD_HASH_ITERATIONS || (process.env.NODE_ENV === "test" ? 1000 : 60000)
+  process.env.PASSWORD_HASH_ITERATIONS ||
+    (process.env.NODE_ENV === "test" ? 1000 : 60000),
 );
 
 function sanitizeMongoUri(rawUri) {
@@ -51,7 +52,9 @@ function createInMemoryCollection(name) {
 
   const findIndex = (filter) => {
     if (!filter || Object.keys(filter).length === 0) return 0;
-    return items.findIndex((item) => Object.keys(filter).every((key) => item[key] === filter[key]));
+    return items.findIndex((item) =>
+      Object.keys(filter).every((key) => item[key] === filter[key]),
+    );
   };
 
   return {
@@ -66,16 +69,24 @@ function createInMemoryCollection(name) {
     async findOne(filter) {
       if (filter && filter.email) return indexMap.get(filter.email) || null;
       if (filter && Object.keys(filter).length > 0) {
-        return items.find((item) => Object.keys(filter).every((key) => item[key] === filter[key])) || null;
+        return (
+          items.find((item) =>
+            Object.keys(filter).every((key) => item[key] === filter[key]),
+          ) || null
+        );
       }
       return items[0] || null;
     },
     async find(filter = {}) {
       if (!filter || Object.keys(filter).length === 0) return [...items];
-      return items.filter((item) => Object.keys(filter).every((key) => item[key] === filter[key]));
+      return items.filter((item) =>
+        Object.keys(filter).every((key) => item[key] === filter[key]),
+      );
     },
     async update(filter, updateDoc) {
-      const match = items.find((item) => Object.keys(filter).every((key) => item[key] === filter[key]));
+      const match = items.find((item) =>
+        Object.keys(filter).every((key) => item[key] === filter[key]),
+      );
       if (!match) return { ok: 0, matchedCount: 0, modifiedCount: 0 };
       const next = { ...match, ...updateDoc.$set };
       const idx = items.indexOf(match);
@@ -94,12 +105,17 @@ function createInMemoryCollection(name) {
         return { deletedCount: count };
       }
       const before = items.length;
-      const filtered = items.filter((item) => !Object.keys(filter).every((key) => item[key] === filter[key]));
+      const filtered = items.filter(
+        (item) =>
+          !Object.keys(filter).every((key) => item[key] === filter[key]),
+      );
       const removed = before - filtered.length;
       items.length = 0;
       filtered.forEach((item) => items.push(item));
       indexMap.clear();
-      items.forEach((item) => { if (typeof item.email === "string") indexMap.set(item.email, item); });
+      items.forEach((item) => {
+        if (typeof item.email === "string") indexMap.set(item.email, item);
+      });
       return { deletedCount: removed };
     },
   };
@@ -116,10 +132,14 @@ let mongoInitError = null;
 async function initializeMongo() {
   const mongoUri = sanitizeMongoUri(process.env.MONGODB_URI);
   if (!mongoUri) {
-    throw new Error("MONGODB_URI must be configured before starting the application");
+    throw new Error(
+      "MONGODB_URI must be configured before starting the application",
+    );
   }
 
-  const isTestDatabase = process.env.NODE_ENV === "test" || /localhost:27017\/testdb/i.test(mongoUri);
+  const isTestDatabase =
+    process.env.NODE_ENV === "test" ||
+    /localhost:27017\/testdb/i.test(mongoUri);
   if (isTestDatabase) {
     signlogColl = createInMemoryCollection("registration_coll");
     visitorsOfPage = createInMemoryCollection("visitors_of_page");
@@ -154,7 +174,10 @@ async function initializeMongo() {
 
 mongoReady = initializeMongo().catch((err) => {
   mongoInitError = err;
-  console.error("MongoDB Atlas connection failed! Please check your internet connection.", err);
+  console.error(
+    "MongoDB Atlas connection failed! Please check your internet connection.",
+    err,
+  );
   console.error("MongoDB index setup failed:", err.message);
   return false;
 });
@@ -176,9 +199,15 @@ const normalizeEnvValue = (value, fallback = "") => {
   return trimmed ? trimmed.replace(/\s+/g, "") : fallback;
 };
 
-const normalizeEmail = (email) => String(email || "").trim().toLowerCase();
+const normalizeEmail = (email) =>
+  String(email || "")
+    .trim()
+    .toLowerCase();
 const isEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-const isValidPassword = (password) => typeof password === "string" && password.length >= 10 && password.length <= 128;
+const isValidPassword = (password) =>
+  typeof password === "string" &&
+  password.length >= 10 &&
+  password.length <= 128;
 const hasSessionUser = (req) => Boolean(req && req.session && req.session.user);
 
 function normalizeStudentRecord(body, status = null) {
@@ -207,7 +236,13 @@ function normalizeStudentRecord(body, status = null) {
 
 async function hashPassword(password) {
   const salt = crypto.randomBytes(16).toString("hex");
-  const derivedKey = await pbkdf2(password, salt, PASSWORD_HASH_ITERATIONS, 64, "sha512");
+  const derivedKey = await pbkdf2(
+    password,
+    salt,
+    PASSWORD_HASH_ITERATIONS,
+    64,
+    "sha512",
+  );
   return `pbkdf2$${PASSWORD_HASH_ITERATIONS}$${salt}$${derivedKey.toString("hex")}`;
 }
 
@@ -241,14 +276,20 @@ async function verifyPassword(password, storedPassword) {
 }
 
 function requireLogin(req, res, next) {
-  if (!req.session.user) return res.status(401).json({ error: "Authentication required" });
+  if (!req.session.user)
+    return res.status(401).json({ error: "Authentication required" });
   next();
 }
 
 async function recordError(type, email, err) {
   if (!errorReports) return;
   try {
-    await errorReports.insert({ type, email, message: err.message, time: new Date() });
+    await errorReports.insert({
+      type,
+      email,
+      message: err.message,
+      time: new Date(),
+    });
   } catch (logError) {
     console.error("Unable to record application error:", logError.message);
   }
@@ -267,7 +308,9 @@ router.post("/postsignup", async (req, res) => {
   const email = normalizeEmail(req.body.email);
   const password = req.body.pwd;
   if (!isEmail(email) || !isValidPassword(password)) {
-    return res.status(400).send("Enter a valid email and a password of at least 10 characters.");
+    return res
+      .status(400)
+      .send("Enter a valid email and a password of at least 10 characters.");
   }
   try {
     await ensureDbReady();
@@ -279,7 +322,8 @@ router.post("/postsignup", async (req, res) => {
     res.status(201).json({ id: doc._id, email: doc.email });
   } catch (err) {
     await recordError("signup", email, err);
-    if (err.code === 11000 || /duplicate/i.test(err.message)) return res.status(409).send("An account with that email already exists.");
+    if (err.code === 11000 || /duplicate/i.test(err.message))
+      return res.status(409).send("An account with that email already exists.");
     res.status(500).send("Unable to create the account right now.");
   }
 });
@@ -287,13 +331,21 @@ router.post("/postsignup", async (req, res) => {
 router.post("/postlogin", async (req, res) => {
   const email = normalizeEmail(req.body.email);
   const password = req.body.pwd;
-  if (!isEmail(email) || typeof password !== "string") return res.status(400).send("Enter your email and password.");
+  if (!isEmail(email) || typeof password !== "string")
+    return res.status(400).send("Enter your email and password.");
   try {
     await ensureDbReady();
     const data = await signlogColl.findOne({ email });
-    if (!data || !(await verifyPassword(password, data.pwd))) throw new Error("Invalid credentials");
-    if (!data.pwd.startsWith("pbkdf2$")) await signlogColl.update({ _id: data._id }, { $set: { pwd: await hashPassword(password) } });
-    await new Promise((resolve, reject) => req.session.regenerate((err) => (err ? reject(err) : resolve())));
+    if (!data || !(await verifyPassword(password, data.pwd)))
+      throw new Error("Invalid credentials");
+    if (!data.pwd.startsWith("pbkdf2$"))
+      await signlogColl.update(
+        { _id: data._id },
+        { $set: { pwd: await hashPassword(password) } },
+      );
+    await new Promise((resolve, reject) =>
+      req.session.regenerate((err) => (err ? reject(err) : resolve())),
+    );
     req.session.user = { id: data._id, email: data.email };
     const visitorName =
       typeof req.body.uname === "string" && req.body.uname.trim()
@@ -309,7 +361,8 @@ router.post("/postlogin", async (req, res) => {
 
 router.post("/postforgot", async (req, res) => {
   const otpEmail = normalizeEmail(req.body.email);
-  if (!isEmail(otpEmail)) return res.status(400).send("Enter a valid email address.");
+  if (!isEmail(otpEmail))
+    return res.status(400).send("Enter a valid email address.");
   try {
     await ensureDbReady();
     const newpassword = randomstring.generate(7);
@@ -322,8 +375,12 @@ router.post("/postforgot", async (req, res) => {
     const gmailUser = normalizeEnvValue(process.env.GMAIL_USER);
     const gmailPass = normalizeEnvValue(process.env.GMAIL_PASS);
 
-    if (!gmailUser || !gmailPass) throw new Error("Mail service is not configured");
-    const transporter = nodemailer.createTransport({ service: "gmail", auth: { user: gmailUser, pass: gmailPass } });
+    if (!gmailUser || !gmailPass)
+      throw new Error("Mail service is not configured");
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user: gmailUser, pass: gmailPass },
+    });
 
     let mailOptions = {
       from: gmailUser,
@@ -344,11 +401,16 @@ router.post("/postforgot", async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    await signlogColl.update({ email: otpEmail }, { $set: { pwd: await hashPassword(newpassword) } });
+    await signlogColl.update(
+      { email: otpEmail },
+      { $set: { pwd: await hashPassword(newpassword) } },
+    );
     res.sendStatus(204);
   } catch (err) {
     await recordError("password-reset", otpEmail, err);
-    res.status(500).send("Unable to send the reset email. Please try again later.");
+    res
+      .status(500)
+      .send("Unable to send the reset email. Please try again later.");
   }
 });
 
@@ -394,12 +456,13 @@ router.post("/hh", async (req, res) => {
 });
 
 router.post("/change", async (req, res) => {
-  if (!hasSessionUser(req)) return res.status(401).send("Authentication required.");
+  if (!hasSessionUser(req))
+    return res.status(401).send("Authentication required.");
   try {
     await ensureDbReady();
     const docs = await studentData.update(
       { rno: req.body.rno },
-      { $set: { status: "Returned" } }
+      { $set: { status: "Returned" } },
     );
     console.log(docs);
     res.redirect("/home");
@@ -410,7 +473,8 @@ router.post("/change", async (req, res) => {
 });
 
 router.post("/edit", async (req, res) => {
-  if (!hasSessionUser(req)) return res.status(401).send("Authentication required.");
+  if (!hasSessionUser(req))
+    return res.status(401).send("Authentication required.");
   try {
     await ensureDbReady();
     const dbResponse = await studentData.find({ rno: req.body.rno });
@@ -429,7 +493,7 @@ router.post("/update", async (req, res) => {
     const data = normalizeStudentRecord(req.body);
     const dbResponse = await studentData.update(
       { rno: req.body.originalRno || req.body.rno },
-      { $set: data }
+      { $set: data },
     );
     console.log(dbResponse);
     res.redirect("/home");
@@ -440,7 +504,8 @@ router.post("/update", async (req, res) => {
 });
 
 router.post("/delete", async (req, res) => {
-  if (!hasSessionUser(req)) return res.status(401).json({ error: "Authentication required" });
+  if (!hasSessionUser(req))
+    return res.status(401).json({ error: "Authentication required" });
   try {
     await ensureDbReady();
     const rno = req.body.rno;

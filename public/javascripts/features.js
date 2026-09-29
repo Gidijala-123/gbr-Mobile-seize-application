@@ -764,3 +764,188 @@ $(document).ready(function () {
   });
 
 });
+
+$(document).ready(function () {
+  $(document).on("input", "#staffDirectorySearch", function () {
+    var query = $(this).val().trim().toLowerCase();
+    var visibleCount = 0;
+    var totalCount = $("#staffDirectoryGrid .staff-profile").length;
+
+    $("#staffDirectoryGrid .staff-profile").each(function () {
+      var matches = (this.getAttribute("data-search") || "").indexOf(query) !== -1;
+      this.hidden = !matches;
+      if (matches) visibleCount += 1;
+    });
+
+    $("#staffDirectoryStatus").text(
+      "Showing " + visibleCount + " of " + totalCount + " faculty",
+    );
+    $("#staffDirectoryEmpty").prop("hidden", visibleCount > 0);
+  });
+});
+
+$(document).ready(function () {
+  var femaleNames = new Set([
+    "prof. s. padmaja",
+    "prof. m. sunitha",
+    "prof. r. kiranmai",
+  ]);
+  var maleNames = new Set([
+    "dr. n. chandrasekhar",
+    "prof. l. satyanarayana",
+    "dr. a. venkataramana",
+    "prof. c. bhaskara",
+    "dr. v. nagaraju",
+    "prof. k. srinivasa",
+    "dr. p. ramakrishna",
+    "dr. b. sudhakar",
+    "dr. t. venkateswara",
+  ]);
+  var portraits = {
+    female: [
+      "/images/faculty-female-01.jpg",
+      "/images/faculty-female-02.jpg",
+      "/images/faculty-female-03.jpg",
+    ],
+    male: [
+      "/images/faculty-male-01.jpg",
+      "/images/faculty-male-02.jpg",
+      "/images/faculty-male-03.jpg",
+      "/images/faculty-male-04.jpg",
+      "/images/faculty-male-05.jpg",
+      "/images/faculty-male-06.jpg",
+      "/images/faculty-male-07.jpg",
+      "/images/faculty-male-08.jpg",
+      "/images/faculty-male-09.jpg",
+    ],
+  };
+  var portraitIndexes = { female: 0, male: 0 };
+  var staffByEmployee = new Map();
+  var rows = document.querySelectorAll("#example2 tbody tr");
+  var grid = document.getElementById("staffDirectoryGrid");
+
+  if (!grid || !rows.length) return;
+
+  rows.forEach(function (row) {
+    var name = row.cells[16] ? row.cells[16].textContent.trim() : "";
+    var employeeId = row.cells[18] ? row.cells[18].textContent.trim() : "";
+    if (!name) return;
+
+    var key = employeeId.toLowerCase() || name.toLowerCase();
+    if (staffByEmployee.has(key)) return;
+
+    var normalizedName = name.toLowerCase();
+    var gender = femaleNames.has(normalizedName)
+      ? "female"
+      : maleNames.has(normalizedName)
+        ? "male"
+        : null;
+    var portrait = gender
+      ? portraits[gender][portraitIndexes[gender]++] || null
+      : null;
+
+    var initials = name
+      .replace(/^(dr|prof)\.\s*/i, "")
+      .replace(/\./g, "")
+      .split(/\s+/)
+      .filter(Boolean)
+      .map(function (part) {
+        return part[0];
+      })
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+
+    staffByEmployee.set(key, {
+      name: name,
+      employeeId: employeeId,
+      portrait: portrait,
+      initials: initials,
+    });
+  });
+
+  var staff = Array.from(staffByEmployee.values()).sort(function (left, right) {
+    return left.name.localeCompare(right.name);
+  });
+
+  staff.forEach(function (member) {
+    var card = document.createElement("article");
+    card.className = "staff-profile";
+    card.dataset.search = (member.name + " " + member.employeeId).toLowerCase();
+
+    var photo = document.createElement("div");
+    photo.className = "staff-profile-photo";
+
+    if (member.portrait) {
+      var image = document.createElement("img");
+      image.src = member.portrait;
+      image.alt = "Representative faculty portrait";
+      image.loading = "lazy";
+      photo.appendChild(image);
+
+      var photoNote = document.createElement("span");
+      photoNote.className = "staff-photo-note";
+      photoNote.textContent = "Representative portrait";
+      photo.appendChild(photoNote);
+    } else {
+      var initials = document.createElement("span");
+      initials.className = "staff-profile-initials";
+      initials.textContent = member.initials;
+      photo.appendChild(initials);
+    }
+
+    var body = document.createElement("div");
+    body.className = "staff-profile-body";
+
+    var role = document.createElement("span");
+    role.className = "staff-profile-role";
+    role.textContent = "Faculty";
+
+    var heading = document.createElement("h3");
+    heading.textContent = member.name;
+
+    var id = document.createElement("p");
+    id.className = "staff-profile-id";
+    var icon = document.createElement("i");
+    icon.className = "fa fa-id-card";
+    icon.setAttribute("aria-hidden", "true");
+    var idText = document.createElement("span");
+    idText.textContent = member.employeeId || "Employee ID unavailable";
+    id.append(icon, idText);
+
+    body.append(role, heading, id);
+    card.append(photo, body);
+    grid.appendChild(card);
+  });
+
+  var status = document.getElementById("staffDirectoryStatus");
+  var total = document.getElementById("staffDirectoryTotal");
+  var empty = document.getElementById("staffDirectoryEmpty");
+  if (status) status.textContent = "Showing " + staff.length + " faculty";
+  if (total) total.textContent = staff.length;
+  if (empty) empty.hidden = staff.length > 0;
+});
+
+$(document).ready(function () {
+  function showStaffDirectory() {
+    $("#contact .contact-selector-section").hide();
+    $("#contact .faculty-panels-container").hide();
+    $("#contact .staff-directory").prop("hidden", false);
+  }
+
+  $(document).on("click", ".dept-directory-open, #contact .year-btn", function () {
+    showStaffDirectory();
+  });
+
+  $(document).on("click", "#staffDirectoryBack", function () {
+    $("#contact .staff-directory").prop("hidden", true);
+    $("#contact .contact-selector-section").show();
+    $("#contact .year-btn").removeClass("year-btn--active");
+    $("#staffDirectorySearch").val("").trigger("input");
+  });
+
+  $('[data-toggle="tab"][href="#contact"]').on("shown.bs.tab", function () {
+    $("#contact .staff-directory").prop("hidden", true);
+    $("#contact .contact-selector-section").show();
+  });
+});

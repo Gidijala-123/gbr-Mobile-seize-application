@@ -11,7 +11,7 @@ html
     link(rel='stylesheet', href='stylesheets/component.css?v=20260925-02')
     link(rel='stylesheet', href='stylesheets/style.css?v=20260925-02')
     link(rel='stylesheet', href='stylesheets/elegant-redesign.css?v=20260929-08')
-    link(rel='stylesheet', href='stylesheets/navbar-redesign.css?v=20260929-07')
+    link(rel='stylesheet', href='stylesheets/navbar-redesign.css?v=20260929-09')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
     link(href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet")
     link(href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet")
@@ -464,6 +464,30 @@ html
                       i.fa.fa-map-pin
                       span Kakinada, Andhra Pradesh — 533437
 
+                .staff-directory(hidden)
+                  button#staffDirectoryBack.staff-directory-back(type="button")
+                    i.fa.fa-arrow-left(aria-hidden="true")
+                    |  All departments
+                  .staff-directory-heading
+                    .staff-directory-title
+                      span.staff-directory-kicker Faculty directory
+                      h2 Faculty and staff
+                      p Browse the educators referenced in the storage records.
+                    .staff-directory-count
+                      strong#staffDirectoryTotal 0
+                      span Faculty
+
+                  .staff-directory-toolbar
+                    label(for="staffDirectorySearch") Find a staff member
+                    .staff-search-input
+                      i.fa.fa-search(aria-hidden="true")
+                      input#staffDirectorySearch(type="search" placeholder="Search by name or employee ID" autocomplete="off")
+                    p#staffDirectoryStatus(role="status" aria-live="polite") Loading faculty directory
+
+                  #staffDirectoryGrid.staff-directory-grid
+
+                  p#staffDirectoryEmpty.staff-directory-empty(hidden) No faculty match that search.
+
                 //- Department selector
                 .contact-selector-section
                   p.contact-selector-label
@@ -475,6 +499,9 @@ html
                       .dept-card-icon
                         i.fa.fa-laptop
                       .dept-card-name MCA
+                      button.dept-directory-open(type="button" aria-label="View faculty directory from MCA")
+                        span View faculty
+                        i.fa.fa-arrow-right(aria-hidden="true")
                       .dept-years
                         button.year-btn(data-target="m11") 1st Yr · ACET
                         button.year-btn(data-target="m12") 1st Yr · ADTP
@@ -487,6 +514,9 @@ html
                       .dept-card-icon
                         i.fa.fa-code
                       .dept-card-name BCA
+                      button.dept-directory-open(type="button" aria-label="View faculty directory from BCA")
+                        span View faculty
+                        i.fa.fa-arrow-right(aria-hidden="true")
                       .dept-years
                         button.year-btn(data-target="b11") 1st Yr · ACET
                         button.year-btn(data-target="b12") 1st Yr · ADTP
@@ -499,6 +529,9 @@ html
                       .dept-card-icon
                         i.fa.fa-paint-brush
                       .dept-card-name Animation
+                      button.dept-directory-open(type="button" aria-label="View faculty directory from Animation")
+                        span View faculty
+                        i.fa.fa-arrow-right(aria-hidden="true")
                       .dept-years
                         button.year-btn(data-target="a11") 1st Yr · ASCS
                         button.year-btn(data-target="a21") 2nd Yr · ASCS
@@ -839,7 +872,7 @@ html
     script(src='javascripts/pdf.js?v=20260925-02')
     script(src="https://unpkg.com/splitting@1.0.5/dist/splitting.min.js")
     script(src='javascripts/click.js?v=20260929-02')
-    script(src='javascripts/features.js?v=20260929-03')
+    script(src='javascripts/features.js?v=20260929-06')
     script.
       $(document).ready(function () {
       $('#example2').dataTable({
