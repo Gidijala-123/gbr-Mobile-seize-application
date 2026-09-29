@@ -60,131 +60,204 @@ $(document).ready(function()
         }
     });
     
-// for posting update data on click
-	$('.edit').click(function()
-    {
-    	var a=$(this).val();
-    	$.post('/edit',{rno:a},function(data3)
-    	{
-    		var a=JSON.stringify(data3);
-    		var b=JSON.parse(a);
-            
-    		$('#Date').val(b[0].Date);	
-    		$('#Time').val(b[0].Time);
-    		$('#rno').val(b[0].rno);    		
-    		$('#sname').val(b[0].sname);
-    		$('#clg').val(b[0].clg);
-    		$('#brch').val(b[0].brch);
-    		$('#year').val(b[0].year);
-    		$('#sec').val(b[0].sec);
-    		$('#spno').val(b[0].spno); 
-    		$('#pname').val(b[0].pname);
-    		$('#ppno').val(b[0].ppno);
-    		$('#mmodel').val(b[0].mmodel);
-    		$('#imei').val(b[0].imei);
-    		$('#mclr').val(b[0].mclr);
-    		$('#rsn').val(b[0].rsn);
-    		$('#ename').val(b[0].ename);
-    		$('#epno').val(b[0].epno);
-    		$('#eid').val(b[0].eid);
-            if (window.GBR && GBR.toast) GBR.toast.info('📝 Edit form loaded — modify and save.');
-    	}).fail(function(){
+    function renderSmartRowEditor($row, record) {
+        var fields = [
+            { key: 'rno', label: 'Roll number' },
+            { key: 'sname', label: 'Student name' },
+            { key: 'clg', label: 'College' },
+            { key: 'brch', label: 'Branch' },
+            { key: 'mmodel', label: 'Mobile model' },
+            { key: 'imei', label: 'IMEI' },
+            { key: 'mclr', label: 'Mobile color' },
+            { key: 'ename', label: 'Employee name' },
+            { key: 'Date', label: 'Date' }
+        ];
+
+        $row.data('inline-record', $.extend({}, record));
+        $row.data('inline-original-rno', String(record.rno || ''));
+        $row.empty().addClass('is-inline-editing');
+
+        fields.forEach(function (field) {
+            var value = record[field.key];
+            var $input = $('<input>', {
+                type: 'text',
+                class: 'inline-edit-field',
+                'data-inline-field': field.key,
+                'aria-label': field.label
+            }).val(value == null ? '' : String(value));
+            $row.append($('<td>').append($input));
+        });
+
+        var $actions = $('<td>').addClass('inline-edit-actions');
+        $actions.append($('<button>', {
+            type: 'button',
+            class: 'inline-edit-action inline-edit-save'
+        }).text('Save'));
+        $actions.append($('<button>', {
+            type: 'button',
+            class: 'inline-edit-action inline-edit-cancel'
+        }).text('Cancel'));
+        $row.append($actions);
+    }
+
+    function updateSmartSearchSource(record, originalRno) {
+        var sourceColumns = {
+            Date: 0,
+            rno: 3,
+            sname: 4,
+            clg: 5,
+            brch: 6,
+            mmodel: 12,
+            imei: 13,
+            mclr: 14,
+            ename: 16
+        };
+        var $sourceRow = $('#example5 tbody tr').filter(function () {
+            return $(this).children('td').eq(3).text().trim() === originalRno;
+        }).first();
+
+        Object.keys(sourceColumns).forEach(function (field) {
+            $sourceRow.children('td').eq(sourceColumns[field]).text(record[field] || '');
+        });
+    }
+
+    function openSmartRowEditor($row, rollNumber) {
+        $.post('/edit', { rno: rollNumber }, function (records) {
+            if (!records || !records.length) {
+                if (window.GBR && GBR.toast) GBR.toast.error('Record not found.');
+                return;
+            }
+            renderSmartRowEditor($row, records[0]);
+        }).fail(function () {
             if (window.GBR && GBR.toast) GBR.toast.error('Failed to load record for editing.');
         });
-    	$('.dontdisplay').show();
-    });  
+    }
 
-// to display anchor tag data of help button
-   $('#navbar a').click(function(e) 
-        {
-          $('.dontshow').show();
-          $('.conta > div').hide();
-          $(this.hash).show();
-          e.preventDefault(); //to prevent scrolling
-        }); 
+    $(document).on('click', '#smart-results-table .inline-edit-cancel', function () {
+        $('#smartSearch').trigger('input');
+    });
 
-// for contact tab
-    $('#cntm11').click(function(e)
-        {
-          $('.main').hide();
-          $('#m11').show();
+    $(document).on('click', '#smart-results-table .inline-edit-save', function () {
+        var $row = $(this).closest('tr');
+        var originalRno = $row.data('inline-original-rno');
+        var record = $.extend({}, $row.data('inline-record'));
+        var $saveButton = $(this).prop('disabled', true);
+
+        $row.find('[data-inline-field]').each(function () {
+            record[$(this).data('inline-field')] = $(this).val();
         });
+        record.originalRno = originalRno;
+
+        $.post('/update', record).done(function () {
+            updateSmartSearchSource(record, originalRno);
+            $('#smartSearch').trigger('input');
+            if (window.GBR && GBR.toast) GBR.toast.success('Record updated.');
+        }).fail(function () {
+            $saveButton.prop('disabled', false);
+            if (window.GBR && GBR.toast) GBR.toast.error('Failed to update record. Please try again.');
+        });
+    });
+
+// Edit controls exist only in the live search results table.
+    $(document).on('click', '#smart-results-table .edit', function (event) {
+        event.preventDefault();
+        var $smartRow = $(this).closest('tr');
+        if (!$smartRow.hasClass('is-inline-editing')) {
+            openSmartRowEditor($smartRow, $(this).data('rno') || $(this).val());
+        }
+    });
+
+    // to display anchor tag data of help button
+    $('#navbar a').click(function(e)
+    {
+        $('.dontshow').show();
+        $('.conta > div').hide();
+        $(this.hash).show();
+        e.preventDefault(); //to prevent scrolling
+    });
+
+    // for contact tab
+    $('#cntm11').click(function(e)
+    {
+        $('.main').hide();
+        $('#m11').show();
+    });
 
     $('#cntm12').click(function(e)
-        {
-          $('.main').hide();
-          $('#m12').show();
-        });
+    {
+        $('.main').hide();
+        $('#m12').show();
+    });
     $('#cntm21').click(function(e)
-        {
-          $('.main').hide();
-          $('#m21').show();
-        });
+    {
+        $('.main').hide();
+        $('#m21').show();
+    });
     $('#cntm22').click(function(e)
-        {
-          $('.main').hide();
-          $('#m22').show();
-        });
+    {
+        $('.main').hide();
+        $('#m22').show();
+    });
     $('#cntm31').click(function(e)
-        {
-          $('.main').hide();
-          $('#m31').show();
-        });
+    {
+        $('.main').hide();
+        $('#m31').show();
+    });
     $('#cntm32').click(function(e)
-        {
-          $('.main').hide();
-          $('#m32').show();
-        });
+    {
+        $('.main').hide();
+        $('#m32').show();
+    });
     $('#cntb11').click(function(e)
-        {
-          $('.main').hide();
-          $('#b11').show();
-        });
+    {
+        $('.main').hide();
+        $('#b11').show();
+    });
     $('#cntb12').click(function(e)
-        {
-          $('.main').hide();
-          $('#b12').show();
-        });
+    {
+        $('.main').hide();
+        $('#b12').show();
+    });
     $('#cntb21').click(function(e)
-        {
-          $('.main').hide();
-          $('#b21').show();
-        });
+    {
+        $('.main').hide();
+        $('#b21').show();
+    });
     $('#cntb22').click(function(e)
-        {
-          $('.main').hide();
-          $('#b22').show();
-        });
+    {
+        $('.main').hide();
+        $('#b22').show();
+    });
     $('#cntb31').click(function(e)
-        {
-          $('.main').hide();
-          $('#b31').show();
-        });
+    {
+        $('.main').hide();
+        $('#b31').show();
+    });
     $('#cntb32').click(function(e)
-        {
-          $('.main').hide();
-          $('#b32').show();
-        });
+    {
+        $('.main').hide();
+        $('#b32').show();
+    });
     $('#cnta11').click(function(e)
-        {
-          $('.main').hide();
-          $('#a11').show();
-        });
+    {
+        $('.main').hide();
+        $('#a11').show();
+    });
     $('#cnta21').click(function(e)
-        {
-          $('.main').hide();
-          $('#a21').show();
-        });
+    {
+        $('.main').hide();
+        $('#a21').show();
+    });
     $('#cnta31').click(function(e)
-        {
-          $('.main').hide();
-          $('#a31').show();
-        });
+    {
+        $('.main').hide();
+        $('#a31').show();
+    });
 
     $('#xyz').click(function(e)
-        {
-          $('.main').show();
-        });
+    {
+        $('.main').show();
+    });
 });
 
 

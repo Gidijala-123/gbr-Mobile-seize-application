@@ -210,6 +210,14 @@ async function runTest(name, fn) {
     const updateRes = makeRes();
     await update(makeReq({ body: { Date: '2026-09-18', Time: '12:00', sname: 'Student One Updated', spno: '9999999999', rno: 'A101', clg: 'ABC College', brch: 'CSE', year: '2', sec: 'A', pname: 'Parent One', ppno: '8888888888', ename: 'Emergency One', epno: '7777777777', eid: 'E101', rsn: 'Recovered', mmodel: 'iPhone 16', imei: '123456789012345', mclr: 'Blue' }, session }), updateRes);
     assert.equal(updateRes.redirectUrl, '/home');
+
+    const inlineUpdateRes = makeRes();
+    await update(makeReq({ body: { Date: '2026-09-18', Time: '12:00', sname: 'Student One Updated', spno: '9999999999', originalRno: 'A101', rno: 'A102', clg: 'ABC College', brch: 'CSE', year: '2', sec: 'A', pname: 'Parent One', ppno: '8888888888', ename: 'Emergency One', epno: '7777777777', eid: 'E101', rsn: 'Recovered', mmodel: 'iPhone 16', imei: '123456789012345', mclr: 'Blue' }, session }), inlineUpdateRes);
+    assert.equal(inlineUpdateRes.redirectUrl, '/home');
+    const renamedEditRes = makeRes();
+    await edit(makeReq({ body: { rno: 'A102' }, session }), renamedEditRes);
+    assert.equal(renamedEditRes.body[0].rno, 'A102');
+    assert.equal(renamedEditRes.body[0].pname, 'Parent One');
   });
 
   await run('unauthenticated home redirects', async () => {

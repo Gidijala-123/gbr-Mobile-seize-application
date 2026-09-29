@@ -2,12 +2,9 @@ const express = require("express");
 const router = express.Router();
 const randomstring = require("randomstring");
 const nodemailer = require("nodemailer");
-const Cryptr = require("cryptr");
 const { MongoClient } = require("mongodb");
 const crypto = require("crypto");
 const { promisify } = require("util");
-const cryptr = new Cryptr("myTotalySecretKey");
-const scrypt = promisify(crypto.scrypt);
 const pbkdf2 = promisify(crypto.pbkdf2);
 const PASSWORD_HASH_ITERATIONS = Number(
   process.env.PASSWORD_HASH_ITERATIONS || (process.env.NODE_ENV === "test" ? 1000 : 60000)
@@ -214,26 +211,33 @@ async function hashPassword(password) {
   return `pbkdf2$${PASSWORD_HASH_ITERATIONS}$${salt}$${derivedKey.toString("hex")}`;
 }
 
-async function verifyPassword(password, storedPassword) {
-  if (typeof storedPassword !== "string") return false;
+function safeHashCompare(expectedHex, actualBuffer) {
+  if (typeof expectedHex !== "string") return false;
 
-  if (storedPassword.startsWith("pbkdf2$")) {
-    const [, iterations, salt, expected] = storedPassword.split("$");
-    const actual = await pbkdf2(password, salt, Number(iterations), 64, "sha512");
-    return crypto.timingSafeEqual(Buffer.from(expected, "hex"), actual);
-  }
-
-  if (storedPassword.startsWith("scrypt$")) {
-    const [, salt, expected] = storedPassword.split("$");
-    const actual = await scrypt(password, salt, 64, { N: 1024, r: 8, p: 1 });
-    return crypto.timingSafeEqual(Buffer.from(expected, "hex"), actual);
-  }
+  const expectedBuffer = Buffer.from(expectedHex, "hex");
+  if (expectedBuffer.length !== actualBuffer.length) return false;
 
   try {
-    return cryptr.decrypt(storedPassword) === password;
+    return crypto.timingSafeEqual(expectedBuffer, actualBuffer);
   } catch (err) {
     return false;
   }
+}
+
+async function verifyPassword(password, storedPassword) {
+  if (typeof storedPassword !== "string") return false;
+
+  if (!storedPassword.startsWith("pbkdf2$")) return false;
+
+  const parts = storedPassword.split("$");
+  const [, iterationsRaw, salt, expected] = parts;
+  if (!iterationsRaw || !salt || !expected) return false;
+
+  const iterations = Number(iterationsRaw);
+  if (!Number.isFinite(iterations) || iterations <= 0) return false;
+
+  const actual = await pbkdf2(password, salt, iterations, 64, "sha512");
+  return safeHashCompare(expected, actual);
 }
 
 function requireLogin(req, res, next) {
@@ -312,7 +316,7 @@ router.post("/postforgot", async (req, res) => {
 
     const user = await signlogColl.findOne({ email: otpEmail });
     if (!user) {
-      throw new Error(`Email ${otpEmail} not found`);
+      return res.sendStatus(204);
     }
 
     const gmailUser = normalizeEnvValue(process.env.GMAIL_USER);
@@ -424,7 +428,7 @@ router.post("/update", async (req, res) => {
     await ensureDbReady();
     const data = normalizeStudentRecord(req.body);
     const dbResponse = await studentData.update(
-      { rno: req.body.rno },
+      { rno: req.body.originalRno || req.body.rno },
       { $set: data }
     );
     console.log(dbResponse);

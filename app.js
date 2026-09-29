@@ -27,8 +27,11 @@ function sanitizeMongoUri(rawUri) {
   }
 }
 
-const mongoUri = sanitizeMongoUri(normalizeEnvValue(process.env.MONGODB_URI, ""));
+const mongoUri = sanitizeMongoUri(
+  normalizeEnvValue(process.env.MONGODB_URI, ""),
+);
 const sessionSecret = normalizeEnvValue(process.env.SESSION_SECRET, "");
+const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
 
 app.set("trust proxy", 1);
 
@@ -39,13 +42,15 @@ if (process.env.NODE_ENV === "production" && !sessionSecret) {
 app.use(logger("dev"));
 app.disable("x-powered-by");
 app.use(express.json({ limit: "100kb" }));
-app.use(express.urlencoded({ extended: false, limit: "100kb", parameterLimit: 100 }));
+app.use(
+  express.urlencoded({ extended: false, limit: "100kb", parameterLimit: 100 }),
+);
 app.use(cookieParser());
 app.use(
   express.static(path.join(__dirname, "public"), {
     maxAge: process.env.NODE_ENV === "production" ? "7d" : 0,
     etag: true,
-  })
+  }),
 );
 
 app.use(
@@ -54,18 +59,19 @@ app.use(
     secret: sessionSecret || "local-development-only-change-me",
     store: MongoStore.create({
       mongoUrl: mongoUri,
-      ttl: 8 * 60 * 60,
+      ttl: SESSION_TTL_SECONDS,
       touchAfter: 24 * 60 * 60,
     }),
     cookie: {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-      maxAge: 8 * 60 * 60 * 1000,
+      maxAge: SESSION_TTL_SECONDS * 1000,
     },
+    rolling: true,
     saveUninitialized: false,
     resave: false,
-  })
+  }),
 );
 app.use("/", indexRouter);
 app.use("/users", usersRouter);

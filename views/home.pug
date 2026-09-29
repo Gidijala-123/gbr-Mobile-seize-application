@@ -10,8 +10,8 @@ html
     link(rel='stylesheet', href='stylesheets/bootstrap.min.css?v=20260925-02')
     link(rel='stylesheet', href='stylesheets/component.css?v=20260925-02')
     link(rel='stylesheet', href='stylesheets/style.css?v=20260925-02')
-    link(rel='stylesheet', href='stylesheets/elegant-redesign.css?v=20260925-02')
-    link(rel='stylesheet', href='stylesheets/navbar-redesign.css?v=20260925-02')
+    link(rel='stylesheet', href='stylesheets/elegant-redesign.css?v=20260929-08')
+    link(rel='stylesheet', href='stylesheets/navbar-redesign.css?v=20260929-07')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
     link(href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet")
     link(href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet")
@@ -398,8 +398,8 @@ html
                         input(type="submit" value="Search")
                         button#smartSearchClear.smart-clear(type="button" title="Clear")
                           i.fa.fa-times
-                .table-responsive
-                  table#example5.table.table-striped(style="display:none;")
+                #example5-wrapper.table-responsive.search-source-data(aria-hidden='true')
+                  table#example5.table.table-striped
                     thead
                       tr
                         th Date
@@ -421,7 +421,6 @@ html
                         th Employee_name
                         th Employee_phno
                         th Employee_ID
-                        th Action
                     tbody
                       each member in data3
                         tr
@@ -444,117 +443,6 @@ html
                           td #{member.ename}
                           td #{member.epno}
                           td #{member.eid}
-                          td
-                            button.edit(onClick="toggle();" value=member.rno) Edit
-
-                  form.form-group#fmgrp.dontdisplay(action='/update',method='post')
-                    .slideInDown
-                      .col-md-4
-                        label.lb Date
-                        br
-                        input.inp#Date.form-control(type="Date" name="Date" )
-                        br
-                        br
-                        label.lb Time
-                        br
-                        input.inp#Time.form-control(type="Time" name="Time" )
-                        br
-                        br
-                        label.lb Student Name
-                        br
-                        input.inp#sname.form-control(type="text" name="sname" )
-                        br
-                        br
-                        label.lb Parent Name
-                        br
-                        input.inp#pname.form-control(type="text" name="pname" )
-                        br
-                        br
-                        label.lb Employee Name
-                        br
-                        input.inp#ename.form-control(type="text" name="ename" )
-                        br
-                        br
-                        label.lb College
-                        br
-                        select.inp#clg.form-control(type="" name="clg")
-                          option ACET
-                          option ADTP
-                          option ASCS
-                          option T-Hub
-                          option Others
-                        br
-                        br
-                      .col-md-4
-                        label.lb Branch
-                        br
-                        select.inp#brch.form-control(name="brch")
-                          option(value='MCA') MCA
-                          option(value='BCA') BCA
-                          option(value='Animation') Animation
-                        br
-                        br
-                        label.lb Year of Study
-                        br
-                        input.inp#year.form-control(type="text" name="year" )
-                        br
-                        br
-                        label.lb Section
-                        br
-                        select.inp#sec.form-control(type="text" name="sec" )
-                          option I
-                          option II
-                          option III
-                        br
-                        br
-                        label.lb Student Mobile number
-                        br
-                        input.inp#spno.form-control(type="number" name="spno" )
-                        br
-                        br
-                        label.lb Parent Mobile number
-                        br
-                        input.inp#ppno.form-control(type="number" name="ppno" )
-                        br
-                        br
-                        label.lb Employee Mobile number
-                        br
-                        input.inp#epno.form-control(type="number" name="epno" )
-                      .col-md-4
-                        label.lb Roll number
-                        br
-                        input.inp#rno.form-control(type="text" name="rno" )
-                        br
-                        br
-                        label.lb Generated_ID
-                        br
-                        input.inp#_id.form-control(type="text" name="gid" disabled)
-                        br
-                        br
-                        label.lb Employee_ID
-                        br
-                        input.inp#eid.form-control(type="text" name="eid" )
-                        br
-                        br
-                        label.lb Mobile model
-                        br
-                        input.inp#mmodel.form-control(type="text" name="mmodel" )
-                        br
-                        br
-                        label.lb Mobile color
-                        br
-                        input.inp#mclr.form-control(type="text" name="mclr" )
-                        br
-                        br
-                        label.lb IMEI number
-                        br
-                        input.inp#imei.form-control(type="number" name="imei" placeholder="Press *#06# for IMEI number" )
-                      .col-md-12
-                        label.lb Reason
-                        br
-                        textarea.inp#rsn.form-control(rows="3" cols="50" placeholder="Enter valid reason" type="text" name="rsn" )
-                        br
-                        input.inp.btn4(type='submit', name='', value='update')
 
               #contact.tab-pane.fade.align
                 p.anim-typewriter Contact Staff
@@ -927,16 +815,6 @@ html
             i.fa.fa-trash
             |  Delete
 
-    //- Session timeout modal (Task 5)
-    #session-warning(style="display:none;")
-      .session-warning-box
-        i.fa.fa-clock-o.session-icon
-        h3 Session Expiring
-        p You will be logged out in #[span#countdown 60] seconds due to inactivity.
-        button#session-extend
-          i.fa.fa-refresh
-          |  Keep me logged in
-
     #warning-message This website is only viewable in landscape mode
     // js placed at the end of the document so the pages load faster
     script(src='javascripts/jquery.js?v=20260925-02')
@@ -960,12 +838,13 @@ html
     script(src='javascripts/jspdf.min.js?v=20260925-02')
     script(src='javascripts/pdf.js?v=20260925-02')
     script(src="https://unpkg.com/splitting@1.0.5/dist/splitting.min.js")
-    script(src='javascripts/click.js?v=20260925-02')
-    script(src='javascripts/features.js?v=20260925-02')
+    script(src='javascripts/click.js?v=20260929-02')
+    script(src='javascripts/features.js?v=20260929-03')
     script.
       $(document).ready(function () {
       $('#example2').dataTable({
         dom: 'Bfrtip',
+        pageLength: 8,
         buttons: [
             {
                 extend: 'copy',
@@ -993,6 +872,7 @@ html
       $(document).ready(function () {
       $('#example3').dataTable({
         dom: 'Bfrtip',
+        pageLength: 8,
         buttons: [
             {
                 extend: 'copy',
@@ -1020,6 +900,7 @@ html
       $(document).ready(function () {
       $('#example4').dataTable({
         dom: 'Bfrtip',
+        pageLength: 8,
         buttons: [
             {
                 extend: 'copy',
@@ -1045,21 +926,6 @@ html
       });
       });
      //these 2 script links must be placed at bottom only, else fails to work
-    script.
-      function toggle()
-        {
-          var fmgrp = document.getElementById('fmgrp');
-          if(fmgrp.style.display === 'block')
-          {
-           fmgrp.style.display = 'none';
-           document.getElementById('example5').style.display = 'block';
-          }
-          else
-          {
-           fmgrp.style.display = 'block';
-           document.getElementById('example5').style.display = 'none';
-          }
-        }
     script.
       $(function() {
       $( '#dl-menu' ).dlmenu({

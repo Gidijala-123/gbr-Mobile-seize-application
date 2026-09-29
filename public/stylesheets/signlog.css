@@ -13,7 +13,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0d1117 0%, #0f2027 40%, #203a43 70%, #2c5364 100%);
+  background:
+    radial-gradient(circle at top left, rgba(16, 185, 129, 0.18), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(6, 182, 212, 0.18), transparent 30%),
+    linear-gradient(135deg, #05131a 0%, #0f172a 34%, #103a44 68%, #0f766e 100%);
   min-height: 100vh;
   overflow: hidden;
   padding: 16px;
@@ -31,12 +34,41 @@ body {
   z-index: 1;
   width: min(920px, 96vw);
   min-height: 560px;
-  background: #ffffff;
-  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 26px;
   overflow: hidden;
   box-shadow:
-    0 40px 100px rgba(0, 0, 0, 0.6),
-    0 8px 32px rgba(0, 0, 0, 0.4);
+    0 45px 110px rgba(0, 0, 0, 0.58),
+    0 12px 36px rgba(15, 23, 42, 0.32);
+}
+
+.auth-wrapper::before,
+.auth-wrapper::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(18px);
+  opacity: 0.32;
+}
+
+.auth-wrapper::before {
+  width: 240px;
+  height: 240px;
+  background: rgba(16, 185, 129, 0.2);
+  top: -80px;
+  right: -30px;
+}
+
+.auth-wrapper::after {
+  width: 280px;
+  height: 280px;
+  background: rgba(14, 165, 233, 0.18);
+  bottom: -80px;
+  left: -40px;
 }
 
 /* ── Form containers ──
@@ -168,6 +200,7 @@ body {
   color: #ffffff;
   margin-bottom: 12px;
   line-height: 1.2;
+  text-shadow: 0 8px 22px rgba(15, 23, 42, 0.28);
 }
 .overlay-panel p {
   font-size: 13.5px;
@@ -181,8 +214,8 @@ body {
   align-items: center;
   gap: 8px;
   padding: 12px 30px;
-  background: transparent;
-  border: 2px solid rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.06);
+  border: 2px solid rgba(255,255,255,0.8);
   border-radius: 50px;
   color: #ffffff;
   font-size: 13px;
@@ -192,6 +225,7 @@ body {
   transition: all 0.25s ease;
   font-family: inherit;
   text-transform: uppercase;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 .ghost-btn:hover {
   background: rgba(255,255,255,0.14);
@@ -333,16 +367,18 @@ form h2 span { display: inline-block; color: #0f172a !important; font-size: 24px
   font-size: 13.5px;
   font-family: inherit;
   color: #0f172a;
-  background: #f8fafc;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
   border: 1.5px solid #e2e8f0;
-  border-radius: 11px;
+  border-radius: 12px;
   outline: none;
-  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: inset 0 1px 1px rgba(148, 163, 184, 0.12);
 }
 .input-group input:focus {
   background: #ffffff;
   border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12), inset 0 1px 1px rgba(148, 163, 184, 0.12);
+  transform: translateY(-1px);
 }
 .input-group input::placeholder { color: #94a3b8; font-size: 13px; }
 .input-icon {
@@ -405,16 +441,16 @@ a.forgot-link:hover { color: #059669; text-decoration: underline; }
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 50%, #0f766e 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 52%, #0f766e 100%);
   color: #ffffff;
   font-size: 14px;
   font-weight: 700;
   font-family: inherit;
   letter-spacing: 0.03em;
   border: none;
-  border-radius: 11px;
+  border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.38);
+  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.36);
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
   margin-top: 4px;
   position: relative;
@@ -482,54 +518,71 @@ a.forgot-link:hover { color: #059669; text-decoration: underline; }
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
   padding: 24px 16px;
+  background:
+    radial-gradient(circle at top left, rgba(16, 185, 129, 0.16), transparent 26%),
+    radial-gradient(circle at bottom right, rgba(6, 182, 212, 0.18), transparent 28%),
+    linear-gradient(135deg, rgba(3, 7, 18, 0.88), rgba(15, 23, 42, 0.9));
 }
 .forgot-card {
-  width: 100%; max-width: 420px;
-  padding: 40px 36px;
-  background: rgba(15, 23, 42, 0.88);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255,255,255,0.09);
+  width: 100%; max-width: 430px;
+  padding: 38px 34px 32px;
+  background: rgba(15, 23, 42, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(148, 163, 184, 0.16);
   border-radius: 24px;
-  box-shadow: 0 32px 80px rgba(0,0,0,0.55);
+  box-shadow: 0 32px 80px rgba(2,6,23,0.5), 0 10px 30px rgba(15,23,42,0.28);
   color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+.forgot-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(16,185,129,0.26), transparent 70%);
+  pointer-events: none;
 }
 .forgot-card h1 {
   font-size: 26px; font-weight: 800;
   text-align: center; margin-bottom: 4px;
+  color: #f8fafc;
 }
 .forgot-card hr {
-  border: 0; border-top: 1px solid rgba(255,255,255,0.1);
+  border: 0; border-top: 1px solid rgba(255,255,255,0.09);
   margin: 14px 0 18px;
 }
 .forgot-card .sub-desc {
-  text-align: center; color: rgba(255,255,255,0.62);
+  text-align: center; color: rgba(255,255,255,0.7);
   font-size: 13.5px; margin-bottom: 22px; line-height: 1.6;
 }
 .forgot-card .fg-field { position: relative; margin-bottom: 16px; }
 .forgot-card .fg-field .fg-icon {
   position: absolute; left: 14px; top: 50%;
   transform: translateY(-50%);
-  color: rgba(255,255,255,0.5); font-size: 14px;
+  color: rgba(255,255,255,0.58); font-size: 14px;
   pointer-events: none; z-index: 2;
 }
 .forgot-card input.form-control {
   width: 100%; height: 48px;
   padding: 0 14px 0 42px; font-size: 14px;
-  background: rgba(255,255,255,0.07);
-  border: 1.5px solid rgba(255,255,255,0.11);
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.12);
   border-radius: 12px; color: #ffffff;
   outline: none; font-family: inherit;
   transition: all 0.25s ease;
+  box-shadow: inset 0 1px 1px rgba(15, 23, 42, 0.18);
 }
-.forgot-card input.form-control::placeholder { color: rgba(255,255,255,0.36); }
+.forgot-card input.form-control::placeholder { color: rgba(255,255,255,0.38); }
 .forgot-card input.form-control:focus {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.09);
   border-color: #10b981;
   box-shadow: 0 0 0 3px rgba(16,185,129,0.18);
 }
 .note-box {
-  background: rgba(251,191,36,0.1); border-left: 3px solid #fbbf24;
+  background: rgba(251,191,36,0.08); border-left: 3px solid #fbbf24;
   border-radius: 10px; padding: 11px 14px;
   margin: 0 0 20px; font-size: 13px; line-height: 1.55; color: #fef3c7;
 }
@@ -537,7 +590,7 @@ a.forgot-link:hover { color: #059669; text-decoration: underline; }
 .btn-send {
   width: 100%; height: 50px; border: none; border-radius: 12px;
   color: #ffffff;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 52%, #0f766e 100%);
   font-weight: 800; font-size: 15px; letter-spacing: 0.03em;
   box-shadow: 0 10px 28px rgba(16,185,129,0.4);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -547,7 +600,7 @@ a.forgot-link:hover { color: #059669; text-decoration: underline; }
 .back-wrap { margin-top: 18px; text-align: center; }
 .back-link {
   display: inline-flex; align-items: center; gap: 8px;
-  color: #34d399; font-size: 13px; font-weight: 600;
+  color: #a7f3d0; font-size: 13px; font-weight: 600;
   text-decoration: none; padding: 8px 20px;
   border-radius: 50px; background: rgba(52,211,153,0.08);
   border: 1px solid rgba(52,211,153,0.18);

@@ -191,12 +191,10 @@ html body.home-body #dboard #form form.form-group::before {
   font-size: 13px !important;
   letter-spacing: 0.06em !important;
   padding: 17px 30px !important;
-  background: linear-gradient(
-    135deg,
-    rgba(6, 182, 212, 0.85) 0%,
-    rgba(30, 58, 138, 0.9) 50%,
-    rgba(8, 145, 178, 0.85) 100%
-  ) !important;
+  background: linear-gradient(135deg,
+      rgba(6, 182, 212, 0.85) 0%,
+      rgba(30, 58, 138, 0.9) 50%,
+      rgba(8, 145, 178, 0.85) 100%) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
   font-weight: 800 !important;
 }
@@ -207,7 +205,7 @@ html body.home-body:not(.dark-mode) #dboard #form form.form-group::before {
 }
 
 /* ── Col-md-4 content area padding ────────────────────────────── */
-body.home-body #dboard #form form > center {
+body.home-body #dboard #form form>center {
   padding: 22px 10px 0 !important;
 }
 
@@ -256,7 +254,7 @@ html body.home-body #dboard #form form .btn2:active {
 }
 
 /* ── Dashboard heading (DashBoard title) ──────────────────────── */
-html body.home-body #dboard > p.anim-typewriter {
+html body.home-body #dboard>p.anim-typewriter {
   font-size: 30px !important;
   min-height: 0 !important;
   font-weight: 900 !important;
@@ -275,7 +273,7 @@ html body.home-body #dboard > p.anim-typewriter {
   overflow: visible !important;
 }
 
-html body.home-body #dboard > p.anim-typewriter::before {
+html body.home-body #dboard>p.anim-typewriter::before {
   content: none !important;
   display: none !important;
   background: transparent !important;
@@ -283,7 +281,7 @@ html body.home-body #dboard > p.anim-typewriter::before {
   box-shadow: none !important;
 }
 
-html body.home-body #dboard > p.anim-typewriter::after {
+html body.home-body #dboard>p.anim-typewriter::after {
   display: block !important;
   content: "" !important;
   background: linear-gradient(90deg, #06b6d4 0%, #1e40af 100%) !important;
@@ -293,7 +291,7 @@ html body.home-body #dboard > p.anim-typewriter::after {
   border-radius: 999px;
 }
 
-html body.home-body:not(.dark-mode) #dboard > p.anim-typewriter {
+html body.home-body:not(.dark-mode) #dboard>p.anim-typewriter {
   background: transparent !important;
   background-color: transparent !important;
   color: #0f172a !important;
@@ -392,11 +390,9 @@ body.home-body ul.sidebar-menu li a i {
 
 body.home-body ul.sidebar-menu li.active a,
 body.home-body ul.sidebar-menu li a:hover {
-  background: linear-gradient(
-    90deg,
-    rgba(6, 182, 212, 0.16) 0%,
-    rgba(30, 64, 175, 0.12) 100%
-  ) !important;
+  background: linear-gradient(90deg,
+      rgba(6, 182, 212, 0.16) 0%,
+      rgba(30, 64, 175, 0.12) 100%) !important;
   color: #ffffff !important;
   border-left-color: #06b6d4 !important;
   box-shadow: inset 0 0 0 1px rgba(6, 182, 212, 0.12) !important;
@@ -529,7 +525,7 @@ body.home-body:not(.dark-mode) #dboard #form form textarea.form-control {
   border-color: #e2e8f0 !important;
 }
 
-body.home-body:not(.dark-mode) #dboard #form form center > .col-md-4 {
+body.home-body:not(.dark-mode) #dboard #form form center>.col-md-4 {
   border-right: 1px solid #f1f5f9 !important;
 }
 
@@ -580,17 +576,17 @@ html body.home-body #dboard .dd1:hover {
 }
 
 /* ── Tab panes (other tabs): glass look consistent ────────── */
-body.home-body .tab-pane.align > p.anim-typewriter,
-body.home-body #search-edit > p.anim-typewriter,
-body.home-body #help > p.anim-typewriter,
-body.home-body #contact > p.anim-typewriter {
+body.home-body .tab-pane.align>p.anim-typewriter,
+body.home-body #search-edit>p.anim-typewriter,
+body.home-body #help>p.anim-typewriter,
+body.home-body #contact>p.anim-typewriter {
   color: #f8fafc !important;
 }
 
-body.home-body:not(.dark-mode) .tab-pane.align > p.anim-typewriter,
-body.home-body:not(.dark-mode) #search-edit > p.anim-typewriter,
-body.home-body:not(.dark-mode) #help > p.anim-typewriter,
-body.home-body:not(.dark-mode) #contact > p.anim-typewriter {
+body.home-body:not(.dark-mode) .tab-pane.align>p.anim-typewriter,
+body.home-body:not(.dark-mode) #search-edit>p.anim-typewriter,
+body.home-body:not(.dark-mode) #help>p.anim-typewriter,
+body.home-body:not(.dark-mode) #contact>p.anim-typewriter {
   color: #0f172a !important;
   -webkit-text-fill-color: #0f172a !important;
 }
@@ -614,7 +610,7 @@ body.home-body table.table thead tr th {
 
 /* ── Responsive tweaks ───────────────────────────────────── */
 @media (max-width: 768px) {
-  body.home-body #dboard > p.anim-typewriter {
+  body.home-body #dboard>p.anim-typewriter {
     font-size: 22px !important;
   }
 
@@ -629,5 +625,2901 @@ body.home-body table.table thead tr th {
 
   body.home-body #date_time {
     font-size: 11px !important;
+  }
+}
+
+/* ================================================================
+   EDIT FORM (#fmgrp) — PREMIUM REDESIGN
+   Fixes: invisible labels, 1-col stacking, duplicate icons, weak UI
+   Boosted specificity: html body.home-body to beat all legacy rules
+   ================================================================ */
+
+/* ── Container: glassmorphic card with neon border ───────── */
+html body.home-body:not(.dark-mode) #fmgrp.dontdisplay,
+html body.home-body.dark-mode #fmgrp.dontdisplay {
+  display: none !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp {
+  display: block;
+  position: relative;
+  border-radius: 24px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(14, 165, 233, 0.22) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%) !important;
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  box-shadow:
+    0 24px 60px rgba(8, 145, 178, 0.16),
+    0 8px 20px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  margin-top: 18px !important;
+  animation: fmgrpSlideIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html body.home-body:not(.dark-mode) #fmgrp::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.45), rgba(99, 102, 241, 0.25) 50%, rgba(139, 92, 246, 0.35));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes fmgrpSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+    filter: blur(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ── Header: luxury gradient bar ───────────────────────────── */
+html body.home-body:not(.dark-mode) #fmgrp .form-panel-header {
+  position: relative;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 22px 32px !important;
+  background:
+    radial-gradient(circle at 90% 50%, rgba(34, 211, 238, 0.35) 0%, transparent 55%),
+    linear-gradient(135deg, #0891b2 0%, #0e7490 40%, #1e3a8a 100%) !important;
+  color: #f8fafc !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  border-bottom: none !important;
+  box-shadow:
+    inset 0 -2px 0 rgba(255, 255, 255, 0.12),
+    0 4px 18px rgba(8, 145, 178, 0.28) !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .form-panel-header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(34, 211, 238, 0.9) 20%,
+      rgba(139, 92, 246, 0.9) 55%,
+      rgba(34, 211, 238, 0.9) 80%,
+      transparent 100%);
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .form-panel-header i {
+  font-size: 15px !important;
+  width: 34px;
+  height: 34px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* ── Layout: 3-column CSS Grid (undo legacy 100% width) ───── */
+html body.home-body:not(.dark-mode) #fmgrp .slideInDown {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px 28px !important;
+  padding: 28px 30px 4px !important;
+  animation: fmgrpInnerIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.06s both;
+}
+
+@keyframes fmgrpInnerIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .slideInDown>.col-md-4,
+html body.home-body:not(.dark-mode) #fmgrp .slideInDown>.col-md-12 {
+  float: none !important;
+  width: auto !important;
+  display: contents !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block {
+  margin: 0 0 20px 0 !important;
+  animation: fieldBlockIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(1) {
+  animation-delay: 0.08s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(2) {
+  animation-delay: 0.11s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(3) {
+  animation-delay: 0.14s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(4) {
+  animation-delay: 0.17s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(5) {
+  animation-delay: 0.20s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(6) {
+  animation-delay: 0.23s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(7) {
+  animation-delay: 0.26s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(8) {
+  animation-delay: 0.29s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(9) {
+  animation-delay: 0.32s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(10) {
+  animation-delay: 0.35s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(11) {
+  animation-delay: 0.38s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(12) {
+  animation-delay: 0.41s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(13) {
+  animation-delay: 0.44s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(14) {
+  animation-delay: 0.47s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(15) {
+  animation-delay: 0.50s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(16) {
+  animation-delay: 0.53s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(17) {
+  animation-delay: 0.56s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(18) {
+  animation-delay: 0.59s;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block:nth-child(19) {
+  animation-delay: 0.62s;
+}
+
+@keyframes fieldBlockIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .field-block.full-width {
+  grid-column: 1 / -1 !important;
+}
+
+/* ── Labels: CRITICAL FIX — visible opaque gradient text ──── */
+/* Override the broken transparent-text rule from earlier block */
+html body.home-body:not(.dark-mode) #fmgrp label.lb {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  font-size: 10.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 8px 2px !important;
+  padding: 0 !important;
+  background: linear-gradient(90deg, #0f766e 0%, #1e3a8a 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: #0f766e !important;
+  color: #0f766e !important;
+  position: relative !important;
+  width: 100%;
+}
+
+/* ── Label icon: unique gradient chip — NO duplicates ────── */
+html body.home-body:not(.dark-mode) #fmgrp label.lb::before {
+  content: "";
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  min-height: 26px !important;
+  border-radius: 8px !important;
+  font-family: FontAwesome, 'Lato', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(135deg, #0ea5e9 0%, #14b8a6 55%, #0891b2 100%) !important;
+  box-shadow:
+    0 8px 18px rgba(14, 165, 233, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  order: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* Icon glyphs — unique per field, NO duplicates (verified) */
+html body.home-body:not(.dark-mode) #fmgrp label.icon-date::before {
+  content: "\f133";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-time::before {
+  content: "\f017";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-student::before {
+  content: "\f007";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-parent::before {
+  content: "\f0c0";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-employee::before {
+  content: "\f2c2";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-college::before {
+  content: "\f19c";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-branch::before {
+  content: "\f0b1";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-year::before {
+  content: "\f073";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-section::before {
+  content: "\f00a";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-phone::before {
+  content: "\f095";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-roll::before {
+  content: "\f02d";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-id::before {
+  content: "\f0b2";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-device::before {
+  content: "\f10b";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-color::before {
+  content: "\f1fb";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-imei::before {
+  content: "\f2db";
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label.icon-reason::before {
+  content: "\f0f6";
+}
+
+/* Label text positioning: icon on left, text on right (no overlap) */
+html body.home-body:not(.dark-mode) #fmgrp label.lb span.label-text,
+html body.home-body:not(.dark-mode) #fmgrp label.lb {
+  white-space: nowrap;
+}
+
+/* ── Inputs: refined glass with spring focus ──────────────── */
+html body.home-body:not(.dark-mode) #fmgrp input.inp.form-control,
+html body.home-body:not(.dark-mode) #fmgrp select.inp.form-control,
+html body.home-body:not(.dark-mode) #fmgrp textarea.inp.form-control {
+  height: 48px !important;
+  min-height: 44px !important;
+  width: 100% !important;
+  padding: 0 16px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%) !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 13px !important;
+  color: #0f172a !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 2px 6px rgba(15, 23, 42, 0.04) !important;
+  transition:
+    all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp textarea.inp.form-control {
+  height: auto !important;
+  min-height: 90px !important;
+  padding: 14px 16px !important;
+  line-height: 1.6 !important;
+  resize: vertical !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp input.inp.form-control::placeholder,
+html body.home-body:not(.dark-mode) #fmgrp textarea.inp.form-control::placeholder {
+  color: #94a3b8 !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp input.inp.form-control:hover,
+html body.home-body:not(.dark-mode) #fmgrp select.inp.form-control:hover,
+html body.home-body:not(.dark-mode) #fmgrp textarea.inp.form-control:hover {
+  border-color: #7dd3fc !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 4px 12px rgba(14, 165, 233, 0.1) !important;
+  transform: translateY(-1px);
+}
+
+html body.home-body:not(.dark-mode) #fmgrp input.inp.form-control:focus,
+html body.home-body:not(.dark-mode) #fmgrp select.inp.form-control:focus,
+html body.home-body:not(.dark-mode) #fmgrp textarea.inp.form-control:focus {
+  background: #ffffff !important;
+  border-color: #06b6d4 !important;
+  box-shadow:
+    0 0 0 4px rgba(6, 182, 212, 0.14),
+    0 8px 24px rgba(6, 182, 212, 0.18) !important;
+  transform: translateY(-2px) scale(1.002);
+  outline: none !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp input.inp.form-control[disabled],
+html body.home-body:not(.dark-mode) #fmgrp input.inp.form-control:disabled {
+  background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+  opacity: 0.85 !important;
+  cursor: not-allowed;
+}
+
+/* ── Reason / Submit row ─────────────────────────────────── */
+html body.home-body:not(.dark-mode) #fmgrp .col-md-12 {
+  clear: none !important;
+  padding-top: 0 !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .form-submit-actions {
+  grid-column: 1 / -1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 14px !important;
+  margin: 4px -30px 0 !important;
+  padding: 22px 32px 28px !important;
+  border-top: 1px solid rgba(148, 163, 184, 0.25) !important;
+  background:
+    linear-gradient(180deg, rgba(248, 250, 252, 0.4) 0%, rgba(241, 245, 249, 0.75) 100%) !important;
+}
+
+/* ── Buttons: premium spring-cubic with glow ─────────────── */
+html body.home-body:not(.dark-mode) #fmgrp .form-submit-actions .btn4,
+html body.home-body:not(.dark-mode) #fmgrp .form-submit-actions .btn4-secondary {
+  min-width: 164px !important;
+  min-height: 50px !important;
+  height: 50px !important;
+  padding: 0 22px !important;
+  font-size: 13.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  border-radius: 13px !important;
+  border: none !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.28s ease,
+    filter 0.2s ease !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .form-submit-actions .btn4[type="submit"] {
+  background:
+    radial-gradient(circle at 85% 20%, rgba(34, 211, 238, 0.35) 0%, transparent 45%),
+    linear-gradient(135deg, #0891b2 0%, #0e7490 45%, #1e40af 100%) !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 14px 34px rgba(8, 145, 178, 0.38),
+    0 4px 10px rgba(15, 23, 42, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .form-submit-actions .btn4[type="submit"]:hover {
+  transform: translateY(-4px) scale(1.02) !important;
+  box-shadow:
+    0 24px 54px rgba(6, 182, 212, 0.45),
+    0 6px 14px rgba(15, 23, 42, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+  filter: brightness(1.08) saturate(1.06) !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .form-submit-actions .btn4[type="submit"]:active {
+  transform: translateY(-1px) scale(0.996) !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .btn4-secondary {
+  background:
+    linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%) !important;
+  color: #0f172a !important;
+  box-shadow:
+    0 10px 24px rgba(148, 163, 184, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .btn4-secondary:hover {
+  transform: translateY(-3px) scale(1.015) !important;
+  box-shadow:
+    0 18px 38px rgba(148, 163, 184, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+}
+
+/* ================================================================
+   SEARCH & EDIT TAB — SMART SEARCH BAR PREMIUM REDESIGN
+   Complete overhaul with animated gradient border, floating icon,
+   spring-cubic hover, and decorative sparks
+   ================================================================ */
+
+/* Tab shell — clean glass card */
+html body.home-body:not(.dark-mode) #search-edit.tab-pane.align {
+  position: relative;
+  background:
+    radial-gradient(ellipse at top left, rgba(56, 189, 248, 0.1) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(99, 102, 241, 0.08) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 250, 252, 0.94) 100%) !important;
+  backdrop-filter: blur(20px) saturate(1.35);
+  -webkit-backdrop-filter: blur(20px) saturate(1.35);
+  border: 1px solid rgba(14, 165, 233, 0.18) !important;
+  border-radius: 28px !important;
+  padding: 26px 22px 22px !important;
+  box-shadow:
+    0 22px 54px rgba(8, 145, 178, 0.1),
+    0 6px 16px rgba(15, 23, 42, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+html body.home-body:not(.dark-mode) #search-edit>p.anim-typewriter {
+  font-size: 26px !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.01em !important;
+  margin: 0 0 18px 8px !important;
+}
+
+/* Search bar outer container */
+html body.home-body:not(.dark-mode) .smart-search-bar {
+  margin: 4px 0 8px 0 !important;
+}
+
+html body.home-body:not(.dark-mode) .smart-search-bar .srcbar {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+  background: transparent !important;
+  display: block !important;
+  height: auto !important;
+}
+
+html body.home-body:not(.dark-mode) #search-edit.tab-pane .smart-search-bar .srcbar,
+html body.home-body.dark-mode #search-edit.tab-pane .smart-search-bar .srcbar {
+  margin: 0 auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html body.home-body #search-edit .smart-search-bar #wrap form.srch {
+  margin-bottom: 0 !important;
+}
+
+html body.home-body:not(.dark-mode) .smart-search-bar #wrap {
+  width: 100% !important;
+  height: auto !important;
+  max-width: none !important;
+  filter: none !important;
+  position: relative;
+}
+
+/* Remove legacy decorative .field placeholder */
+html body.home-body:not(.dark-mode) .smart-search-bar .field {
+  display: none !important;
+}
+
+/* Actual search form — single elegant pill with gradient border */
+html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch {
+  position: relative;
+  width: 100%;
+  height: 66px;
+  border-radius: 22px;
+  padding: 0;
+  display: flex !important;
+  align-items: stretch !important;
+  background:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(135deg, rgba(34, 211, 238, 0.55), rgba(99, 102, 241, 0.4) 50%, rgba(139, 92, 246, 0.5)) border-box;
+  border: 2px solid transparent !important;
+  box-shadow:
+    0 18px 44px rgba(8, 145, 178, 0.15),
+    0 4px 12px rgba(15, 23, 42, 0.05) !important;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease,
+    filter 0.2s ease;
+  overflow: hidden;
+}
+
+html body.home-body #search-edit .smart-search-bar #wrap form.srch,
+html body.home-body #search-edit .smart-search-bar #wrap form.srch:hover,
+html body.home-body #search-edit .smart-search-bar #wrap form.srch:focus-within {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(from 0deg,
+      transparent 0deg,
+      rgba(34, 211, 238, 0.25) 60deg,
+      transparent 120deg,
+      transparent 240deg,
+      rgba(139, 92, 246, 0.25) 300deg,
+      transparent 360deg);
+  animation: searchConicSpin 8s linear infinite;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch:focus-within::before {
+  opacity: 1;
+}
+
+@keyframes searchConicSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 28px 58px rgba(6, 182, 212, 0.22),
+    0 6px 14px rgba(15, 23, 42, 0.07) !important;
+}
+
+html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch:focus-within {
+  transform: translateY(-4px) scale(1.004);
+  box-shadow:
+    0 32px 64px rgba(6, 182, 212, 0.28),
+    0 0 0 4px rgba(34, 211, 238, 0.1),
+    0 6px 14px rgba(15, 23, 42, 0.07) !important;
+}
+
+/* Search input */
+html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch input[type="text"] {
+  position: relative !important;
+  z-index: 2 !important;
+  flex: 1 !important;
+  height: 100% !important;
+  width: 100% !important;
+  padding: 0 210px 0 62px !important;
+  border-radius: 22px !important;
+  border: none !important;
+  border-right: none !important;
+  background: transparent !important;
+  color: #0f172a !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch input[type="text"]::placeholder {
+  color: #64748b !important;
+  opacity: 0.95 !important;
+  font-weight: 500 !important;
+}
+
+/* Animated floating search icon */
+html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch::after {
+  content: "\f002";
+  font-family: FontAwesome;
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #06b6d4 0%, #1e40af 100%);
+  color: #ffffff;
+  font-size: 13px;
+  box-shadow:
+    0 10px 22px rgba(6, 182, 212, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  z-index: 3;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch:focus-within::after {
+  transform: translateY(-50%) scale(1.1) rotate(-6deg);
+  box-shadow:
+    0 14px 30px rgba(6, 182, 212, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+/* Search button (right side gradient pill) */
+html body.home-body:not(.dark-mode) .smart-search-bar .btnwrap {
+  position: absolute !important;
+  right: 4px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  height: 56px !important;
+  width: 170px !important;
+  border-radius: 17px !important;
+  overflow: hidden;
+  border: none !important;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at 82% 22%, rgba(255, 255, 255, 0.3) 0%, transparent 45%),
+    linear-gradient(135deg, #06b6d4 0%, #0e7490 45%, #1e40af 100%);
+  box-shadow:
+    0 14px 32px rgba(6, 182, 212, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  z-index: 3;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.28s ease,
+    filter 0.2s ease,
+    width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html body.home-body:not(.dark-mode) .smart-search-bar .btnwrap:hover {
+  transform: translateY(-50%) translateX(-2px) scale(1.025) !important;
+  box-shadow:
+    0 22px 48px rgba(6, 182, 212, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  filter: brightness(1.1) saturate(1.08);
+}
+
+html body.home-body:not(.dark-mode) .smart-search-bar .btnwrap:active {
+  transform: translateY(-50%) scale(0.992) !important;
+}
+
+html body.home-body:not(.dark-mode) .smart-search-bar .btnwrap b {
+  position: relative !important;
+  z-index: 2 !important;
+  color: #ffffff !important;
+  font-size: 13.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  margin: 0 !important;
+  transform: none !important;
+  font-family: "Lato", sans-serif !important;
+}
+
+html body.home-body:not(.dark-mode) .smart-search-bar .btnwrap b::before {
+  content: "\f002";
+  font-family: FontAwesome;
+  font-size: 11px;
+  opacity: 0.9;
+}
+
+/* Legacy submit input — invisible overlay to keep form submittable */
+html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch input[type="submit"] {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 170px;
+  height: 56px;
+  border-radius: 17px;
+  opacity: 0;
+  z-index: 4;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+/* Clear button */
+html body.home-body:not(.dark-mode) .smart-search-bar .smart-clear {
+  position: absolute !important;
+  right: 184px !important;
+  top: 50% !important;
+  transform: translateY(-50%) scale(0.75) !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  background: rgba(148, 163, 184, 0.12) !important;
+  color: #64748b !important;
+  border: none !important;
+  z-index: 5 !important;
+  cursor: pointer !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition:
+    all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* When jQuery .toggle() sets inline display:block, also reveal with opacity */
+html body.home-body:not(.dark-mode) .smart-search-bar .smart-clear[style*="display: block"],
+html body.home-body:not(.dark-mode) .smart-search-bar .smart-clear[style*="display:inline"] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateY(-50%) scale(1) !important;
+}
+
+html body.home-body:not(.dark-mode) .smart-search-bar .smart-clear:hover {
+  background: rgba(239, 68, 68, 0.12) !important;
+  color: #ef4444 !important;
+  transform: translateY(-50%) scale(1.12) rotate(90deg) !important;
+}
+
+/* Decorative sparkles inside btnwrap on hover */
+html body.home-body:not(.dark-mode) .smart-search-bar .btnwrap .spark {
+  display: none !important;
+}
+
+html body.home-body:not(.dark-mode) .smart-search-bar .btnwrap .blob {
+  display: none !important;
+}
+
+/* Results table wrapper — keep border-radius ONLY on the scroll-wrapper (not the table), NEVER clip overflow on table element itself (breaks horizontal scroll) */
+html body.home-body #example5-wrapper.search-source-data {
+  display: none !important;
+}
+
+html body.home-body #smart-results-table .inline-edit-field {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 110px;
+  height: 34px;
+  padding: 5px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  font: inherit;
+}
+
+html body.home-body #smart-results-table .inline-edit-field:focus {
+  border-color: #0891b2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(8, 145, 178, 0.16);
+}
+
+html body.home-body #smart-results-table .inline-edit-actions {
+  display: flex;
+  min-width: 132px;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+html body.home-body #smart-results-table .inline-edit-action {
+  min-height: 32px;
+  padding: 5px 9px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  cursor: pointer;
+  font: inherit;
+}
+
+html body.home-body #smart-results-table .inline-edit-save {
+  border-color: #0f766e;
+  background: #0f766e;
+  color: #ffffff;
+}
+
+html body.home-body #smart-results-table .inline-edit-cancel {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+html body.home-body.dark-mode #smart-results-table .inline-edit-field {
+  border-color: #475569;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+html body.home-body.dark-mode #smart-results-table .inline-edit-cancel {
+  border-color: #475569;
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+html body.home-body:not(.dark-mode) #smart-results-wrapper,
+html body.home-body:not(.dark-mode) #smart-results-wrapper+.table-responsive {
+  border-radius: 20px !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  scrollbar-width: thin !important;
+}
+
+html body.home-body #search-edit #smart-results-wrapper {
+  margin-top: 8px !important;
+  padding: 8px 12px 6px !important;
+}
+
+html body.home-body #search-edit #smart-results-status {
+  display: flex;
+  align-items: center;
+  min-height: 22px;
+  margin: 6px 0 4px;
+}
+
+html body.home-body #search-edit #smart-results-status .smart-count-badge {
+  padding: 3px 10px !important;
+}
+
+html body.home-body:not(.dark-mode) #smart-results-wrapper+.table-responsive table#example5,
+html body.home-body.dark-mode #smart-results-wrapper+.table-responsive table#example5 {
+  overflow: visible !important;
+  border-radius: 20px !important;
+}
+
+html body.home-body:not(.dark-mode) .smart-count-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  border-radius: 999px !important;
+  padding: 5px 14px !important;
+  font-size: 11.5px !important;
+  letter-spacing: 0.06em !important;
+}
+
+html body.home-body:not(.dark-mode) #smart-no-results {
+  border-radius: 16px !important;
+  padding: 26px 18px !important;
+  font-size: 14px !important;
+  background:
+    linear-gradient(135deg, rgba(34, 211, 238, 0.06) 0%, rgba(99, 102, 241, 0.05) 100%) !important;
+  border: 1px dashed rgba(6, 182, 212, 0.3) !important;
+  color: #475569 !important;
+  display: flex;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+}
+
+html body.home-body:not(.dark-mode) #smart-no-results i {
+  font-size: 18px;
+  color: #0891b2;
+}
+
+/* ================================================================
+   DARK MODE VARIANTS — Edit form + Search bar
+   ================================================================ */
+
+/* Dark: edit form card */
+html body.home-body.dark-mode #fmgrp {
+  display: block;
+  position: relative;
+  border-radius: 24px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(34, 211, 238, 0.18) !important;
+  background:
+    radial-gradient(ellipse at top left, rgba(34, 211, 238, 0.08) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.92) 100%) !important;
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  box-shadow:
+    0 26px 66px rgba(0, 0, 0, 0.5),
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  margin-top: 18px !important;
+  animation: fmgrpSlideIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html body.home-body.dark-mode #fmgrp::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.35), rgba(99, 102, 241, 0.22) 50%, rgba(139, 92, 246, 0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+}
+
+html body.home-body.dark-mode #fmgrp .form-panel-header {
+  position: relative;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 22px 32px !important;
+  background:
+    radial-gradient(circle at 90% 50%, rgba(34, 211, 238, 0.28) 0%, transparent 55%),
+    linear-gradient(135deg, #0e7490 0%, #164e63 40%, #1e3a8a 100%) !important;
+  color: #f8fafc !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  border-bottom: none !important;
+  box-shadow: inset 0 -2px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+html body.home-body.dark-mode #fmgrp .form-panel-header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(34, 211, 238, 0.85) 20%,
+      rgba(139, 92, 246, 0.85) 55%,
+      rgba(34, 211, 238, 0.85) 80%,
+      transparent 100%);
+}
+
+html body.home-body.dark-mode #fmgrp .form-panel-header i {
+  font-size: 15px !important;
+  width: 34px;
+  height: 34px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+html body.home-body.dark-mode #fmgrp .slideInDown {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px 28px !important;
+  padding: 28px 30px 4px !important;
+  animation: fmgrpInnerIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.06s both;
+}
+
+html body.home-body.dark-mode #fmgrp .slideInDown>.col-md-4,
+html body.home-body.dark-mode #fmgrp .slideInDown>.col-md-12 {
+  float: none !important;
+  width: auto !important;
+  display: contents !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block {
+  margin: 0 0 20px 0 !important;
+  animation: fieldBlockIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(1) {
+  animation-delay: 0.08s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(2) {
+  animation-delay: 0.11s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(3) {
+  animation-delay: 0.14s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(4) {
+  animation-delay: 0.17s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(5) {
+  animation-delay: 0.20s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(6) {
+  animation-delay: 0.23s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(7) {
+  animation-delay: 0.26s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(8) {
+  animation-delay: 0.29s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(9) {
+  animation-delay: 0.32s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(10) {
+  animation-delay: 0.35s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(11) {
+  animation-delay: 0.38s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(12) {
+  animation-delay: 0.41s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(13) {
+  animation-delay: 0.44s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(14) {
+  animation-delay: 0.47s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(15) {
+  animation-delay: 0.50s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(16) {
+  animation-delay: 0.53s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(17) {
+  animation-delay: 0.56s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(18) {
+  animation-delay: 0.59s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block:nth-child(19) {
+  animation-delay: 0.62s;
+}
+
+html body.home-body.dark-mode #fmgrp .field-block.full-width {
+  grid-column: 1 / -1 !important;
+}
+
+/* Dark: visible labels */
+html body.home-body.dark-mode #fmgrp label.lb {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  font-size: 10.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 8px 2px !important;
+  padding: 0 !important;
+  background: linear-gradient(90deg, rgba(34, 211, 238, 0.95) 0%, rgba(167, 139, 250, 0.95) 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: rgba(34, 211, 238, 0.95) !important;
+  color: rgba(34, 211, 238, 0.95) !important;
+  position: relative !important;
+  width: 100%;
+}
+
+/* Dark: unique label icon chips */
+html body.home-body.dark-mode #fmgrp label.lb::before {
+  content: "";
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  min-height: 26px !important;
+  border-radius: 8px !important;
+  font-family: FontAwesome, 'Lato', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(135deg, #06b6d4 0%, #0e7490 55%, #1e40af 100%) !important;
+  box-shadow:
+    0 8px 22px rgba(6, 182, 212, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  order: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-date::before {
+  content: "\f133";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-time::before {
+  content: "\f017";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-student::before {
+  content: "\f007";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-parent::before {
+  content: "\f0c0";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-employee::before {
+  content: "\f2c2";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-college::before {
+  content: "\f19c";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-branch::before {
+  content: "\f0b1";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-year::before {
+  content: "\f073";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-section::before {
+  content: "\f00a";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-phone::before {
+  content: "\f095";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-roll::before {
+  content: "\f02d";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-id::before {
+  content: "\f0b2";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-device::before {
+  content: "\f10b";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-color::before {
+  content: "\f1fb";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-imei::before {
+  content: "\f2db";
+}
+
+html body.home-body.dark-mode #fmgrp label.icon-reason::before {
+  content: "\f0f6";
+}
+
+/* Dark: inputs */
+html body.home-body.dark-mode #fmgrp input.inp.form-control,
+html body.home-body.dark-mode #fmgrp select.inp.form-control,
+html body.home-body.dark-mode #fmgrp textarea.inp.form-control {
+  height: 48px !important;
+  min-height: 44px !important;
+  width: 100% !important;
+  padding: 0 16px !important;
+  background:
+    linear-gradient(180deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.85) 100%) !important;
+  border: 1.5px solid rgba(51, 65, 85, 0.8) !important;
+  border-radius: 13px !important;
+  color: #e2e8f0 !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 2px 6px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+html body.home-body.dark-mode #fmgrp textarea.inp.form-control {
+  height: auto !important;
+  min-height: 90px !important;
+  padding: 14px 16px !important;
+  line-height: 1.6 !important;
+  resize: vertical !important;
+}
+
+html body.home-body.dark-mode #fmgrp input.inp.form-control::placeholder,
+html body.home-body.dark-mode #fmgrp textarea.inp.form-control::placeholder {
+  color: #64748b !important;
+  font-weight: 500 !important;
+}
+
+html body.home-body.dark-mode #fmgrp input.inp.form-control:hover,
+html body.home-body.dark-mode #fmgrp select.inp.form-control:hover,
+html body.home-body.dark-mode #fmgrp textarea.inp.form-control:hover {
+  border-color: rgba(34, 211, 238, 0.5) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 4px 14px rgba(6, 182, 212, 0.12) !important;
+  transform: translateY(-1px);
+}
+
+html body.home-body.dark-mode #fmgrp input.inp.form-control:focus,
+html body.home-body.dark-mode #fmgrp select.inp.form-control:focus,
+html body.home-body.dark-mode #fmgrp textarea.inp.form-control:focus {
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%) !important;
+  border-color: #06b6d4 !important;
+  box-shadow:
+    0 0 0 4px rgba(6, 182, 212, 0.15),
+    0 10px 28px rgba(6, 182, 212, 0.22) !important;
+  transform: translateY(-2px) scale(1.002);
+  outline: none !important;
+}
+
+html body.home-body.dark-mode #fmgrp input.inp.form-control[disabled],
+html body.home-body.dark-mode #fmgrp input.inp.form-control:disabled {
+  background: linear-gradient(180deg, #0f172a 0%, #020617 100%) !important;
+  border-color: rgba(51, 65, 85, 0.7) !important;
+  color: #64748b !important;
+  opacity: 0.85 !important;
+  cursor: not-allowed;
+}
+
+html body.home-body.dark-mode #fmgrp .form-submit-actions {
+  grid-column: 1 / -1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 14px !important;
+  margin: 4px -30px 0 !important;
+  padding: 22px 32px 28px !important;
+  border-top: 1px solid rgba(51, 65, 85, 0.5) !important;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, rgba(2, 6, 23, 0.7) 100%) !important;
+}
+
+/* Dark: buttons */
+html body.home-body.dark-mode #fmgrp .form-submit-actions .btn4,
+html body.home-body.dark-mode #fmgrp .form-submit-actions .btn4-secondary {
+  min-width: 164px !important;
+  min-height: 50px !important;
+  height: 50px !important;
+  padding: 0 22px !important;
+  font-size: 13.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  border-radius: 13px !important;
+  border: none !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.28s ease,
+    filter 0.2s ease !important;
+}
+
+html body.home-body.dark-mode #fmgrp .form-submit-actions .btn4[type="submit"] {
+  background:
+    radial-gradient(circle at 85% 20%, rgba(34, 211, 238, 0.3) 0%, transparent 45%),
+    linear-gradient(135deg, #0891b2 0%, #0e7490 45%, #1e40af 100%) !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 16px 38px rgba(6, 182, 212, 0.42),
+    0 4px 10px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+html body.home-body.dark-mode #fmgrp .form-submit-actions .btn4[type="submit"]:hover {
+  transform: translateY(-4px) scale(1.02) !important;
+  box-shadow:
+    0 28px 60px rgba(6, 182, 212, 0.5),
+    0 6px 14px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  filter: brightness(1.1) saturate(1.08) !important;
+}
+
+html body.home-body.dark-mode #fmgrp .form-submit-actions .btn4[type="submit"]:active {
+  transform: translateY(-1px) scale(0.996) !important;
+}
+
+html body.home-body.dark-mode #fmgrp .btn4-secondary {
+  background:
+    linear-gradient(135deg, rgba(51, 65, 85, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%) !important;
+  color: #e2e8f0 !important;
+  border: 1px solid rgba(71, 85, 105, 0.6) !important;
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+html body.home-body.dark-mode #fmgrp .btn4-secondary:hover {
+  transform: translateY(-3px) scale(1.015) !important;
+  box-shadow:
+    0 20px 44px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  background: linear-gradient(135deg, rgba(71, 85, 105, 0.9) 0%, rgba(51, 65, 85, 0.9) 100%) !important;
+}
+
+/* Dark: search tab shell */
+html body.home-body.dark-mode #search-edit.tab-pane.align {
+  position: relative;
+  background:
+    radial-gradient(ellipse at top left, rgba(34, 211, 238, 0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(99, 102, 241, 0.06) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.7) 0%, rgba(2, 6, 23, 0.8) 100%) !important;
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(51, 65, 85, 0.6) !important;
+  border-radius: 28px !important;
+  padding: 26px 22px 22px !important;
+  box-shadow:
+    0 26px 58px rgba(0, 0, 0, 0.45),
+    0 6px 16px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Dark: search bar */
+html body.home-body.dark-mode .smart-search-bar {
+  margin: 4px 0 8px 0 !important;
+}
+
+html body.home-body.dark-mode .smart-search-bar .srcbar {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+  background: transparent !important;
+  display: block !important;
+  height: auto !important;
+}
+
+html body.home-body.dark-mode .smart-search-bar #wrap {
+  width: 100% !important;
+  height: auto !important;
+  max-width: none !important;
+  filter: none !important;
+  position: relative;
+}
+
+html body.home-body.dark-mode .smart-search-bar .field {
+  display: none !important;
+}
+
+html body.home-body.dark-mode .smart-search-bar #wrap form.srch {
+  position: relative;
+  width: 100%;
+  height: 66px;
+  border-radius: 22px;
+  padding: 0;
+  display: flex !important;
+  align-items: stretch !important;
+  background:
+    linear-gradient(#0f172a 0 0) padding-box,
+    linear-gradient(135deg, rgba(34, 211, 238, 0.4), rgba(99, 102, 241, 0.3) 50%, rgba(139, 92, 246, 0.38)) border-box;
+  border: 2px solid transparent !important;
+  box-shadow:
+    0 22px 50px rgba(0, 0, 0, 0.45),
+    0 4px 12px rgba(0, 0, 0, 0.25) !important;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease,
+    filter 0.2s ease;
+  overflow: hidden;
+}
+
+html body.home-body.dark-mode .smart-search-bar #wrap form.srch::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(from 0deg,
+      transparent 0deg,
+      rgba(34, 211, 238, 0.2) 60deg,
+      transparent 120deg,
+      transparent 240deg,
+      rgba(139, 92, 246, 0.2) 300deg,
+      transparent 360deg);
+  animation: searchConicSpin 8s linear infinite;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+html body.home-body.dark-mode .smart-search-bar #wrap form.srch:focus-within::before {
+  opacity: 1;
+}
+
+html body.home-body.dark-mode .smart-search-bar #wrap form.srch:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 34px 70px rgba(6, 182, 212, 0.18),
+    0 6px 14px rgba(0, 0, 0, 0.3) !important;
+}
+
+html body.home-body.dark-mode .smart-search-bar #wrap form.srch:focus-within {
+  transform: translateY(-4px) scale(1.004);
+  box-shadow:
+    0 38px 78px rgba(6, 182, 212, 0.24),
+    0 0 0 4px rgba(34, 211, 238, 0.08),
+    0 6px 14px rgba(0, 0, 0, 0.3) !important;
+}
+
+html body.home-body.dark-mode .smart-search-bar #wrap form.srch input[type="text"] {
+  position: relative !important;
+  z-index: 2 !important;
+  flex: 1 !important;
+  height: 100% !important;
+  width: 100% !important;
+  padding: 0 210px 0 62px !important;
+  border-radius: 22px !important;
+  border: none !important;
+  border-right: none !important;
+  background: transparent !important;
+  color: #f1f5f9 !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+html body.home-body.dark-mode .smart-search-bar #wrap form.srch input[type="text"]::placeholder {
+  color: #64748b !important;
+  opacity: 0.95 !important;
+  font-weight: 500 !important;
+}
+
+html body.home-body.dark-mode .smart-search-bar #wrap form.srch::after {
+  content: "\f002";
+  font-family: FontAwesome;
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #06b6d4 0%, #1e40af 100%);
+  color: #ffffff;
+  font-size: 13px;
+  box-shadow:
+    0 12px 26px rgba(6, 182, 212, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  z-index: 3;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html body.home-body.dark-mode .smart-search-bar #wrap form.srch:focus-within::after {
+  transform: translateY(-50%) scale(1.1) rotate(-6deg);
+}
+
+html body.home-body.dark-mode .smart-search-bar .btnwrap {
+  position: absolute !important;
+  right: 4px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  height: 56px !important;
+  width: 170px !important;
+  border-radius: 17px !important;
+  overflow: hidden;
+  border: none !important;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at 82% 22%, rgba(255, 255, 255, 0.22) 0%, transparent 45%),
+    linear-gradient(135deg, #06b6d4 0%, #0e7490 45%, #1e40af 100%);
+  box-shadow:
+    0 16px 38px rgba(6, 182, 212, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  z-index: 3;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.28s ease,
+    filter 0.2s ease;
+}
+
+html body.home-body.dark-mode .smart-search-bar .btnwrap:hover {
+  transform: translateY(-50%) translateX(-2px) scale(1.025) !important;
+  box-shadow:
+    0 26px 56px rgba(6, 182, 212, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  filter: brightness(1.1) saturate(1.08);
+}
+
+html body.home-body.dark-mode .smart-search-bar .btnwrap:active {
+  transform: translateY(-50%) scale(0.992) !important;
+}
+
+html body.home-body.dark-mode .smart-search-bar .btnwrap b {
+  position: relative !important;
+  z-index: 2 !important;
+  color: #ffffff !important;
+  font-size: 13.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  margin: 0 !important;
+  transform: none !important;
+  font-family: "Lato", sans-serif !important;
+}
+
+html body.home-body.dark-mode .smart-search-bar .btnwrap b::before {
+  content: "\f002";
+  font-family: FontAwesome;
+  font-size: 11px;
+  opacity: 0.9;
+}
+
+html body.home-body.dark-mode .smart-search-bar #wrap form.srch input[type="submit"] {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 170px;
+  height: 56px;
+  border-radius: 17px;
+  opacity: 0;
+  z-index: 4;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+html body.home-body.dark-mode .smart-search-bar .smart-clear {
+  position: absolute !important;
+  right: 184px !important;
+  top: 50% !important;
+  transform: translateY(-50%) scale(0.75) !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  background: rgba(71, 85, 105, 0.25) !important;
+  color: #94a3b8 !important;
+  border: none !important;
+  z-index: 5 !important;
+  cursor: pointer !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition:
+    all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+html body.home-body.dark-mode .smart-search-bar .smart-clear[style*="display: block"],
+html body.home-body.dark-mode .smart-search-bar .smart-clear[style*="display:inline"] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateY(-50%) scale(1) !important;
+}
+
+html body.home-body.dark-mode .smart-search-bar .smart-clear:hover {
+  background: rgba(239, 68, 68, 0.18) !important;
+  color: #f87171 !important;
+  transform: translateY(-50%) scale(1.12) rotate(90deg) !important;
+}
+
+html body.home-body.dark-mode .smart-search-bar .btnwrap .spark,
+html body.home-body.dark-mode .smart-search-bar .btnwrap .blob {
+  display: none !important;
+}
+
+html body.home-body.dark-mode .smart-no-results {
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.06) 0%, rgba(99, 102, 241, 0.05) 100%) !important;
+  border: 1px dashed rgba(34, 211, 238, 0.25) !important;
+  color: #94a3b8 !important;
+  border-radius: 16px !important;
+}
+
+/* ================================================================
+   MOBILE RESPONSIVENESS — Edit form + Search bar (≤768px)
+   ================================================================ */
+@media (max-width: 768px) {
+
+  html body.home-body:not(.dark-mode) #fmgrp .slideInDown,
+  html body.home-body.dark-mode #fmgrp .slideInDown {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+    padding: 18px 16px 4px !important;
+  }
+
+  html body.home-body:not(.dark-mode) #fmgrp .form-submit-actions,
+  html body.home-body.dark-mode #fmgrp .form-submit-actions {
+    flex-direction: column-reverse !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    margin: 0 -16px 0 !important;
+    padding: 18px 16px 20px !important;
+  }
+
+  html body.home-body:not(.dark-mode) #fmgrp .form-submit-actions .btn4,
+  html body.home-body.dark-mode #fmgrp .form-submit-actions .btn4,
+  html body.home-body:not(.dark-mode) #fmgrp .form-submit-actions .btn4-secondary,
+  html body.home-body.dark-mode #fmgrp .form-submit-actions .btn4-secondary {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  html body.home-body:not(.dark-mode) #fmgrp .form-panel-header,
+  html body.home-body.dark-mode #fmgrp .form-panel-header {
+    padding: 18px 18px !important;
+    font-size: 12.5px !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch,
+  html body.home-body.dark-mode .smart-search-bar #wrap form.srch {
+    height: 58px !important;
+    border-radius: 18px !important;
+  }
+
+  html body.home-body:not(.dark-mode) .smart-search-bar .btnwrap,
+  html body.home-body.dark-mode .smart-search-bar .btnwrap,
+  html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch input[type="submit"],
+  html body.home-body.dark-mode .smart-search-bar #wrap form.srch input[type="submit"] {
+    width: 100px !important;
+    height: 50px !important;
+    border-radius: 14px !important;
+  }
+
+  html body.home-body:not(.dark-mode) .smart-search-bar .btnwrap b,
+  html body.home-body.dark-mode .smart-search-bar .btnwrap b {
+    font-size: 11px !important;
+    letter-spacing: 0.05em !important;
+  }
+
+  html body.home-body:not(.dark-mode) .smart-search-bar .btnwrap b::before,
+  html body.home-body.dark-mode .smart-search-bar .btnwrap b::before {
+    display: none;
+  }
+
+  html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch input[type="text"],
+  html body.home-body.dark-mode .smart-search-bar #wrap form.srch input[type="text"] {
+    padding: 0 114px 0 54px !important;
+    font-size: 14px !important;
+  }
+
+  html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch::after,
+  html body.home-body.dark-mode .smart-search-bar #wrap form.srch::after {
+    left: 14px !important;
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 11px !important;
+  }
+
+  html body.home-body:not(.dark-mode) .smart-search-bar .smart-clear,
+  html body.home-body.dark-mode .smart-search-bar .smart-clear {
+    right: 118px !important;
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  html body.home-body:not(.dark-mode) #search-edit.tab-pane.align,
+  html body.home-body.dark-mode #search-edit.tab-pane.align {
+    padding: 18px 12px !important;
+    border-radius: 20px !important;
+  }
+}
+
+@media (max-width: 420px) {
+
+  html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch,
+  html body.home-body.dark-mode .smart-search-bar #wrap form.srch {
+    height: 54px !important;
+  }
+
+  html body.home-body:not(.dark-mode) .smart-search-bar .btnwrap,
+  html body.home-body.dark-mode .smart-search-bar .btnwrap {
+    width: 86px !important;
+    height: 46px !important;
+  }
+
+  html body.home-body:not(.dark-mode) .smart-search-bar .btnwrap b,
+  html body.home-body.dark-mode .smart-search-bar .btnwrap b {
+    font-size: 10px !important;
+  }
+
+  html body.home-body:not(.dark-mode) .smart-search-bar #wrap form.srch input[type="text"],
+  html body.home-body.dark-mode .smart-search-bar #wrap form.srch input[type="text"] {
+    padding: 0 100px 0 48px !important;
+    font-size: 13px !important;
+  }
+}
+
+/* ================================================================
+   SCROLL FIX: Thin, visible scrollbar + escape overflow:hidden traps
+   Unifies the two warring scroll strategies in style.css.
+   Boosted specificity html body.home-body beats both rule sets.
+   ================================================================ */
+
+/* ── Body becomes the REAL scroll container ───────────────────── */
+html body.home-body {
+  overflow: visible !important;
+  overflow-y: auto !important;
+  height: auto !important;
+  min-height: 100vh !important;
+  position: static !important;
+}
+
+/* ── #main-content: NOT fixed anymore — natural flow + generous bottom padding ── */
+html body.home-body #main-content {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  height: auto !important;
+  min-height: calc(100vh - 64px) !important;
+  overflow: visible !important;
+  overflow-y: visible !important;
+  overflow-x: hidden !important;
+  scrollbar-width: auto !important;
+  padding: 88px 32px 220px 272px !important;
+  /* 64px header + 24px, sidebar 260 + 12 gap */
+  margin: 0 !important;
+  background: transparent !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+html body.home-body:not(.sidebar-close):not(.sidebar-closed) #main-content {
+  padding-left: 292px !important;
+}
+
+/* ── Sidebar collapsed layout: correct left padding ───────────── */
+html body.home-body.sidebar-close #main-content,
+html body.home-body.sidebar-closed #main-content {
+  padding-left: 108px !important;
+}
+
+/* ── Make absolutely sure all tab panes allow content overflow so form can be seen/scrolled ── */
+html body.home-body .tab-content,
+html body.home-body .tab-pane,
+html body.home-body .tab-pane.active,
+html body.home-body .tab-pane.align,
+html body.home-body #search-edit.tab-pane,
+html body.home-body #search-edit.tab-pane.align,
+html body.home-body section.wrapper,
+html body.home-body section#container {
+  overflow: visible !important;
+  overflow-y: visible !important;
+  overflow-x: hidden !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  scrollbar-width: none !important;
+}
+
+/* ── Search-edit tab: add generous inner bottom padding so submit row is never clipped ── */
+html body.home-body #search-edit.tab-pane.align {
+  padding-bottom: 50px !important;
+}
+
+/* ── Edit form: if viewport is short, allow inner vertical scroll too, extra inner bottom padding ── */
+html body.home-body #fmgrp {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* ── Search page: permanently hide #example5 data source wrapper (only smart results shown) ── */
+html body.home-body #search-edit #example5-wrapper.search-source-data {
+  display: none !important;
+}
+
+/* ── Search page: allow class-based hiding of smart results wrapper (beats tab-pane block rule) ── */
+html body.home-body #search-edit #smart-results-wrapper.table-responsive.srw-hidden {
+  display: none !important;
+}
+
+@media (max-height: 820px) {
+
+  html body.home-body:not(.dark-mode) #fmgrp,
+  html body.home-body.dark-mode #fmgrp {
+    max-height: calc(100vh - 160px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    scrollbar-width: thin !important;
+  }
+}
+
+/* ── THIN PREMIUM BODY SCROLLBAR (visible, elegant gradient thumb) ── */
+html body.home-body::-webkit-scrollbar {
+  display: block !important;
+  width: 10px !important;
+}
+
+html body.home-body::-webkit-scrollbar-track {
+  background: transparent !important;
+  border: none !important;
+}
+
+html body.home-body::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #06b6d4 0%, #0e7490 45%, #1e40af 100%) !important;
+  border-radius: 999px !important;
+  width: 10px !important;
+  border: 2px solid transparent !important;
+  background-clip: padding-box !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+html body.home-body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #22d3ee 0%, #0891b2 45%, #2563eb 100%) !important;
+  background-clip: padding-box !important;
+  border: 2px solid transparent !important;
+}
+
+html body.home-body::-webkit-scrollbar-corner {
+  background: transparent !important;
+}
+
+/* Firefox body scrollbar */
+html body.home-body {
+  scrollbar-width: thin !important;
+  scrollbar-color: #0891b2 transparent !important;
+}
+
+/* ── #fmgrp inner vertical scrollbar (small screens) ───────── */
+html body.home-body:not(.dark-mode) #fmgrp::-webkit-scrollbar,
+html body.home-body.dark-mode #fmgrp::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #0ea5e9, #0e7490) !important;
+  border-radius: 999px !important;
+  border: 2px solid transparent !important;
+  background-clip: padding-box !important;
+}
+
+html body.home-body.dark-mode #fmgrp::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #06b6d4, #1e3a8a) !important;
+  border-radius: 999px !important;
+  border: 2px solid transparent !important;
+  background-clip: padding-box !important;
+}
+
+/* ── Horizontal thin scrollbars (tables / overflow-x) ──────────── */
+html body.home-body .table-responsive::-webkit-scrollbar,
+html body.home-body table::-webkit-scrollbar {
+  height: 6px !important;
+  width: 6px !important;
+}
+
+html body.home-body .table-responsive::-webkit-scrollbar-thumb,
+html body.home-body table::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #0ea5e9, #1e40af) !important;
+  border-radius: 999px !important;
+}
+
+/* Dark-mode body scrollbar */
+html body.home-body.dark-mode::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #06b6d4 0%, #0e7490 45%, #1e40af 100%) !important;
+  background-clip: padding-box !important;
+  border: 2px solid transparent !important;
+}
+
+html body.home-body.dark-mode::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #22d3ee 0%, #0891b2 45%, #2563eb 100%) !important;
+  background-clip: padding-box !important;
+  border: 2px solid transparent !important;
+}
+
+html body.home-body.dark-mode {
+  scrollbar-color: #06b6d4 transparent !important;
+}
+
+/* Mobile: scrollbar even thinner and correct sidebar / main padding */
+@media (max-width: 768px) {
+  html body.home-body #main-content {
+    padding: 80px 14px 140px 14px !important;
+  }
+
+  html body.home-body.sidebar-close #main-content,
+  html body.home-body.sidebar-closed #main-content,
+  html body.home-body:not(.sidebar-close):not(.sidebar-closed) #main-content {
+    padding-left: 14px !important;
+  }
+
+  html body.home-body::-webkit-scrollbar {
+    width: 6px !important;
+  }
+
+  html body.home-body #search-edit.tab-pane.align {
+    padding-bottom: 28px !important;
+  }
+}
+
+/* ── #fmgrp validation shake animation ─────────────────────────── */
+@-webkit-keyframes inputShake {
+
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translateX(-5px);
+  }
+
+  40%,
+  60% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes inputShake {
+
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translateX(-5px);
+  }
+
+  40%,
+  60% {
+    transform: translateX(5px);
+  }
+}
+
+html body.home-body:not(.dark-mode) #fmgrp input.input--shake,
+html body.home-body:not(.dark-mode) #fmgrp select.input--shake,
+html body.home-body:not(.dark-mode) #fmgrp textarea.input--shake,
+html body.home-body.dark-mode #fmgrp input.input--shake,
+html body.home-body.dark-mode #fmgrp select.input--shake,
+html body.home-body.dark-mode #fmgrp textarea.input--shake {
+  -webkit-animation: inputShake 0.55s cubic-bezier(.36, .07, .19, .97) both;
+  animation: inputShake 0.55s cubic-bezier(.36, .07, .19, .97) both;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.18) !important;
+}
+
+/* ── #fmgrp submit loading button state ─────────────────────────── */
+html body.home-body:not(.dark-mode) #fmgrp .btn4.btn--loading,
+html body.home-body.dark-mode #fmgrp .btn4.btn--loading {
+  pointer-events: none !important;
+  cursor: progress !important;
+  opacity: 0.82 !important;
+  transform: scale(0.985) !important;
+  filter: grayscale(0.08) !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp .btn4.btn--loading i,
+html body.home-body.dark-mode #fmgrp .btn4.btn--loading i {
+  display: inline-block;
+  -webkit-animation: fa-spin 0.9s linear infinite;
+  animation: fa-spin 0.9s linear infinite;
+  font-size: 16px;
+}
+
+/* ==========================================================================
+   ═══════════ HORIZONTAL TABLE SCROLL — BOOSTED SPECIFICITY GUARANTEE ══════
+   Priority: HIGHER than style.css rules (uses `html body.home-body` prefix)
+   Purpose:  Ensure DataTables / all tables can always be scrolled horizontally
+             to reach action buttons (Edit / Update / Delete / Transfer)
+             even on narrow viewports. This block is the final cascade authority
+             and cannot be overridden by legacy style.css rules.
+   ========================================================================== */
+
+/* 1. Every table-scroll wrapper in every context and every tab — FORCE overflow-x: auto */
+html body.home-body .table-responsive,
+html body.home-body #search-edit .table-responsive,
+html body.home-body #totallist .table-responsive,
+html body.home-body #officelist .table-responsive,
+html body.home-body #returnedlist .table-responsive,
+html body.home-body .tab-pane.align .table-responsive,
+html body.home-body .tab-pane .table-responsive,
+html body.home-body #smart-results-wrapper,
+html body.home-body #search-edit.tab-pane.align .table-responsive,
+html body.home-body.dark-mode .table-responsive,
+html body.home-body.dark-mode #search-edit .table-responsive,
+html body.home-body.dark-mode .tab-pane.align .table-responsive,
+html body.home-body:not(.dark-mode) .table-responsive,
+html body.home-body:not(.dark-mode) #search-edit .table-responsive,
+html body.home-body:not(.dark-mode) .tab-pane.align .table-responsive {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  display: block !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #0891b2 rgba(148, 163, 184, 0.08) !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x pan-y !important;
+}
+
+/* 2. DataTables native scrollX containers (if scrollX:true ever added) */
+html body.home-body .dataTables_scroll,
+html body.home-body .dataTables_scrollBody,
+html body.home-body .dataTables_wrapper,
+html body.home-body.dark-mode .dataTables_scroll,
+html body.home-body.dark-mode .dataTables_scrollBody,
+html body.home-body.dark-mode .dataTables_wrapper {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  max-width: 100% !important;
+  scrollbar-width: thin !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* 3. TABLE ELEMENTS themselves: NEVER apply overflow hidden (breaks scrolling; only wrappers should clip/scroll) */
+html body.home-body table.table,
+html body.home-body table#example2,
+html body.home-body table#example3,
+html body.home-body table#example4,
+html body.home-body table#example5,
+html body.home-body .dataTables_scroll table,
+html body.home-body.dark-mode table.table,
+html body.home-body.dark-mode table#example2,
+html body.home-body.dark-mode table#example3,
+html body.home-body.dark-mode table#example4,
+html body.home-body.dark-mode table#example5 {
+  overflow: visible !important;
+  display: table !important;
+  width: 100% !important;
+  min-width: max-content !important;
+}
+
+/* 4. EXPLICIT VISIBLE HORIZONTAL SCROLLBARS on .table-responsive — cyan → teal → indigo gradient (6px height) */
+html body.home-body .table-responsive::-webkit-scrollbar,
+html body.home-body .dataTables_scroll::-webkit-scrollbar,
+html body.home-body .dataTables_scrollBody::-webkit-scrollbar,
+html body.home-body #smart-results-wrapper::-webkit-scrollbar {
+  display: block !important;
+  height: 6px !important;
+  width: 6px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+html body.home-body .table-responsive::-webkit-scrollbar-track,
+html body.home-body .dataTables_scroll::-webkit-scrollbar-track,
+html body.home-body .dataTables_scrollBody::-webkit-scrollbar-track,
+html body.home-body #smart-results-wrapper::-webkit-scrollbar-track {
+  background: rgba(148, 163, 184, 0.08) !important;
+  border-radius: 999px !important;
+}
+
+html body.home-body .table-responsive::-webkit-scrollbar-thumb,
+html body.home-body .dataTables_scroll::-webkit-scrollbar-thumb,
+html body.home-body .dataTables_scrollBody::-webkit-scrollbar-thumb,
+html body.home-body #smart-results-wrapper::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #22d3ee 0%, #0891b2 45%, #1e40af 100%) !important;
+  border-radius: 999px !important;
+  height: 6px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background-clip: padding-box !important;
+  min-width: 48px !important;
+}
+
+html body.home-body .table-responsive::-webkit-scrollbar-thumb:hover,
+html body.home-body .dataTables_scroll::-webkit-scrollbar-thumb:hover,
+html body.home-body .dataTables_scrollBody::-webkit-scrollbar-thumb:hover,
+html body.home-body #smart-results-wrapper::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #67e8f9 0%, #06b6d4 45%, #2563eb 100%) !important;
+  background-clip: padding-box !important;
+}
+
+html body.home-body .table-responsive::-webkit-scrollbar-corner,
+html body.home-body .dataTables_scroll::-webkit-scrollbar-corner {
+  background: transparent !important;
+}
+
+/* 5. Firefox (Gecko) — same gradient visible bar for all .table-responsive */
+html body.home-body .table-responsive,
+html body.home-body .dataTables_scroll,
+html body.home-body .dataTables_scrollBody,
+html body.home-body #smart-results-wrapper {
+  scrollbar-width: thin !important;
+  scrollbar-color: #0891b2 rgba(148, 163, 184, 0.08) !important;
+}
+
+/* 6. Dark-mode horizontal scrollbar gradient — neon cyan → indigo darker shade */
+html body.home-body.dark-mode .table-responsive::-webkit-scrollbar-thumb,
+html body.home-body.dark-mode .dataTables_scroll::-webkit-scrollbar-thumb,
+html body.home-body.dark-mode .dataTables_scrollBody::-webkit-scrollbar-thumb,
+html body.home-body.dark-mode #smart-results-wrapper::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #06b6d4 0%, #1e40af 55%, #7c3aed 100%) !important;
+  background-clip: padding-box !important;
+}
+
+html body.home-body.dark-mode .table-responsive,
+html body.home-body.dark-mode .dataTables_scroll,
+html body.home-body.dark-mode .dataTables_scrollBody,
+html body.home-body.dark-mode #smart-results-wrapper {
+  scrollbar-color: #22d3ee rgba(255, 255, 255, 0.04) !important;
+}
+
+/* 7. Mobile (<= 768px) — guarantee even more: bump scrollbar touch-size to 8px for 44px Fitts targets */
+@media (max-width: 768px) {
+
+  html body.home-body .table-responsive::-webkit-scrollbar,
+  html body.home-body .dataTables_scroll::-webkit-scrollbar,
+  html body.home-body .dataTables_scrollBody::-webkit-scrollbar,
+  html body.home-body #smart-results-wrapper::-webkit-scrollbar {
+    height: 8px !important;
+  }
+
+  html body.home-body .table-responsive::-webkit-scrollbar-thumb,
+  html body.home-body .dataTables_scroll::-webkit-scrollbar-thumb,
+  html body.home-body .dataTables_scrollBody::-webkit-scrollbar-thumb,
+  html body.home-body #smart-results-wrapper::-webkit-scrollbar-thumb {
+    min-width: 56px !important;
+    height: 8px !important;
+  }
+}
+
+/* ==========================================================================
+   ══════════════════════════════════════════════════════════════════════════
+   SUPER-BOOSTED ID-ID COMBINED SELECTORS (specificity 2 IDs · 2+ classes)
+   ══════════════════════════════════════════════════════════════════════════
+   Definitive win-vs-style.css-cascade authority.
+   style.css #search-edit rule = specificity (0,1,2,1) [1 id / 2 classes]
+   This block rules = (0,2,1,2) or HIGHER [2 IDs + class + 2 elements]
+   Nothing in style.css can ever beat these.  EVER.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* 1. ALL .table-responsive inside ANY tab-pane, identified by BOTH #search-edit AND its own wrapper — beats style.css */
+html body.home-body #search-edit .table-responsive,
+html body.home-body #search-edit.table-pane.align .table-responsive,
+html body.home-body #totallist .table-responsive,
+html body.home-body #officelist .table-responsive,
+html body.home-body #returnedlist .table-responsive,
+html body.home-body #help .table-responsive,
+html body.home-body #contact .table-responsive,
+html body.home-body #search-edit #smart-results-wrapper {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  display: block !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #0891b2 rgba(148, 163, 184, 0.08) !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x pan-y !important;
+}
+
+/* 2. table#example5 overflow MUST NEVER be hidden — last-column Edit/Update buttons unreachable otherwise */
+html body.home-body #search-edit table#example5,
+html body.home-body #search-edit table.table,
+html body.home-body #totallist table#example2,
+html body.home-body #officelist table#example3,
+html body.home-body #returnedlist table#example4,
+html body.home-body table#example5,
+html body.home-body table#example2,
+html body.home-body table#example3,
+html body.home-body table#example4 {
+  overflow: visible !important;
+  display: table !important;
+  width: 100% !important;
+  min-width: max-content !important;
+  table-layout: auto !important;
+}
+
+/* 3. Dark-mode same scrollbar treatment for #search-edit */
+html body.home-body.dark-mode #search-edit .table-responsive,
+html body.home-body.dark-mode #search-edit #smart-results-wrapper {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #22d3ee rgba(255, 255, 255, 0.04) !important;
+}
+
+/* 4. SUPER-BOOSTED Mobile (<=768px) — final mobile fallback */
+@media (max-width: 768px) {
+
+  html body.home-body #search-edit .table-responsive,
+  html body.home-body #search-edit #smart-results-wrapper,
+  html body.home-body #totallist .table-responsive,
+  html body.home-body #officelist .table-responsive,
+  html body.home-body #returnedlist .table-responsive {
+    overflow-x: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+
+/* ==========================================================================
+   ══════════════════════════════════════════════════════════════════════════
+   #FMGRP (Edit/Update Form) — FULL DASHBOARD FORM DESIGN PARITY
+   ══════════════════════════════════════════════════════════════════════════
+   Goal: make the Update form in the Search tab look IDENTICAL to the
+   Dashboard new-entry (#dboard #form) card design:
+   - Same white card border-radius 20px, subtle border, premium shadow
+   - Same dark→slate gradient header strip with cyan 3px bottom accent
+   - Same 3-col responsive layout with vertical column dividers
+   - Same 3 gradient stat cards (edit-blue / edit-indigo / edit-purple)
+   - Same label styling: uppercase, letter-spacing, gradient clipped text
+   - Same input geometry: 47px height / 11px radius / focus cyan glow
+   - Same Reason textarea: 11px radius, vertical resize only
+   - Same Submit (btn2) primary: 54px height / 14px radius / indigo→cyan gradient
+   - New Cancel (btn2-secondary): matching size, white→slate ghost, hover lift
+   - Same spring animations + glass polish + dark-mode matching style
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 0. Hide old fmgrp legacy visual markers (slideInDown, form-panel-header are removed) ── */
+html body.home-body #fmgrp .slideInDown,
+html body.home-body #fmgrp .form-panel-header,
+html body.home-body #fmgrp .field-block,
+html body.home-body #fmgrp label.lb,
+html body.home-body #fmgrp input.inp,
+html body.home-body #fmgrp textarea.inp,
+html body.home-body #fmgrp .btn4 {
+  display: none !important;
+}
+
+/* ── 1. OUTER FORM CARD — matches #dboard #form exactly ───────────────────── */
+html body.home-body #fmgrp.form-group {
+  position: relative !important;
+  display: block !important;
+  background: #ffffff !important;
+  border-radius: 20px !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow:
+    0 20px 50px rgba(15, 23, 42, 0.09),
+    0 4px 12px rgba(15, 23, 42, 0.05) !important;
+  overflow: visible !important;
+  margin: 22px 0 10px 0 !important;
+  padding: 0 !important;
+  animation: fmgrpSlideIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html body.home-body.dark-mode #fmgrp.form-group {
+  background:
+    linear-gradient(180deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%) !important;
+  border: 1px solid rgba(148, 163, 184, 0.18) !important;
+  box-shadow:
+    0 24px 60px rgba(2, 6, 23, 0.55),
+    0 8px 20px rgba(2, 6, 23, 0.3) !important;
+}
+
+/* Neon gradient border (light mode) via pseudo-outline — matches dashboard form */
+html body.home-body:not(.dark-mode) #fmgrp.form-group::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.45), rgba(99, 102, 241, 0.25) 50%, rgba(139, 92, 246, 0.35));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Dashboard-style form-header dark strip (same style as #dboard ::before header) */
+html body.home-body #fmgrp .form-header-bar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 11px !important;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 45%, #334155 100%) !important;
+  color: #f8fafc !important;
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  padding: 17px 28px !important;
+  border-radius: 20px 20px 0 0 !important;
+  border-bottom: 3px solid #22d3ee !important;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.06) !important;
+  position: relative;
+  z-index: 3;
+}
+
+html body.home-body #fmgrp .form-header-bar i {
+  font-size: 15px !important;
+  color: #22d3ee !important;
+  opacity: 0.98 !important;
+}
+
+html body.home-body #fmgrp .form-header-bar .form-header-sub {
+  margin-left: auto !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  color: rgba(148, 163, 184, 0.88) !important;
+}
+
+html body.home-body.dark-mode #fmgrp .form-header-bar {
+  background: linear-gradient(135deg, #020617 0%, #0f172a 45%, #1e293b 100%) !important;
+  border-bottom: 3px solid #06b6d4 !important;
+}
+
+/* ── 2. FORM BODY LAYOUT — match dashboard's <center>+3 column design ─────── */
+html body.home-body #fmgrp .form-body {
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+  position: relative;
+}
+
+html body.home-body #fmgrp .form-body>center {
+  padding: 26px 20px 0 20px !important;
+  display: block !important;
+  text-align: left !important;
+}
+
+html body.home-body #fmgrp .form-body>center>.col-md-4 {
+  float: left !important;
+  width: 33.33333333% !important;
+  padding: 0 14px !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  min-height: 1px !important;
+}
+
+/* Dashboard column dividers — light grey border-right between col-md-4 */
+html body.home-body:not(.dark-mode) #fmgrp .form-body>center>.col-md-4+.col-md-4::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 20px;
+  bottom: 20px;
+  width: 1px;
+  background: #f1f5f9 !important;
+}
+
+html body.home-body.dark-mode #fmgrp .form-body>center>.col-md-4+.col-md-4::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 20px;
+  bottom: 20px;
+  width: 1px;
+  background: rgba(148, 163, 184, 0.12) !important;
+}
+
+/* Reason + Submit row must clear floats */
+html body.home-body #fmgrp .form-body>.col-md-12,
+html body.home-body #fmgrp .form-body>center~.col-md-12,
+html body.home-body #fmgrp .col-md-12 {
+  clear: both !important;
+  float: none !important;
+  width: 100% !important;
+  padding: 0 28px 30px 28px !important;
+  margin-top: 10px !important;
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+/* The last center (after textarea) is the button bar */
+html body.home-body #fmgrp .col-md-12>center {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 16px !important;
+  margin-top: 24px !important;
+  padding: 0 !important;
+}
+
+/* Suppress useless <br> double-spacing — labels margin takes over */
+html body.home-body #fmgrp br {
+  display: none !important;
+  line-height: 0 !important;
+  font-size: 0 !important;
+  height: 0 !important;
+}
+
+/* ── 3. THREE STAT CARDS — blue / indigo / purple variants (match dashboard) ─ */
+html body.home-body #fmgrp .dd1 {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 22px 20px 20px !important;
+  border-radius: 16px !important;
+  margin: 0 0 14px 0 !important;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
+}
+
+html body.home-body #fmgrp .dd1:hover {
+  transform: translateY(-5px) scale(1.018) !important;
+}
+
+html body.home-body #fmgrp .dd1 p.p1 {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin: 0 0 14px 0 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.1em !important;
+  white-space: nowrap !important;
+  color: rgba(255, 255, 255, 0.88) !important;
+  text-transform: uppercase !important;
+}
+
+html body.home-body #fmgrp .dd1 p.p1 .stat-ico {
+  font-size: 14px !important;
+  opacity: 0.95 !important;
+}
+
+html body.home-body #fmgrp .dd1 .pp1 {
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+  color: #ffffff !important;
+  letter-spacing: 0.04em !important;
+  text-shadow: 0 4px 14px rgba(0, 0, 0, 0.22) !important;
+}
+
+html body.home-body #fmgrp .dd1 .pp1 i {
+  font-size: 17px !important;
+  margin-right: 2px !important;
+  opacity: 0.95;
+}
+
+/* Stat card 1 (left): dashboard blue gradient */
+html body.home-body #fmgrp .dd1.stat-card--edit {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.16) 0%, transparent 45%),
+    linear-gradient(135deg, #1e40af 0%, #1d4ed8 45%, #0891b2 100%) !important;
+  box-shadow:
+    0 16px 40px rgba(29, 78, 216, 0.36),
+    0 4px 12px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+html body.home-body #fmgrp .dd1.stat-card--edit:hover {
+  box-shadow:
+    0 26px 56px rgba(29, 78, 216, 0.48),
+    0 8px 18px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+html body.home-body #fmgrp .dd1.stat-card--edit p.p1 .stat-ico {
+  color: #93c5fd !important;
+}
+
+/* Stat card 2 (middle): teal→cyan→indigo gradient */
+html body.home-body #fmgrp .dd1.stat-card--edit2 {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.16) 0%, transparent 45%),
+    linear-gradient(135deg, #047857 0%, #059669 45%, #0891b2 100%) !important;
+  box-shadow:
+    0 16px 40px rgba(5, 150, 105, 0.36),
+    0 4px 12px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+html body.home-body #fmgrp .dd1.stat-card--edit2:hover {
+  box-shadow:
+    0 26px 56px rgba(5, 150, 105, 0.48),
+    0 8px 18px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+html body.home-body #fmgrp .dd1.stat-card--edit2 p.p1 .stat-ico {
+  color: #6ee7b7 !important;
+}
+
+/* Stat card 3 (right): purple→indigo gradient */
+html body.home-body #fmgrp .dd1.stat-card--edit3 {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.16) 0%, transparent 45%),
+    linear-gradient(135deg, #5b21b6 0%, #7c3aed 45%, #0891b2 100%) !important;
+  box-shadow:
+    0 16px 40px rgba(124, 58, 237, 0.36),
+    0 4px 12px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+html body.home-body #fmgrp .dd1.stat-card--edit3:hover {
+  box-shadow:
+    0 26px 56px rgba(124, 58, 237, 0.48),
+    0 8px 18px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+html body.home-body #fmgrp .dd1.stat-card--edit3 p.p1 .stat-ico {
+  color: #c4b5fd !important;
+}
+
+/* ── 4. LABELS — match dashboard gradient-clipped uppercase style ──────────── */
+html body.home-body #fmgrp label {
+  display: block !important;
+  font-size: 10.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.09em !important;
+  text-transform: uppercase !important;
+  margin: 16px 0 6px 2px !important;
+  padding: 0 !important;
+  font-family: "Lato", -apple-system, sans-serif !important;
+  line-height: 1.2 !important;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.55), rgba(34, 211, 238, 0.85));
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  position: relative !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp label {
+  background: linear-gradient(90deg, #475569, #0891b2) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* ── 5. INPUTS + SELECTS — match dashboard 47px h / 11px r / cyan focus glow ─ */
+html body.home-body #fmgrp input.form-control,
+html body.home-body #fmgrp select.form-control {
+  height: 47px !important;
+  border-radius: 11px !important;
+  padding: 0 16px 0 44px !important;
+  letter-spacing: 0.01em;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  width: 100% !important;
+  display: block !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+  box-shadow: none !important;
+}
+
+html body.home-body #fmgrp select.form-control {
+  padding-right: 40px !important;
+  padding-left: 16px !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp input.form-control,
+html body.home-body:not(.dark-mode) #fmgrp select.form-control,
+html body.home-body:not(.dark-mode) #fmgrp textarea.form-control {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+}
+
+html body.home-body:not(.dark-mode) #fmgrp input.form-control:focus,
+html body.home-body:not(.dark-mode) #fmgrp select.form-control:focus,
+html body.home-body:not(.dark-mode) #fmgrp textarea.form-control:focus {
+  background: #ffffff !important;
+  border-color: #0891b2 !important;
+  box-shadow:
+    0 0 0 3px rgba(8, 145, 178, 0.12),
+    0 2px 6px rgba(15, 23, 42, 0.06) !important;
+  outline: none !important;
+}
+
+html body.home-body.dark-mode #fmgrp input.form-control,
+html body.home-body.dark-mode #fmgrp select.form-control,
+html body.home-body.dark-mode #fmgrp textarea.form-control {
+  background: rgba(15, 23, 42, 0.65) !important;
+  border: 1.5px solid rgba(148, 163, 184, 0.22) !important;
+  color: #f1f5f9 !important;
+}
+
+html body.home-body.dark-mode #fmgrp input.form-control:focus,
+html body.home-body.dark-mode #fmgrp select.form-control:focus,
+html body.home-body.dark-mode #fmgrp textarea.form-control:focus {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-color: #22d3ee !important;
+  box-shadow:
+    0 0 0 3px rgba(34, 211, 238, 0.16),
+    0 2px 6px rgba(2, 6, 23, 0.4) !important;
+  outline: none !important;
+}
+
+html body.home-body #fmgrp input.form-control[disabled] {
+  background: #f1f5f9 !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+  border-color: #e2e8f0 !important;
+}
+
+html body.home-body.dark-mode #fmgrp input.form-control[disabled] {
+  background: rgba(15, 23, 42, 0.4) !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+}
+
+html body.home-body #fmgrp input::placeholder,
+html body.home-body #fmgrp textarea::placeholder {
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
+}
+
+/* ── 6. REASON TEXTAREA — match dashboard style ──────────────────────────── */
+html body.home-body #fmgrp textarea.form-control {
+  border-radius: 11px !important;
+  padding: 13px 16px !important;
+  line-height: 1.65 !important;
+  min-height: 110px !important;
+  resize: vertical !important;
+  font-size: 14px !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+/* ── 7. BUTTON ROW — btn2 dashboard exact match + secondary cancel ────────── */
+html body.home-body #fmgrp .btn-row {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+  margin-top: 22px !important;
+}
+
+/* Primary Update button: matches Submit+Print btn2 geometry + purple→cyan gradient */
+html body.home-body #fmgrp .btn2.btn2--primary {
+  min-width: 230px !important;
+  height: 54px !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  border-radius: 14px !important;
+  background:
+    radial-gradient(circle at 82% 22%, rgba(255, 255, 255, 0.22) 0%, transparent 45%),
+    linear-gradient(135deg, #1e3a8a 0%, #0891b2 55%, #0e7490 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 28px rgba(30, 58, 138, 0.32) !important;
+  letter-spacing: 0.04em !important;
+  transition:
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.25s ease !important;
+  color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 9px !important;
+  padding: 0 22px !important;
+  cursor: pointer !important;
+  font-family: "Lato", sans-serif !important;
+}
+
+html body.home-body #fmgrp .btn2.btn2--primary i {
+  font-size: 15px !important;
+}
+
+html body.home-body #fmgrp .btn2.btn2--primary:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 18px 38px rgba(30, 58, 138, 0.42) !important;
+}
+
+html body.home-body #fmgrp .btn2.btn2--primary:active {
+  transform: translateY(-1px) scale(0.99) !important;
+  box-shadow: 0 6px 16px rgba(30, 58, 138, 0.3) !important;
+}
+
+/* Secondary Cancel button: ghost-style matches dashboard (slate→slate hover, same geometry) */
+html body.home-body #fmgrp .btn2.btn2--secondary {
+  min-width: 200px !important;
+  height: 54px !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  border-radius: 14px !important;
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05) !important;
+  letter-spacing: 0.04em !important;
+  transition:
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.25s ease,
+    border-color 0.2s ease,
+    color 0.2s ease !important;
+  color: #475569 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 0 22px !important;
+  cursor: pointer !important;
+  font-family: "Lato", sans-serif !important;
+}
+
+html body.home-body #fmgrp .btn2.btn2--secondary i {
+  font-size: 14px !important;
+  color: #94a3b8 !important;
+}
+
+html body.home-body #fmgrp .btn2.btn2--secondary:hover {
+  transform: translateY(-3px) !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12) !important;
+}
+
+html body.home-body #fmgrp .btn2.btn2--secondary:hover i {
+  color: #475569 !important;
+}
+
+html body.home-body #fmgrp .btn2.btn2--secondary:active {
+  transform: translateY(-1px) scale(0.99) !important;
+}
+
+html body.home-body.dark-mode #fmgrp .btn2.btn2--secondary {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border-color: rgba(148, 163, 184, 0.26) !important;
+  color: #cbd5e1 !important;
+}
+
+html body.home-body.dark-mode #fmgrp .btn2.btn2--secondary i {
+  color: #64748b !important;
+}
+
+html body.home-body.dark-mode #fmgrp .btn2.btn2--secondary:hover {
+  background: rgba(30, 41, 59, 0.95) !important;
+  border-color: rgba(34, 211, 238, 0.4) !important;
+  color: #f1f5f9 !important;
+}
+
+html body.home-body.dark-mode #fmgrp .btn2.btn2--secondary:hover i {
+  color: #cbd5e1 !important;
+}
+
+/* ── 8. Input field icon decoration (prefix icons inside input, like dashboard) ── */
+/* Using label + input wrapper we don't have extra divs, so render icons via input::before equivalents isn't possible on inputs (replaced-elements). Instead use input-left padding and matching sibling decoration like the dashboard uses. */
+html body.home-body #fmgrp .col-md-4,
+html body.home-body #fmgrp .col-md-12 {
+  position: relative !important;
+}
+
+/* ── 9. Loading state re-use: keep original btn--loading + shake classes working ── */
+html body.home-body #fmgrp .btn2.btn--loading {
+  pointer-events: none !important;
+  cursor: progress !important;
+  opacity: 0.85 !important;
+  transform: scale(0.985) !important;
+  filter: grayscale(0.08) !important;
+}
+
+html body.home-body #fmgrp .btn2.btn--loading i.fa.fa-spinner {
+  display: inline-block !important;
+  -webkit-animation: fa-spin 0.9s linear infinite !important;
+  animation: fa-spin 0.9s linear infinite !important;
+  font-size: 16px !important;
+}
+
+html body.home-body #fmgrp input.input--shake,
+html body.home-body #fmgrp select.input--shake,
+html body.home-body #fmgrp textarea.input--shake {
+  -webkit-animation: inputShake 0.55s cubic-bezier(.36, .07, .19, .97) both !important;
+  animation: inputShake 0.55s cubic-bezier(.36, .07, .19, .97) both !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.18) !important;
+}
+
+/* ── 10. RESPONSIVE: collapse to single column on mobile, mirror dashboard breakpoint ── */
+@media (max-width: 991px) {
+  html body.home-body #fmgrp .form-body>center>.col-md-4 {
+    float: none !important;
+    width: 100% !important;
+    padding: 0 12px !important;
+  }
+
+  html body.home-body:not(.dark-mode) #fmgrp .form-body>center>.col-md-4+.col-md-4::before,
+  html body.home-body.dark-mode #fmgrp .form-body>center>.col-md-4+.col-md-4::before {
+    display: none !important;
+  }
+
+  html body.home-body #fmgrp .col-md-12 {
+    padding: 0 18px 26px 18px !important;
+  }
+
+  html body.home-body #fmgrp .btn-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  html body.home-body #fmgrp .btn2.btn2--primary,
+  html body.home-body #fmgrp .btn2.btn2--secondary {
+    min-width: 100% !important;
+    width: 100% !important;
+  }
+
+  html body.home-body #fmgrp .form-header-bar .form-header-sub {
+    display: none !important;
   }
 }
