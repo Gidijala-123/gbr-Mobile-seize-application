@@ -256,6 +256,11 @@ body.home-body #container aside {
 body.home-body #sidebar {
   background: linear-gradient(180deg, rgba(8, 18, 33, 0.98), rgba(14, 23, 37, 0.96)) !important;
   border-right: 1px solid rgba(124, 140, 165, 0.18) !important;
+  transition: width 0.28s ease, min-width 0.28s ease, padding 0.28s ease !important;
+}
+
+body.home-body #container #main-content {
+  transition: padding-left 0.28s ease, margin-left 0.28s ease, width 0.28s ease !important;
 }
 
 body.home-body #sidebar .sidebar-brand {
@@ -390,13 +395,13 @@ body.home-body #container.sidebar-close #sidebar .sidebar-menu li a,
 body.home-body #container.sidebar-closed #sidebar .sidebar-menu li a {
   justify-content: center !important;
   align-items: center !important;
-  width: 54px !important;
-  min-width: 54px !important;
-  height: 54px !important;
+  width: 42px !important;
+  min-width: 42px !important;
+  height: 42px !important;
   padding: 0 !important;
   margin: 0 auto !important;
   border-left-width: 0 !important;
-  border-radius: 16px !important;
+  border-radius: 12px !important;
   transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
   background: rgba(15, 23, 42, 0.2) !important;
   border: 1px solid transparent !important;
@@ -422,19 +427,19 @@ body.home-body #container.sidebar-close #sidebar .sidebar-menu li a i,
 body.home-body #container.sidebar-closed #sidebar .sidebar-menu li a i {
   width: auto !important;
   padding: 0 !important;
-  font-size: 18px !important;
-  color: #dfeeff !important;
+  font-size: 14px !important;
+  color: rgba(103, 232, 249, 0.85) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   text-align: center !important;
   line-height: 1 !important;
+  transition: font-size 0.28s ease, color 0.2s ease !important;
 }
 
 body.home-body #container.sidebar-close #sidebar .sidebar-menu li.active a i,
 body.home-body #container.sidebar-closed #sidebar .sidebar-menu li.active a i {
-  color: #ffffff !important;
-  text-shadow: 0 0 10px rgba(34, 211, 238, 0.72) !important;
+  color: #22d3ee !important;
 }
 
 body.home-body #container.sidebar-close #main-content,
@@ -468,8 +473,8 @@ body.home-body #container.sidebar-closed #main-content {
 
   body.home-body #container.sidebar-close #main-content,
   body.home-body #container.sidebar-closed #main-content {
-    margin-left: 58px !important;
-    width: calc(100% - 58px) !important;
+    margin-left: 72px !important;
+    width: calc(100% - 72px) !important;
   }
 }
 

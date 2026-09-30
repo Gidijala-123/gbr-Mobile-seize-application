@@ -2455,14 +2455,14 @@ html body.home-body #main-content {
   -webkit-overflow-scrolling: touch !important;
 }
 
-html body.home-body:not(.sidebar-close):not(.sidebar-closed) #main-content {
+html body.home-body #container:not(.sidebar-close):not(.sidebar-closed) #main-content {
   padding-left: 292px !important;
 }
 
 /* ── Sidebar collapsed layout: correct left padding ───────────── */
-html body.home-body.sidebar-close #main-content,
-html body.home-body.sidebar-closed #main-content {
-  padding-left: 108px !important;
+html body.home-body #container.sidebar-close #main-content,
+html body.home-body #container.sidebar-closed #main-content {
+  padding-left: 28px !important;
 }
 
 /* ── Make absolutely sure all tab panes allow content overflow so form can be seen/scrolled ── */

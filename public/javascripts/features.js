@@ -940,6 +940,7 @@ $(document).ready(function () {
   $(document).on("click", "#staffDirectoryBack", function () {
     $("#contact .staff-directory").prop("hidden", true);
     $("#contact .contact-selector-section").show();
+    $("#contact .contact-dept-grid, #contact .contact-selector-label").show();
     $("#contact .year-btn").removeClass("year-btn--active");
     $("#staffDirectorySearch").val("").trigger("input");
   });
