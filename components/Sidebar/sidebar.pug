@@ -13,7 +13,7 @@ aside.sidebar-component
       span Navigation
 
     ul#nav-accordion.sidebar-menu
-      li.active
+      li(class=isAuditPage ? null : 'active')
         a(data-toggle='tab', href='#dboard', data-tooltip='Dashboard')
           .nav-icon-wrap
             i.fa.fa-tachometer
@@ -38,7 +38,7 @@ aside.sidebar-component
           .nav-icon-wrap
             i.fa.fa-trash
           span.nav-text Recently Deleted
-      li.sub-menu
+      li.sub-menu(class=isAuditPage ? 'active' : null)
         a(href='/audit', data-tooltip='Record Activity')
           .nav-icon-wrap
             i.fa.fa-history

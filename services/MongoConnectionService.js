@@ -1,7 +1,8 @@
 function createMongoConnectionService({
   connect,
   getConnection,
-  wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
+  wait = (milliseconds) =>
+    new Promise((resolve) => setTimeout(resolve, milliseconds)),
   logger = console,
   attempts = 5,
   initialDelayMs = 250,

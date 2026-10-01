@@ -151,4 +151,17 @@ $('#example4').dataTable({
   ]
 });
 });
+$(document).ready(function () {
+  $('#auditTable').dataTable({
+    dom: 'Bfrtip',
+    pageLength: 8,
+    buttons: [
+      { extend: 'copy', title: 'Record Activity' },
+      { extend: 'csvHtml5', title: 'Record Activity' },
+      { extend: 'excelHtml5', title: 'Record Activity' },
+      { extend: 'pdfHtml5', title: 'Record Activity' },
+      { extend: 'print', title: 'Record Activity' }
+    ]
+  });
+});
      //these 2 script links must be placed at bottom only, else fails to work

@@ -31,6 +31,7 @@ GMAIL_PASS=your-gmail-app-password-without-spaces
 ```
 
 Notes:
+
 - `MONGODB_URI` is required for the app and session store to start.
 - `SESSION_SECRET` is required in production.
 - For Gmail, use a 16-character app password. If you paste it with spaces, the app now strips whitespace automatically for smoother setup.
@@ -139,24 +140,24 @@ The application follows a server-rendered MVC-style structure:
 
 ## Main Routes
 
-| Method | Route | Purpose |
-| --- | --- | --- |
-| `GET` | `/` | Render login and signup page |
-| `GET` | `/forgot` | Render forgot-password page |
-| `POST` | `/postsignup` | Create a user account |
-| `POST` | `/postlogin` | Authenticate a user and create a session |
-| `POST` | `/postforgot` | Generate and email a temporary credential |
-| `GET` | `/home` | Render the authenticated dashboard and device lists |
-| `GET` | `/api/records` | Authenticated DataTables paging, search, status filtering, and sorting (`draw`, `start`, `length`, `order`, `columns`, `search[value]`) |
-| `GET` | `/api/recyclebin` | List records deleted within the 30-day recovery window |
-| `GET` | `/audit` | View recent record field changes and lifecycle events |
-| `GET` | `/api/records/:id/audit` | Fetch audit events for one record |
-| `POST` | `/restore/:id` | Restore a recently deleted record by ObjectId |
-| `POST` | `/hh` | Register a seized device |
-| `POST` | `/change` | Mark a device as returned |
-| `POST` | `/edit` | Fetch a record by roll number |
-| `POST` | `/update` | Update an existing record |
-| `GET` | `/logout` | Destroy the current session |
+| Method | Route                    | Purpose                                                                                                                                 |
+| ------ | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET`  | `/`                      | Render login and signup page                                                                                                            |
+| `GET`  | `/forgot`                | Render forgot-password page                                                                                                             |
+| `POST` | `/postsignup`            | Create a user account                                                                                                                   |
+| `POST` | `/postlogin`             | Authenticate a user and create a session                                                                                                |
+| `POST` | `/postforgot`            | Generate and email a temporary credential                                                                                               |
+| `GET`  | `/home`                  | Render the authenticated dashboard and device lists                                                                                     |
+| `GET`  | `/api/records`           | Authenticated DataTables paging, search, status filtering, and sorting (`draw`, `start`, `length`, `order`, `columns`, `search[value]`) |
+| `GET`  | `/api/recyclebin`        | List records deleted within the 30-day recovery window                                                                                  |
+| `GET`  | `/audit`                 | View recent record field changes and lifecycle events                                                                                   |
+| `GET`  | `/api/records/:id/audit` | Fetch audit events for one record                                                                                                       |
+| `POST` | `/restore/:id`           | Restore a recently deleted record by ObjectId                                                                                           |
+| `POST` | `/hh`                    | Register a seized device                                                                                                                |
+| `POST` | `/change`                | Mark a device as returned                                                                                                               |
+| `POST` | `/edit`                  | Fetch a record by roll number                                                                                                           |
+| `POST` | `/update`                | Update an existing record                                                                                                               |
+| `GET`  | `/logout`                | Destroy the current session                                                                                                             |
 
 ## Data Model
 

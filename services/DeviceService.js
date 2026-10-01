@@ -30,7 +30,12 @@ function createDeviceService({ getRecordRepository, getAuditRepository }) {
     return getAuditRepository && getAuditRepository();
   }
 
-  async function writeAuditEntries(record, actionType, changedByEmail, changes) {
+  async function writeAuditEntries(
+    record,
+    actionType,
+    changedByEmail,
+    changes,
+  ) {
     const repository = auditLogs();
     if (!repository || !changes.length) return;
     await Promise.all(
@@ -50,7 +55,10 @@ function createDeviceService({ getRecordRepository, getAuditRepository }) {
   }
 
   function valuesDiffer(left, right) {
-    return JSON.stringify(left == null ? null : left) !== JSON.stringify(right == null ? null : right);
+    return (
+      JSON.stringify(left == null ? null : left) !==
+      JSON.stringify(right == null ? null : right)
+    );
   }
 
   return {
@@ -99,7 +107,12 @@ function createDeviceService({ getRecordRepository, getAuditRepository }) {
       const [recordsTotal, recordsFiltered, data] = await Promise.all([
         records().countDocuments(baseFilter),
         records().countDocuments(filter),
-        records().findPage(filter, { [field]: direction }, pageOffset, pageLength),
+        records().findPage(
+          filter,
+          { [field]: direction },
+          pageOffset,
+          pageLength,
+        ),
       ]);
 
       return { draw, recordsTotal, recordsFiltered, data };
@@ -119,7 +132,9 @@ function createDeviceService({ getRecordRepository, getAuditRepository }) {
       return createdRecord;
     },
     async markReturned(recordId, changedByEmail) {
-      const previous = (await records().find({ _id: recordId, deletedAt: null }))[0];
+      const previous = (
+        await records().find({ _id: recordId, deletedAt: null })
+      )[0];
       if (!previous) return { ok: 0, matchedCount: 0, modifiedCount: 0 };
       const statusChanged = previous.status !== "Returned";
       const statusChangedAt = statusChanged
@@ -141,8 +156,16 @@ function createDeviceService({ getRecordRepository, getAuditRepository }) {
       if (result.matchedCount && statusChanged) {
         await writeAuditEntries(previous, "STATUS_CHANGE", changedByEmail, [
           { field: "status", oldValue: previous.status, newValue: "Returned" },
-          { field: "statusChangedBy", oldValue: previous.statusChangedBy, newValue: statusChangedBy },
-          { field: "statusChangedAt", oldValue: previous.statusChangedAt, newValue: statusChangedAt },
+          {
+            field: "statusChangedBy",
+            oldValue: previous.statusChangedBy,
+            newValue: statusChangedBy,
+          },
+          {
+            field: "statusChangedAt",
+            oldValue: previous.statusChangedAt,
+            newValue: statusChangedAt,
+          },
         ]);
       }
       return result;
@@ -151,7 +174,9 @@ function createDeviceService({ getRecordRepository, getAuditRepository }) {
       return records().find({ _id: recordId, deletedAt: null });
     },
     async updateById(recordId, record, changedByEmail) {
-      const previous = (await records().find({ _id: recordId, deletedAt: null }))[0];
+      const previous = (
+        await records().find({ _id: recordId, deletedAt: null })
+      )[0];
       if (!previous) return { ok: 0, matchedCount: 0, modifiedCount: 0 };
       const result = await records().update(
         { _id: recordId, deletedAt: null },
@@ -159,7 +184,9 @@ function createDeviceService({ getRecordRepository, getAuditRepository }) {
       );
       if (result.matchedCount) {
         const changes = Object.entries(record)
-          .filter(([field, newValue]) => valuesDiffer(previous[field], newValue))
+          .filter(([field, newValue]) =>
+            valuesDiffer(previous[field], newValue),
+          )
           .map(([field, newValue]) => ({
             field,
             oldValue: previous[field],
@@ -173,7 +200,9 @@ function createDeviceService({ getRecordRepository, getAuditRepository }) {
       return result;
     },
     async deleteById(recordId, deletedBy) {
-      const previous = (await records().find({ _id: recordId, deletedAt: null }))[0];
+      const previous = (
+        await records().find({ _id: recordId, deletedAt: null })
+      )[0];
       if (!previous) return { ok: 0, matchedCount: 0, modifiedCount: 0 };
       const deletedAt = new Date();
       const result = await records().update(
@@ -182,7 +211,11 @@ function createDeviceService({ getRecordRepository, getAuditRepository }) {
       );
       if (result.matchedCount) {
         await writeAuditEntries(previous, "DELETE", deletedBy, [
-          { field: "deletedAt", oldValue: previous.deletedAt, newValue: deletedAt },
+          {
+            field: "deletedAt",
+            oldValue: previous.deletedAt,
+            newValue: deletedAt,
+          },
         ]);
       }
       return result;
@@ -199,7 +232,9 @@ function createDeviceService({ getRecordRepository, getAuditRepository }) {
         );
     },
     async restoreById(recordId, cutoff, changedByEmail) {
-      const previous = (await records().find({ _id: recordId, deletedAt: { $gte: cutoff } }))[0];
+      const previous = (
+        await records().find({ _id: recordId, deletedAt: { $gte: cutoff } })
+      )[0];
       if (!previous) return { ok: 0, matchedCount: 0, modifiedCount: 0 };
       const result = await records().update(
         { _id: recordId, deletedAt: { $gte: cutoff } },
@@ -220,7 +255,9 @@ function createDeviceService({ getRecordRepository, getAuditRepository }) {
       if (!repository) return [];
       const entries = await repository.find(recordId ? { recordId } : {});
       return entries
-        .sort((left, right) => new Date(right.changedAt) - new Date(left.changedAt))
+        .sort(
+          (left, right) => new Date(right.changedAt) - new Date(left.changedAt),
+        )
         .slice(0, limit);
     },
   };

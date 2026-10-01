@@ -4,11 +4,16 @@ const { promisify } = require("node:util");
 const pbkdf2 = promisify(crypto.pbkdf2);
 const DEFAULT_PASSWORD_HASH_ITERATIONS = 60000;
 
-async function hashPassword(password, iterations = DEFAULT_PASSWORD_HASH_ITERATIONS) {
+async function hashPassword(
+  password,
+  iterations = DEFAULT_PASSWORD_HASH_ITERATIONS,
+) {
   if (typeof password !== "string")
     throw new TypeError("Password must be a string.");
   if (!Number.isInteger(iterations) || iterations <= 0)
-    throw new RangeError("Password hash iterations must be a positive integer.");
+    throw new RangeError(
+      "Password hash iterations must be a positive integer.",
+    );
 
   const salt = crypto.randomBytes(16).toString("hex");
   const derivedKey = await pbkdf2(password, salt, iterations, 64, "sha512");

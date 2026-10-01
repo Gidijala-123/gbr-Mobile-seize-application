@@ -1,6 +1,6 @@
 include ../StatCard/stat-card.pug
 
-#dboard.tab-pane.fade.in.active.intake-form-component
+#dboard.tab-pane.fade.intake-form-component(class=isAuditPage ? null : 'in active')
   p.anim-typewriter DashBoard
   #form.form-card
     form.form-group(action='/hh',method='post')

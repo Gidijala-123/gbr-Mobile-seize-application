@@ -3444,4 +3444,14 @@ body.home-body.dark-mode #dboard>p.anim-typewriter {
   padding: 0 !important;
 }
 
+  body.home-body #auditlist.tab-pane.align {
+    padding: 24px !important;
+  }
+
+  @media (max-width: 767px) {
+    body.home-body #auditlist.tab-pane.align {
+      padding: 16px !important;
+    }
+  }
+
 /* ── Responsive ─────────────────────────────────────────────────── */

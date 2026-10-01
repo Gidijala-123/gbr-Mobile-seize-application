@@ -31,7 +31,10 @@ function createEmailService({ nodemailer }) {
   async function send(mailOptions) {
     const { user, password } = getCredentials();
     if (!user || !password) throw new Error("Mail service is not configured");
-    return getTransporter(user, password).sendMail({ from: user, ...mailOptions });
+    return getTransporter(user, password).sendMail({
+      from: user,
+      ...mailOptions,
+    });
   }
 
   function sendSignupNotification({

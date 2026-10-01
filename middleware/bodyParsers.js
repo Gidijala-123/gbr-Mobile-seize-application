@@ -3,7 +3,9 @@ function positiveIntegerSetting(environment, name, fallback, maximum) {
   if (rawValue === undefined || rawValue === "") return fallback;
   const value = Number(rawValue);
   if (!Number.isSafeInteger(value) || value < 1 || value > maximum)
-    throw new RangeError(`${name} must be an integer between 1 and ${maximum}.`);
+    throw new RangeError(
+      `${name} must be an integer between 1 and ${maximum}.`,
+    );
   return value;
 }
 
@@ -11,7 +13,12 @@ function getBodyParserLimits(environment = process.env) {
   return {
     jsonLimitMb: positiveIntegerSetting(environment, "JSON_LIMIT_MB", 1, 100),
     formLimitMb: positiveIntegerSetting(environment, "FORM_LIMIT_MB", 5, 100),
-    parameterLimit: positiveIntegerSetting(environment, "PARAMETER_LIMIT", 1000, 10000),
+    parameterLimit: positiveIntegerSetting(
+      environment,
+      "PARAMETER_LIMIT",
+      1000,
+      10000,
+    ),
   };
 }
 

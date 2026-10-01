@@ -52,7 +52,9 @@ function normalizeError(error, environment = process.env.NODE_ENV) {
 
   const candidateStatus = Number(error && (error.statusCode || error.status));
   const statusCode =
-    Number.isInteger(candidateStatus) && candidateStatus >= 400 && candidateStatus <= 599
+    Number.isInteger(candidateStatus) &&
+    candidateStatus >= 400 &&
+    candidateStatus <= 599
       ? candidateStatus
       : 500;
   const isDevelopment = environment === "development";

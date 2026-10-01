@@ -23,7 +23,13 @@ const deviceRecordSchema = new mongoose.Schema(
     deletedAt: { type: Date, default: null },
     deletedBy: { type: String, default: null, trim: true, maxlength: 254 },
     createdAt: { type: Date, default: Date.now },
-    statusChangedBy: { type: String, default: null, lowercase: true, trim: true, maxlength: 254 },
+    statusChangedBy: {
+      type: String,
+      default: null,
+      lowercase: true,
+      trim: true,
+      maxlength: 254,
+    },
     statusChangedAt: { type: Date, default: null },
     status: {
       type: String,

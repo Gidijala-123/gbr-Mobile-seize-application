@@ -14,7 +14,9 @@ function createErrorReporter({ getErrorRepository, logger = console }) {
     } catch (loggingError) {
       logger.error(
         "Unable to record application error:",
-        loggingError && loggingError.message ? loggingError.message : loggingError,
+        loggingError && loggingError.message
+          ? loggingError.message
+          : loggingError,
       );
     }
   }

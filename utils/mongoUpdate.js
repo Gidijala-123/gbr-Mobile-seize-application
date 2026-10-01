@@ -1,7 +1,11 @@
 const { isDeepStrictEqual } = require("node:util");
 
 function applyMongoUpdate(document, updateDocument) {
-  if (!updateDocument || typeof updateDocument !== "object" || Array.isArray(updateDocument))
+  if (
+    !updateDocument ||
+    typeof updateDocument !== "object" ||
+    Array.isArray(updateDocument)
+  )
     throw new TypeError("Mongo update must be an object.");
 
   const updated = { ...document };
@@ -22,11 +26,16 @@ function applyMongoUpdate(document, updateDocument) {
         if (!Array.isArray(current))
           throw new TypeError(`${operator} requires an array field: ${field}.`);
         const values =
-          value && typeof value === "object" && !Array.isArray(value) && "$each" in value
+          value &&
+          typeof value === "object" &&
+          !Array.isArray(value) &&
+          "$each" in value
             ? value.$each
             : [value];
         if (!Array.isArray(values))
-          throw new TypeError(`${operator} $each requires an array for ${field}.`);
+          throw new TypeError(
+            `${operator} $each requires an array for ${field}.`,
+          );
         updated[field] =
           operator === "$push"
             ? [...current, ...values]

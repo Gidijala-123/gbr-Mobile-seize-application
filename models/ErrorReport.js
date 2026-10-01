@@ -20,4 +20,5 @@ errorReportSchema.pre("save", function setErrorTime() {
 });
 
 module.exports =
-  mongoose.models.ErrorReport || mongoose.model("ErrorReport", errorReportSchema);
+  mongoose.models.ErrorReport ||
+  mongoose.model("ErrorReport", errorReportSchema);

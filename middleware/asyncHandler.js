@@ -9,13 +9,23 @@ function wrapAsyncHandlers(router) {
   router.asyncHandlersWrapped = true;
 
   // Express 4 does not forward rejected promises from async route handlers.
-  for (const method of ["get", "post", "put", "patch", "delete", "options", "head", "all"]) {
+  for (const method of [
+    "get",
+    "post",
+    "put",
+    "patch",
+    "delete",
+    "options",
+    "head",
+    "all",
+  ]) {
     const registerRoute = router[method].bind(router);
     router[method] = (path, ...handlers) =>
       registerRoute(
         path,
         ...handlers.map((handler) =>
-          typeof handler === "function" && handler.constructor.name === "AsyncFunction"
+          typeof handler === "function" &&
+          handler.constructor.name === "AsyncFunction"
             ? catchAsync(handler)
             : handler,
         ),

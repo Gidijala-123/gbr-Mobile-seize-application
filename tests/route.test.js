@@ -11,9 +11,17 @@ const pug = require("pug");
 const { generate: generateTotp } = require("otplib");
 const { EventEmitter } = require("node:events");
 const { wrapAsyncHandlers } = require("../middleware/asyncHandler");
-const { installProcessErrorHandlers } = require("../middleware/processErrorHandlers");
-const { createBodyParsers, getBodyParserLimits } = require("../middleware/bodyParsers");
-const { getRequestId, requestIdMiddleware } = require("../middleware/requestContext");
+const {
+  installProcessErrorHandlers,
+} = require("../middleware/processErrorHandlers");
+const {
+  createBodyParsers,
+  getBodyParserLimits,
+} = require("../middleware/bodyParsers");
+const {
+  getRequestId,
+  requestIdMiddleware,
+} = require("../middleware/requestContext");
 
 process.env.NODE_ENV = "test";
 process.env.MONGODB_URI = "mongodb://localhost:27017/testdb";
@@ -47,7 +55,10 @@ function makeCollection(name) {
       }
 
       if (name === "student_data") {
-        const record = { ...payload, _id: `student-${appState.records.length + 1}` };
+        const record = {
+          ...payload,
+          _id: `student-${appState.records.length + 1}`,
+        };
         appState.records.push(record);
         return record;
       }
@@ -64,9 +75,11 @@ function makeCollection(name) {
     },
     findOne: async (filter = {}) => {
       if (name !== "registration_coll") return null;
-      return [...appState.users.values()].find((user) =>
-        Object.entries(filter).every(([key, value]) => user[key] === value),
-      ) || null;
+      return (
+        [...appState.users.values()].find((user) =>
+          Object.entries(filter).every(([key, value]) => user[key] === value),
+        ) || null
+      );
     },
     find: async (filter = {}) => {
       if (name === "student_data") {
@@ -81,8 +94,7 @@ function makeCollection(name) {
         const user = [...appState.users.values()].find((item) =>
           Object.entries(query).every(([key, value]) => item[key] === value),
         );
-        if (!user)
-          return { ok: 0, matchedCount: 0 };
+        if (!user) return { ok: 0, matchedCount: 0 };
         Object.assign(user, update.$set);
         return { ok: 1, matchedCount: 1 };
       }
@@ -145,7 +157,10 @@ const app = require("../app");
 
 function getHandler(pathname, method) {
   const route = router.stack.find(
-    (layer) => layer.route && layer.route.path === pathname && layer.route.methods[method.toLowerCase()]
+    (layer) =>
+      layer.route &&
+      layer.route.path === pathname &&
+      layer.route.methods[method.toLowerCase()],
   );
   return route && route.route.stack.at(-1).handle;
 }
@@ -154,11 +169,13 @@ const httpApp = express();
 httpApp.set("trust proxy", 1);
 httpApp.use(express.json());
 httpApp.use(express.urlencoded({ extended: false }));
-httpApp.use(sessionMiddleware({
-  secret: "csrf-test-session-secret",
-  resave: false,
-  saveUninitialized: false,
-}));
+httpApp.use(
+  sessionMiddleware({
+    secret: "csrf-test-session-secret",
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
 httpApp.use(csrfProtection());
 httpApp.use((req, res, next) => {
   res.locals.csrfToken = req.csrfToken();
@@ -179,7 +196,10 @@ async function createCsrfAgent() {
 function makeReq(overrides = {}) {
   return {
     body: {},
-    session: { regenerate: (callback) => callback(null), destroy: (callback) => callback() },
+    session: {
+      regenerate: (callback) => callback(null),
+      destroy: (callback) => callback(),
+    },
     ...overrides,
   };
 }
@@ -251,16 +271,12 @@ describe("Application route validation", () => {
   });
 
   test("responses negotiate Brotli and gzip compression", async () => {
-    const brotli = await supertest(app)
-      .get("/")
-      .set("Accept-Encoding", "br");
+    const brotli = await supertest(app).get("/").set("Accept-Encoding", "br");
     assert.equal(brotli.status, 200);
     assert.equal(brotli.headers["content-encoding"], "br");
     assert.match(brotli.text, /GBR \| Mobile Storage Application/);
 
-    const gzip = await supertest(app)
-      .get("/")
-      .set("Accept-Encoding", "gzip");
+    const gzip = await supertest(app).get("/").set("Accept-Encoding", "gzip");
     assert.equal(gzip.status, 200);
     assert.equal(gzip.headers["content-encoding"], "gzip");
     assert.match(gzip.text, /GBR \| Mobile Storage Application/);
@@ -356,17 +372,21 @@ describe("Application route validation", () => {
         count2: 0,
         previousLogin: null,
       });
-      assert.match(html, darkMode ? /class="home-body dark-mode"/ : /class="home-body"/);
-      for (const markup of requiredMarkup) assert.ok(html.includes(markup), markup);
+      assert.match(
+        html,
+        darkMode ? /class="home-body dark-mode"/ : /class="home-body"/,
+      );
+      for (const markup of requiredMarkup)
+        assert.ok(html.includes(markup), markup);
     }
   });
 
   test("component assets render on the dashboard and Pug source stays private", async () => {
     const agent = supertest.agent(app);
     const assetIp = "198.51.100.240";
-    let token = (await agent.get("/").set("X-Forwarded-For", assetIp)).text.match(
-      /name="csrf-token" content="([^"]+)"/,
-    )[1];
+    let token = (
+      await agent.get("/").set("X-Forwarded-For", assetIp)
+    ).text.match(/name="csrf-token" content="([^"]+)"/)[1];
     const email = "component-assets@example.com";
     const signup = await agent
       .post("/postsignup")
@@ -375,9 +395,9 @@ describe("Application route validation", () => {
       .send({ email, pwd: "Amber!Comet42Velvet" });
     assert.equal(signup.status, 204);
 
-    const verificationToken = appState.mail.at(-1).text.match(
-      /verify-email\?token=([a-f0-9]{64})/i,
-    )[1];
+    const verificationToken = appState.mail
+      .at(-1)
+      .text.match(/verify-email\?token=([a-f0-9]{64})/i)[1];
     const verified = await agent
       .get(`/verify-email?token=${verificationToken}`)
       .set("X-Forwarded-For", assetIp);
@@ -399,7 +419,10 @@ describe("Application route validation", () => {
     assert.match(home.text, /\/components\/DataTable\/data-table\.js/);
     assert.match(home.text, /stat-card-component/);
     assert.match(home.text, /data-table-component/);
-    assert.doesNotMatch(home.text, /javascripts\/(?:features|common-scripts)\.js/);
+    assert.doesNotMatch(
+      home.text,
+      /javascripts\/(?:features|common-scripts)\.js/,
+    );
 
     for (const asset of [
       "/components/Shared/shared.css",
@@ -420,14 +443,22 @@ describe("Application route validation", () => {
     assert.equal(htmlResponse.status, 404);
     assert.match(htmlResponse.text, /Back to Home/);
     assert.match(htmlResponse.text, /Not Found/);
-    assert.match(htmlResponse.text, new RegExp(`Request ID: <code>${htmlResponse.headers["x-request-id"]}</code>`));
+    assert.match(
+      htmlResponse.text,
+      new RegExp(
+        `Request ID: <code>${htmlResponse.headers["x-request-id"]}</code>`,
+      ),
+    );
 
     const jsonResponse = await supertest(app)
       .get("/api/missing-resource")
       .set("Accept", "application/json");
     assert.equal(jsonResponse.status, 404);
     assert.equal(jsonResponse.body.error, "Not Found");
-    assert.equal(jsonResponse.body.requestId, jsonResponse.headers["x-request-id"]);
+    assert.equal(
+      jsonResponse.body.requestId,
+      jsonResponse.headers["x-request-id"],
+    );
 
     const legacyUsersResponse = await supertest(app)
       .get("/users")
@@ -474,7 +505,9 @@ describe("Application route validation", () => {
     });
     timeoutApp.use((error, req, res, next) => {
       if (req.timedout || (error && error.code === "ETIMEDOUT")) {
-        return res.status(504).json({ error: "Gateway Timeout", requestId: req.id });
+        return res
+          .status(504)
+          .json({ error: "Gateway Timeout", requestId: req.id });
       }
       next(error);
     });
@@ -531,19 +564,25 @@ describe("Application route validation", () => {
     const signup = getHandler("/postsignup", "post");
     const verifyEmail = getHandler("/verify-email", "get");
 
-    const firstReq = makeReq({ body: { email: "demo@example.com", pwd: "Amber!Comet42Velvet" } });
+    const firstReq = makeReq({
+      body: { email: "demo@example.com", pwd: "Amber!Comet42Velvet" },
+    });
     const firstRes = makeRes();
     await signup(firstReq, firstRes);
 
     assert.equal(firstRes.statusCode, 204);
     assert.equal(appState.mail[0].to, "demo@example.com");
     assert.match(appState.mail[0].subject, /verify/i);
-    const token = appState.mail[0].text.match(/verify-email\?token=([a-f0-9]{64})/i)[1];
+    const token = appState.mail[0].text.match(
+      /verify-email\?token=([a-f0-9]{64})/i,
+    )[1];
     const verificationRes = makeRes();
     await verifyEmail(makeReq({ query: { token } }), verificationRes);
     assert.equal(verificationRes.statusCode, 200);
 
-    const duplicateReq = makeReq({ body: { email: "demo@example.com", pwd: "Amber!Comet42Velvet" } });
+    const duplicateReq = makeReq({
+      body: { email: "demo@example.com", pwd: "Amber!Comet42Velvet" },
+    });
     const duplicateRes = makeRes();
     await signup(duplicateReq, duplicateRes);
 
@@ -557,12 +596,18 @@ describe("Application route validation", () => {
     const reset = getHandler("/postreset", "post");
 
     const commonSignup = makeRes();
-    await signup(makeReq({ body: { email: "common@example.com", pwd: "password123" } }), commonSignup);
+    await signup(
+      makeReq({ body: { email: "common@example.com", pwd: "password123" } }),
+      commonSignup,
+    );
     assert.equal(commonSignup.statusCode, 400);
     assert.match(String(commonSignup.body), /common/i);
 
     const weakSignup = makeRes();
-    await signup(makeReq({ body: { email: "weak@example.com", pwd: "lowercase2026!" } }), weakSignup);
+    await signup(
+      makeReq({ body: { email: "weak@example.com", pwd: "lowercase2026!" } }),
+      weakSignup,
+    );
     assert.equal(weakSignup.statusCode, 400);
     assert.match(String(weakSignup.body), /mixed case/i);
 
@@ -574,24 +619,41 @@ describe("Application route validation", () => {
     for (let index = 0; index < weakPasswords.length; index += 1) {
       const [password, expectedMessage] = weakPasswords[index];
       const response = makeRes();
-      await signup(makeReq({
-        body: { email: `weak-${index}@example.com`, pwd: password },
-      }), response);
+      await signup(
+        makeReq({
+          body: { email: `weak-${index}@example.com`, pwd: password },
+        }),
+        response,
+      );
       assert.equal(response.statusCode, 400);
       assert.match(String(response.body), expectedMessage);
     }
 
     const commonReset = makeRes();
-    await reset(makeReq({
-      body: { email: "common@example.com", otp: "000000", pwd: "password123" },
-    }), commonReset);
+    await reset(
+      makeReq({
+        body: {
+          email: "common@example.com",
+          otp: "000000",
+          pwd: "password123",
+        },
+      }),
+      commonReset,
+    );
     assert.equal(commonReset.statusCode, 400);
     assert.match(String(commonReset.body), /common/i);
 
     const weakReset = makeRes();
-    await reset(makeReq({
-      body: { email: "weak@example.com", otp: "000000", pwd: "lowercase2026!" },
-    }), weakReset);
+    await reset(
+      makeReq({
+        body: {
+          email: "weak@example.com",
+          otp: "000000",
+          pwd: "lowercase2026!",
+        },
+      }),
+      weakReset,
+    );
     assert.equal(weakReset.statusCode, 400);
     assert.match(String(weakReset.body), /mixed case/i);
   });
@@ -600,10 +662,19 @@ describe("Application route validation", () => {
     const signup = getHandler("/postsignup", "post");
     const login = getHandler("/postlogin", "post");
 
-    await signup(makeReq({ body: { email: "alice@example.com", pwd: "Amber!Comet42Velvet" } }), makeRes());
+    await signup(
+      makeReq({
+        body: { email: "alice@example.com", pwd: "Amber!Comet42Velvet" },
+      }),
+      makeRes(),
+    );
 
     const req = makeReq({
-      body: { email: "alice@example.com", pwd: "Amber!Comet42Velvet", uname: "Alice" },
+      body: {
+        email: "alice@example.com",
+        pwd: "Amber!Comet42Velvet",
+        uname: "Alice",
+      },
       session: {
         regenerate: (callback) => callback(null),
       },
@@ -620,34 +691,51 @@ describe("Application route validation", () => {
     const recordSession = {
       user: { id: "datatable-user", email: "datatable-http@example.com" },
     };
-    for (const [index, date] of ["2026-02-01", "2026-02-02", "2026-02-03"].entries()) {
-      await create(makeReq({
-        session: recordSession,
-        body: {
-          Date: date,
-          Time: "10:00",
-          sname: "HttpPageMarker",
-          rno: `HTTP${index + 1}`,
-          clg: "ABC College",
-          brch: "CSE",
-          year: "2",
-          sec: "A",
-          mmodel: "Phone Model",
-          imei: `22345678901234${index}`,
-        },
-      }), makeRes());
+    for (const [index, date] of [
+      "2026-02-01",
+      "2026-02-02",
+      "2026-02-03",
+    ].entries()) {
+      await create(
+        makeReq({
+          session: recordSession,
+          body: {
+            Date: date,
+            Time: "10:00",
+            sname: "HttpPageMarker",
+            rno: `HTTP${index + 1}`,
+            clg: "ABC College",
+            brch: "CSE",
+            year: "2",
+            sec: "A",
+            mmodel: "Phone Model",
+            imei: `22345678901234${index}`,
+          },
+        }),
+        makeRes(),
+      );
     }
 
     await getHandler("/postsignup", "post")(
-      makeReq({ body: { email: "datatable-http@example.com", pwd: "Amber!Comet42Velvet" } }),
+      makeReq({
+        body: {
+          email: "datatable-http@example.com",
+          pwd: "Amber!Comet42Velvet",
+        },
+      }),
       makeRes(),
     );
     const agent = supertest.agent(app);
-    const csrfToken = (await agent.get("/")).text.match(/name="csrf-token" content="([^"]+)"/)[1];
+    const csrfToken = (await agent.get("/")).text.match(
+      /name="csrf-token" content="([^"]+)"/,
+    )[1];
     const login = await agent
       .post("/postlogin")
       .set("X-CSRF-Token", csrfToken)
-      .send({ email: "datatable-http@example.com", pwd: "Amber!Comet42Velvet" });
+      .send({
+        email: "datatable-http@example.com",
+        pwd: "Amber!Comet42Velvet",
+      });
     assert.equal(login.status, 204);
 
     const response = await agent.get("/api/records").query({
@@ -676,11 +764,23 @@ describe("Application route validation", () => {
     const update = getHandler("/update", "post");
     const listRecords = getHandler("/api/records", "get");
 
-    await signup(makeReq({ body: { email: "records@example.com", pwd: "Amber!Comet42Velvet" } }), makeRes());
+    await signup(
+      makeReq({
+        body: { email: "records@example.com", pwd: "Amber!Comet42Velvet" },
+      }),
+      makeRes(),
+    );
 
-    const session = { regenerate: (callback) => callback(null), user: undefined };
+    const session = {
+      regenerate: (callback) => callback(null),
+      user: undefined,
+    };
     const loginReq = makeReq({
-      body: { email: "records@example.com", pwd: "Amber!Comet42Velvet", uname: "Records User" },
+      body: {
+        email: "records@example.com",
+        pwd: "Amber!Comet42Velvet",
+        uname: "Records User",
+      },
       session,
     });
     await login(loginReq, makeRes());
@@ -713,10 +813,19 @@ describe("Application route validation", () => {
     assert.equal(createRes.redirectUrl, "/home");
 
     const listRes = makeRes();
-    await listRecords(makeReq({
-      session,
-      query: { draw: "1", start: "0", length: "10", status: "At_office", search: { value: "A101" } },
-    }), listRes);
+    await listRecords(
+      makeReq({
+        session,
+        query: {
+          draw: "1",
+          start: "0",
+          length: "10",
+          status: "At_office",
+          search: { value: "A101" },
+        },
+      }),
+      listRes,
+    );
     const recordId = listRes.body.data[0]._id;
 
     const editReq = makeReq({ body: { _id: recordId }, session });
@@ -724,30 +833,36 @@ describe("Application route validation", () => {
     await edit(editReq, editRes);
     assert.equal(editRes.statusCode, 200);
     assert.equal(editRes.body.rno, "A101");
-    assert.deepEqual(Object.keys(editRes.body).sort(), [
-      "Date",
-      "Time",
-      "_id",
-      "clg",
-      "brch",
-      "eid",
-      "ename",
-      "epno",
-      "imei",
-      "mclr",
-      "mmodel",
-      "pname",
-      "ppno",
-      "rno",
-      "rsn",
-      "sec",
-      "sname",
-      "spno",
-      "year",
-    ].sort());
+    assert.deepEqual(
+      Object.keys(editRes.body).sort(),
+      [
+        "Date",
+        "Time",
+        "_id",
+        "clg",
+        "brch",
+        "eid",
+        "ename",
+        "epno",
+        "imei",
+        "mclr",
+        "mmodel",
+        "pname",
+        "ppno",
+        "rno",
+        "rsn",
+        "sec",
+        "sname",
+        "spno",
+        "year",
+      ].sort(),
+    );
 
     const missingEditRes = makeRes();
-    await edit(makeReq({ body: { _id: "000000000000000000000099" }, session }), missingEditRes);
+    await edit(
+      makeReq({ body: { _id: "000000000000000000000099" }, session }),
+      missingEditRes,
+    );
     assert.equal(missingEditRes.statusCode, 404);
 
     const changeReq = makeReq({ body: { _id: recordId }, session });
@@ -756,19 +871,31 @@ describe("Application route validation", () => {
     assert.equal(changeRes.redirectUrl, "/home");
 
     const returnedListRes = makeRes();
-    await listRecords(makeReq({
-      session,
-      query: { draw: "1", start: "0", length: "10", status: "Returned", search: { value: "A101" } },
-    }), returnedListRes);
+    await listRecords(
+      makeReq({
+        session,
+        query: {
+          draw: "1",
+          start: "0",
+          length: "10",
+          status: "Returned",
+          search: { value: "A101" },
+        },
+      }),
+      returnedListRes,
+    );
     const returnedRecord = returnedListRes.body.data[0];
     assert.equal(returnedRecord.statusChangedBy, session.user.email);
     assert.ok(returnedRecord.statusChangedAt instanceof Date);
 
     const missingReturnRes = makeRes();
-    await change(makeReq({
-      body: { _id: "000000000000000000000099" },
-      session,
-    }), missingReturnRes);
+    await change(
+      makeReq({
+        body: { _id: "000000000000000000000099" },
+        session,
+      }),
+      missingReturnRes,
+    );
     assert.equal(missingReturnRes.statusCode, 404);
 
     const updateReq = makeReq({
@@ -806,19 +933,34 @@ describe("Application route validation", () => {
     const reset = getHandler("/postreset", "post");
     const login = getHandler("/postlogin", "post");
 
-    await signup(makeReq({ body: { email: "forgot@example.com", pwd: "Amber!Comet42Velvet" } }), makeRes());
+    await signup(
+      makeReq({
+        body: { email: "forgot@example.com", pwd: "Amber!Comet42Velvet" },
+      }),
+      makeRes(),
+    );
 
     const res = makeRes();
     await forgot(makeReq({ body: { email: "forgot@example.com" } }), res);
 
     assert.equal(res.statusCode, 204);
-    const resetMail = appState.mail.find((mail) => /reset code/i.test(mail.subject));
-    assert.equal(appState.mail.filter((mail) => /reset code/i.test(mail.subject)).length, 1);
+    const resetMail = appState.mail.find((mail) =>
+      /reset code/i.test(mail.subject),
+    );
+    assert.equal(
+      appState.mail.filter((mail) => /reset code/i.test(mail.subject)).length,
+      1,
+    );
     assert.equal(resetMail.to, "forgot@example.com");
     assert.match(resetMail.text, /\b\d{6}\b/);
 
     const oldPasswordRes = makeRes();
-    await login(makeReq({ body: { email: "forgot@example.com", pwd: "Amber!Comet42Velvet" } }), oldPasswordRes);
+    await login(
+      makeReq({
+        body: { email: "forgot@example.com", pwd: "Amber!Comet42Velvet" },
+      }),
+      oldPasswordRes,
+    );
     assert.equal(oldPasswordRes.statusCode, 204);
 
     const otp = resetMail.text.match(/\b\d{6}\b/)[0];
@@ -832,28 +974,51 @@ describe("Application route validation", () => {
       },
     };
     const reusedPasswordRes = makeRes();
-    await reset(makeReq({ body: { email: "forgot@example.com", otp, pwd: "Amber!Comet42Velvet" } }), reusedPasswordRes);
+    await reset(
+      makeReq({
+        body: { email: "forgot@example.com", otp, pwd: "Amber!Comet42Velvet" },
+      }),
+      reusedPasswordRes,
+    );
     assert.equal(reusedPasswordRes.statusCode, 400);
     assert.match(String(reusedPasswordRes.body), /Cannot reuse/i);
 
     const resetRes = makeRes();
-    await reset(makeReq({
-      body: { email: "forgot@example.com", otp, pwd: "Reset!Comet54Velvet" },
-      session: resetSession,
-    }), resetRes);
+    await reset(
+      makeReq({
+        body: { email: "forgot@example.com", otp, pwd: "Reset!Comet54Velvet" },
+        session: resetSession,
+      }),
+      resetRes,
+    );
     assert.equal(resetRes.statusCode, 204);
     assert.equal(resetSessionRegenerated, true);
     assert.equal(resetSession.user, undefined);
 
     const newPasswordRes = makeRes();
-    await login(makeReq({ body: { email: "forgot@example.com", pwd: "Amber!Comet42Velvet" } }), newPasswordRes);
+    await login(
+      makeReq({
+        body: { email: "forgot@example.com", pwd: "Amber!Comet42Velvet" },
+      }),
+      newPasswordRes,
+    );
     assert.equal(newPasswordRes.statusCode, 401);
     const resetPasswordLogin = makeRes();
-    await login(makeReq({ body: { email: "forgot@example.com", pwd: "Reset!Comet54Velvet" } }), resetPasswordLogin);
+    await login(
+      makeReq({
+        body: { email: "forgot@example.com", pwd: "Reset!Comet54Velvet" },
+      }),
+      resetPasswordLogin,
+    );
     assert.equal(resetPasswordLogin.statusCode, 204);
 
     const reusedRes = makeRes();
-    await reset(makeReq({ body: { email: "forgot@example.com", otp, pwd: "Other!Comet93Velvet" } }), reusedRes);
+    await reset(
+      makeReq({
+        body: { email: "forgot@example.com", otp, pwd: "Other!Comet93Velvet" },
+      }),
+      reusedRes,
+    );
     assert.equal(reusedRes.statusCode, 400);
   });
 
@@ -862,15 +1027,23 @@ describe("Application route validation", () => {
     const forgot = getHandler("/postforgot", "post");
     const reset = getHandler("/postreset", "post");
     const email = "expired-reset@example.com";
-    await signup(makeReq({ body: { email, pwd: "Amber!Comet42Velvet" } }), makeRes());
+    await signup(
+      makeReq({ body: { email, pwd: "Amber!Comet42Velvet" } }),
+      makeRes(),
+    );
     await forgot(makeReq({ body: { email } }), makeRes());
 
-    const otp = appState.mail.find((mail) => /reset code/i.test(mail.subject)).text.match(/\b\d{6}\b/)[0];
+    const otp = appState.mail
+      .find((mail) => /reset code/i.test(mail.subject))
+      .text.match(/\b\d{6}\b/)[0];
     const realNow = Date.now;
     Date.now = () => realNow() + 11 * 60 * 1000;
     const expiredRes = makeRes();
     try {
-      await reset(makeReq({ body: { email, otp, pwd: "Amber!Comet42Velvet" } }), expiredRes);
+      await reset(
+        makeReq({ body: { email, otp, pwd: "Amber!Comet42Velvet" } }),
+        expiredRes,
+      );
     } finally {
       Date.now = realNow;
     }
@@ -967,7 +1140,11 @@ describe("Application route validation", () => {
 
     for (const route of routes) {
       const response = await agent.post(route).send({});
-      assert.equal(response.status, 403, `${route} should require a CSRF token`);
+      assert.equal(
+        response.status,
+        403,
+        `${route} should require a CSRF token`,
+      );
     }
   });
 
@@ -989,7 +1166,11 @@ describe("Application route validation", () => {
         .post(route)
         .set("X-CSRF-Token", token)
         .send({});
-      assert.equal(response.status, 401, `${route} should require authentication`);
+      assert.equal(
+        response.status,
+        401,
+        `${route} should require authentication`,
+      );
     }
 
     const totpStatus = await agent.get("/totp/status");
@@ -1002,7 +1183,9 @@ describe("Application route validation", () => {
 
   test("authenticated sessions are rejected when the user-agent fingerprint changes", async () => {
     const agent = supertest.agent(app);
-    let csrfToken = (await agent.get("/")).text.match(/name="csrf-token" content="([^"]+)"/)[1];
+    let csrfToken = (await agent.get("/")).text.match(
+      /name="csrf-token" content="([^"]+)"/,
+    )[1];
     const email = "fingerprint-check@example.com";
     const signup = await agent
       .post("/postsignup")
@@ -1010,7 +1193,9 @@ describe("Application route validation", () => {
       .send({ email, pwd: "Amber!Comet42Velvet" });
     assert.equal(signup.status, 204);
 
-    csrfToken = (await agent.get("/")).text.match(/name="csrf-token" content="([^"]+)"/)[1];
+    csrfToken = (await agent.get("/")).text.match(
+      /name="csrf-token" content="([^"]+)"/,
+    )[1];
     const login = await agent
       .post("/postlogin")
       .set("X-CSRF-Token", csrfToken)
@@ -1031,7 +1216,10 @@ describe("Application route validation", () => {
       .set("X-Forwarded-For", "198.51.100.70");
     const ipLogin = await ipAgent
       .post("/postlogin")
-      .set("X-CSRF-Token", ipLoginPage.text.match(/name="csrf-token" content="([^"]+)"/)[1])
+      .set(
+        "X-CSRF-Token",
+        ipLoginPage.text.match(/name="csrf-token" content="([^"]+)"/)[1],
+      )
       .set("User-Agent", "Fingerprint Browser A")
       .set("X-Forwarded-For", "198.51.100.70")
       .send({ email, pwd: "Amber!Comet42Velvet" });
@@ -1075,9 +1263,9 @@ describe("Application route validation", () => {
     assert.equal(signup.body.success, true);
     assert.match(signup.body.data.message, /verification instructions/i);
 
-    const verificationToken = appState.mail.at(-1).text.match(
-      /verify-email\?token=([a-f0-9]{64})/i,
-    )[1];
+    const verificationToken = appState.mail
+      .at(-1)
+      .text.match(/verify-email\?token=([a-f0-9]{64})/i)[1];
     const verification = await agent
       .post("/api/v1/auth/verify-email")
       .set("X-CSRF-Token", token)
@@ -1171,7 +1359,9 @@ describe("Application route validation", () => {
     assert.equal(records.body.data.records.length, 1);
     assert.equal(records.body.data.pagination.total, 1);
 
-    const legacyLogout = await agent.get("/logout").set("X-Forwarded-For", apiIp);
+    const legacyLogout = await agent
+      .get("/logout")
+      .set("X-Forwarded-For", apiIp);
     assert.equal(legacyLogout.status, 302);
     assert.equal(legacyLogout.headers.deprecation, "@1790812800");
     assert.match(legacyLogout.headers.link, /\/api\/v1\/auth\/logout/);
@@ -1193,10 +1383,15 @@ describe("Application route validation", () => {
     assert.match(csp, /https:\/\/cdnjs\.cloudflare\.com/);
     assert.equal(response.headers["x-frame-options"], "SAMEORIGIN");
     assert.equal(response.headers["x-content-type-options"], "nosniff");
-    assert.equal(response.headers["referrer-policy"], "strict-origin-when-cross-origin");
+    assert.equal(
+      response.headers["referrer-policy"],
+      "strict-origin-when-cross-origin",
+    );
     assert.match(response.headers["strict-transport-security"], /preload/);
     assert.ok(
-      response.headers["set-cookie"].some((cookie) => /session=.*samesite=strict/i.test(cookie)),
+      response.headers["set-cookie"].some((cookie) =>
+        /session=.*samesite=strict/i.test(cookie),
+      ),
     );
     assert.equal(
       response.headers["permissions-policy"],
@@ -1217,7 +1412,10 @@ describe("Application route validation", () => {
     const allowed = await supertest(app)
       .get("/")
       .set("Origin", "https://trusted.example");
-    assert.equal(allowed.headers["access-control-allow-origin"], "https://trusted.example");
+    assert.equal(
+      allowed.headers["access-control-allow-origin"],
+      "https://trusted.example",
+    );
     assert.equal(allowed.headers["access-control-allow-credentials"], "true");
 
     const blocked = await supertest(app)
@@ -1231,8 +1429,14 @@ describe("Application route validation", () => {
       .set("Access-Control-Request-Method", "POST")
       .set("Access-Control-Request-Headers", "content-type,x-csrf-token");
     assert.equal(preflight.status, 204);
-    assert.equal(preflight.headers["access-control-allow-origin"], "https://trusted.example");
-    assert.match(preflight.headers["access-control-allow-headers"], /x-csrf-token/i);
+    assert.equal(
+      preflight.headers["access-control-allow-origin"],
+      "https://trusted.example",
+    );
+    assert.match(
+      preflight.headers["access-control-allow-headers"],
+      /x-csrf-token/i,
+    );
 
     const { agent, token } = await createCsrfAgent();
     const upload = await agent
@@ -1245,7 +1449,9 @@ describe("Application route validation", () => {
   test("the mounted app sanitizes Mongo operators and stored record text", async () => {
     const agent = supertest.agent(app);
     const loginPage = await agent.get("/");
-    const tokenMatch = loginPage.text.match(/name="csrf-token" content="([^"]+)"/);
+    const tokenMatch = loginPage.text.match(
+      /name="csrf-token" content="([^"]+)"/,
+    );
     assert.ok(tokenMatch);
     let token = tokenMatch[1];
     const email = "input-sanitizer@example.com";
@@ -1304,7 +1510,9 @@ describe("Application route validation", () => {
       .set("X-CSRF-Token", token)
       .send({ ...validRecord, sname: " " });
     assert.equal(missingRequiredField.status, 422);
-    assert.ok(missingRequiredField.body.errors.some((error) => error.field === "sname"));
+    assert.ok(
+      missingRequiredField.body.errors.some((error) => error.field === "sname"),
+    );
 
     const create = await agent
       .post("/hh")
@@ -1333,7 +1541,10 @@ describe("Application route validation", () => {
     assert.equal(edit.status, 200);
     assert.equal(edit.body.sname, "Asha Rao");
     assert.equal(edit.body.rsn, "Using phone");
-    assert.doesNotMatch(JSON.stringify(edit.body), /<script|onerror|alert\(1\)/i);
+    assert.doesNotMatch(
+      JSON.stringify(edit.body),
+      /<script|onerror|alert\(1\)/i,
+    );
 
     const returned = await agent
       .post("/change")
@@ -1370,7 +1581,9 @@ describe("Application route validation", () => {
     assert.match(recycleBinPage.text, /Asha Rao/);
 
     const recycleBin = await agent.get("/api/recyclebin");
-    const deletedRecord = recycleBin.body.data.find((record) => record._id === recordId);
+    const deletedRecord = recycleBin.body.data.find(
+      (record) => record._id === recordId,
+    );
     assert.ok(deletedRecord);
     assert.equal(deletedRecord.deletedBy, email);
 
@@ -1392,19 +1605,28 @@ describe("Application route validation", () => {
 
     const recordActivity = await agent.get(`/api/records/${recordId}/audit`);
     assert.equal(recordActivity.status, 200);
-    assert.ok(recordActivity.body.data.some((event) => event.actionType === "CREATE"));
-    assert.ok(recordActivity.body.data.some((event) => event.actionType === "DELETE"));
-    assert.ok(recordActivity.body.data.some((event) => event.actionType === "RESTORE"));
+    assert.ok(
+      recordActivity.body.data.some((event) => event.actionType === "CREATE"),
+    );
+    assert.ok(
+      recordActivity.body.data.some((event) => event.actionType === "DELETE"),
+    );
+    assert.ok(
+      recordActivity.body.data.some((event) => event.actionType === "RESTORE"),
+    );
 
     const activityPage = await agent.get("/audit");
     assert.equal(activityPage.status, 200);
     assert.match(activityPage.text, /Record Activity/);
+    assert.match(activityPage.text, /sidebar-component/);
+    assert.match(activityPage.text, /id="auditTable"/);
     assert.match(activityPage.text, /MSA001/);
   });
 
   test("TOTP enrollment, challenge login, recovery codes, and disable work", async () => {
     const agent = supertest.agent(app);
-    const readCsrfToken = (html) => html.match(/name="csrf-token" content="([^"]+)"/)[1];
+    const readCsrfToken = (html) =>
+      html.match(/name="csrf-token" content="([^"]+)"/)[1];
     const email = "totp-enabled@example.com";
     let csrfToken = readCsrfToken((await agent.get("/")).text);
 
@@ -1491,7 +1713,10 @@ describe("Application route validation", () => {
     const disabled = await agent
       .post("/totp/disable")
       .set("X-CSRF-Token", csrfToken)
-      .send({ password: "Amber!Comet42Velvet", code: confirmation.body.recoveryCodes[1] });
+      .send({
+        password: "Amber!Comet42Velvet",
+        code: confirmation.body.recoveryCodes[1],
+      });
     assert.equal(disabled.status, 200);
     assert.ok(disabled.body.csrfToken);
     const status = await agent.get("/totp/status");
@@ -1508,7 +1733,9 @@ describe("Application route validation", () => {
     const agent = supertest.agent(app);
     const email = "new-device-audit@example.com";
     const signupIp = "198.51.100.59";
-    let csrfToken = (await agent.get("/")).text.match(/name="csrf-token" content="([^"]+)"/)[1];
+    let csrfToken = (await agent.get("/")).text.match(
+      /name="csrf-token" content="([^"]+)"/,
+    )[1];
     const signup = await agent
       .post("/postsignup")
       .set("X-Forwarded-For", signupIp)
@@ -1521,7 +1748,9 @@ describe("Application route validation", () => {
         .get("/")
         .set("User-Agent", userAgent)
         .set("X-Forwarded-For", ip);
-      const token = loginPage.text.match(/name="csrf-token" content="([^"]+)"/)[1];
+      const token = loginPage.text.match(
+        /name="csrf-token" content="([^"]+)"/,
+      )[1];
       const response = await client
         .post("/postlogin")
         .set("X-CSRF-Token", token)
@@ -1537,10 +1766,17 @@ describe("Application route validation", () => {
       return response;
     };
 
-    assert.equal((await signIn(agent, "198.51.100.60", "Audit Test Browser")).status, 204);
-    const newDeviceEmails = () => appState.mail.filter((mail) => /new sign-in/i.test(mail.subject));
+    assert.equal(
+      (await signIn(agent, "198.51.100.60", "Audit Test Browser")).status,
+      204,
+    );
+    const newDeviceEmails = () =>
+      appState.mail.filter((mail) => /new sign-in/i.test(mail.subject));
     assert.equal(newDeviceEmails().length, 0);
-    assert.equal((await signIn(agent, "198.51.100.60", "Audit Test Browser")).status, 204);
+    assert.equal(
+      (await signIn(agent, "198.51.100.60", "Audit Test Browser")).status,
+      204,
+    );
     assert.equal(newDeviceEmails().length, 0);
     const lastLogin = await agent
       .get("/home")
@@ -1548,7 +1784,11 @@ describe("Application route validation", () => {
       .set("X-Forwarded-For", "198.51.100.60");
     assert.match(lastLogin.text, /Audit Test Browser/);
     const newDeviceAgent = supertest.agent(app);
-    assert.equal((await signIn(newDeviceAgent, "198.51.100.61", "Different Browser")).status, 204);
+    assert.equal(
+      (await signIn(newDeviceAgent, "198.51.100.61", "Different Browser"))
+        .status,
+      204,
+    );
     assert.equal(newDeviceEmails().length, 1);
     assert.equal(newDeviceEmails()[0].to, email);
     assert.match(newDeviceEmails()[0].text, /198\.51\.100\.61/);
@@ -1568,11 +1808,23 @@ describe("Application route validation", () => {
     const login = getHandler("/postlogin", "post");
     const logout = getHandler("/logout", "get");
 
-    await signup(makeReq({ body: { email: "logout@example.com", pwd: "Amber!Comet42Velvet" } }), makeRes());
+    await signup(
+      makeReq({
+        body: { email: "logout@example.com", pwd: "Amber!Comet42Velvet" },
+      }),
+      makeRes(),
+    );
 
-    const session = { regenerate: (callback) => callback(null), destroy: (callback) => callback() };
+    const session = {
+      regenerate: (callback) => callback(null),
+      destroy: (callback) => callback(),
+    };
     const loginReq = makeReq({
-      body: { email: "logout@example.com", pwd: "Amber!Comet42Velvet", uname: "Logout User" },
+      body: {
+        email: "logout@example.com",
+        pwd: "Amber!Comet42Velvet",
+        uname: "Logout User",
+      },
       session,
     });
     await login(loginReq, makeRes());

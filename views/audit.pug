@@ -1,34 +1,25 @@
-extends layout
-
-block content
-  main.audit-page
-    header.audit-header
-      a(href='/home') Back to dashboard
-      h1 Record Activity
-      p Recent record field changes and lifecycle actions.
-    .table-responsive
-      table.audit-table
-        thead
+#auditlist.tab-pane.fade.align.data-table-panel(class=isAuditPage ? 'in active' : null)
+  p.anim-typewriter Record Activity
+  .table-responsive.data-table-component
+    table#auditTable.table.table-striped
+      thead
+        tr
+          th Action
+          th Roll number
+          th Record ID
+          th Field
+          th Previous value
+          th New value
+          th Changed by
+          th Changed at
+      tbody
+        each event in auditEvents
           tr
-            th Action
-            th Roll number
-            th Record ID
-            th Field
-            th Previous value
-            th New value
-            th Changed by
-            th Changed at
-        tbody
-          each event in events
-            tr
-              td= event.actionType
-              td= event.recordRno || ''
-              td= event.recordId
-              td= event.field
-              td= event.oldValue == null ? '' : String(event.oldValue)
-              td= event.newValue == null ? '' : String(event.newValue)
-              td= event.changedByEmail
-              td= event.changedAt
-          else
-            tr
-              td(colspan='8') No record activity yet.
+            td= event.actionType
+            td= event.recordRno || ''
+            td= event.recordId
+            td= event.field
+            td= event.oldValue == null ? '' : String(event.oldValue)
+            td= event.newValue == null ? '' : String(event.newValue)
+            td= event.changedByEmail
+            td= event.changedAt

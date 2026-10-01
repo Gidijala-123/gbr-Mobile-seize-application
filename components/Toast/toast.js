@@ -65,7 +65,8 @@ GBR.toast = (function () {
   }
 
   document.addEventListener("click", function (event) {
-    var closeButton = event.target.closest && event.target.closest(".toast-close");
+    var closeButton =
+      event.target.closest && event.target.closest(".toast-close");
     if (!closeButton) return;
     var toast = closeButton.closest(".gbr-toast");
     if (toast) toast.remove();
@@ -105,8 +106,7 @@ window.alert = function (msg) {
   }
 };
 
-
-   $(document).ready(function () {
+$(document).ready(function () {
   var databaseError = document.body.getAttribute("data-db-error");
   if (databaseError && window.GBR && GBR.toast) GBR.toast.error(databaseError);
 });

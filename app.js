@@ -76,7 +76,9 @@ app.use(function haltOnTimedout(req, res, next) {
   }
   next();
 });
-app.use(logger(":id :method :url :status :response-time ms - :res[content-length]"));
+app.use(
+  logger(":id :method :url :status :response-time ms - :res[content-length]"),
+);
 app.disable("x-powered-by");
 app.use(function (req, res, next) {
   res.locals.cspNonce = crypto.randomBytes(16).toString("base64");
@@ -122,7 +124,10 @@ app.use(
   }),
 );
 app.use(function (req, res, next) {
-  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  res.setHeader(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=()",
+  );
   next();
 });
 app.use(
@@ -140,7 +145,12 @@ app.use(
     },
     credentials: true,
     methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "X-CSRF-Token", "CSRF-Token", "X-Requested-With"],
+    allowedHeaders: [
+      "Content-Type",
+      "X-CSRF-Token",
+      "CSRF-Token",
+      "X-Requested-With",
+    ],
     maxAge: 600,
     optionsSuccessStatus: 204,
   }),
@@ -215,7 +225,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(function timeoutErrorHandler(error, req, res, next) {
-  if (req.timedout || error && error.code === "ETIMEDOUT") {
+  if (req.timedout || (error && error.code === "ETIMEDOUT")) {
     return res.status(504).json({
       error: "Gateway Timeout",
       ...(req.id ? { requestId: req.id } : {}),

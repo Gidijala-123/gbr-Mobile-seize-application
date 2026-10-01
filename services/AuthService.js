@@ -46,9 +46,14 @@ function createAuthService({
   }
 
   async function getPasswordValidationError(password) {
-    if (typeof password !== "string" || password.length < 10 || password.length > 128)
+    if (
+      typeof password !== "string" ||
+      password.length < 10 ||
+      password.length > 128
+    )
       return "Password must be between 10 and 128 characters.";
-    if (await isCommonPassword(password)) return "Choose a less common password.";
+    if (await isCommonPassword(password))
+      return "Choose a less common password.";
     if (
       !validator.isStrongPassword(password, {
         minLength: 10,
@@ -66,14 +71,20 @@ function createAuthService({
   async function findUserByEmail(email) {
     const canonicalEmail = normalizeEmail(email);
     const users = getUserRepository();
-    const canonicalUser = await users.findOne({ emailCanonical: canonicalEmail });
+    const canonicalUser = await users.findOne({
+      emailCanonical: canonicalEmail,
+    });
     if (canonicalUser) return canonicalUser;
 
     const legacyUser = await users.findOne({ email: canonicalEmail });
     if (legacyUser) return legacyUser;
 
     const legacyUsers = await users.find({});
-    return legacyUsers.find((user) => normalizeEmail(user.email) === canonicalEmail) || null;
+    return (
+      legacyUsers.find(
+        (user) => normalizeEmail(user.email) === canonicalEmail,
+      ) || null
+    );
   }
 
   async function wasPasswordUsed(password, user) {
@@ -125,7 +136,10 @@ function createAuthService({
       !(user.emailVerificationExpiresAt instanceof Date) ||
       user.emailVerificationExpiresAt.getTime() <= now
     ) {
-      return { error: "This verification link is invalid or expired.", status: 400 };
+      return {
+        error: "This verification link is invalid or expired.",
+        status: 400,
+      };
     }
 
     const result = await updateUser(
@@ -139,7 +153,10 @@ function createAuthService({
       },
     );
     if (result.matchedCount === 0 || result.ok === 0)
-      return { error: "This verification link is invalid or expired.", status: 400 };
+      return {
+        error: "This verification link is invalid or expired.",
+        status: 400,
+      };
     return { user, result };
   }
 
@@ -160,7 +177,9 @@ function createAuthService({
     }
     if (matchedIndex < 0) return false;
 
-    const remainingCodes = hashes.filter((_hash, index) => index !== matchedIndex);
+    const remainingCodes = hashes.filter(
+      (_hash, index) => index !== matchedIndex,
+    );
     const result = await updateUser(
       { _id: user._id, totpRecoveryCodeHashes: hashes },
       { $set: { totpRecoveryCodeHashes: remainingCodes } },

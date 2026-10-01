@@ -83,7 +83,8 @@ async function main() {
         const stages = collectStages(plan.queryPlanner.winningPlan);
         return {
           label: check.label,
-          collectionScans: stages.filter((stage) => stage === "COLLSCAN").length,
+          collectionScans: stages.filter((stage) => stage === "COLLSCAN")
+            .length,
           indexScans: stages.filter((stage) => stage === "IXSCAN").length,
         };
       }),
