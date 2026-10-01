@@ -1,0 +1,1 @@
+/* RecordDetailModal component behavior. */

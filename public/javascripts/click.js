@@ -31,8 +31,9 @@ $(document).ready(function()
 // for status > transfer button
     $('.bbb').click(function()
     {
-     var aa=$(this).val();
-      $.post('/change',{"rno":aa},function(data)
+         var recordId=$(this).data('recordId');
+            if (!recordId) return;
+            $.post('/change',{"_id":recordId},function(data)
       {
         if (window.GBR && GBR.toast) {
           GBR.toast.success("✅ Mobile returned — status changed to Returned.");
@@ -74,7 +75,7 @@ $(document).ready(function()
         ];
 
         $row.data('inline-record', $.extend({}, record));
-        $row.data('inline-original-rno', String(record.rno || ''));
+        $row.data('inline-original-id', String(record._id || ''));
         $row.empty().addClass('is-inline-editing');
 
         fields.forEach(function (field) {
@@ -100,7 +101,7 @@ $(document).ready(function()
         $row.append($actions);
     }
 
-    function updateSmartSearchSource(record, originalRno) {
+    function updateSmartSearchSource(record, originalId) {
         var sourceColumns = {
             Date: 0,
             rno: 3,
@@ -113,7 +114,7 @@ $(document).ready(function()
             ename: 16
         };
         var $sourceRow = $('#example5 tbody tr').filter(function () {
-            return $(this).children('td').eq(3).text().trim() === originalRno;
+            return $(this).children('td').eq(2).text().trim() === originalId;
         }).first();
 
         Object.keys(sourceColumns).forEach(function (field) {
@@ -121,8 +122,8 @@ $(document).ready(function()
         });
     }
 
-    function openSmartRowEditor($row, rollNumber) {
-        $.post('/edit', { rno: rollNumber }, function (records) {
+    function openSmartRowEditor($row, recordId) {
+        $.post('/edit', { _id: recordId }, function (records) {
             if (!records || !records.length) {
                 if (window.GBR && GBR.toast) GBR.toast.error('Record not found.');
                 return;
@@ -139,17 +140,17 @@ $(document).ready(function()
 
     $(document).on('click', '#smart-results-table .inline-edit-save', function () {
         var $row = $(this).closest('tr');
-        var originalRno = $row.data('inline-original-rno');
+        var originalId = $row.data('inline-original-id');
         var record = $.extend({}, $row.data('inline-record'));
         var $saveButton = $(this).prop('disabled', true);
 
         $row.find('[data-inline-field]').each(function () {
             record[$(this).data('inline-field')] = $(this).val();
         });
-        record.originalRno = originalRno;
+        record._id = originalId;
 
         $.post('/update', record).done(function () {
-            updateSmartSearchSource(record, originalRno);
+            updateSmartSearchSource(record, originalId);
             $('#smartSearch').trigger('input');
             if (window.GBR && GBR.toast) GBR.toast.success('Record updated.');
         }).fail(function () {
@@ -163,7 +164,7 @@ $(document).ready(function()
         event.preventDefault();
         var $smartRow = $(this).closest('tr');
         if (!$smartRow.hasClass('is-inline-editing')) {
-            openSmartRowEditor($smartRow, $(this).data('rno') || $(this).val());
+            openSmartRowEditor($smartRow, $(this).data('recordId'));
         }
     });
 

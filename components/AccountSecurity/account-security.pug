@@ -1,0 +1,39 @@
+#totp-security-modal.modal.fade.account-security-component(tabindex="-1" role="dialog" aria-labelledby="totpSecurityTitle" aria-hidden="true")
+  .modal-dialog(role="document")
+    .modal-content.totp-settings
+      .modal-header
+        button.close(type="button" data-dismiss="modal" aria-label="Close")
+          span(aria-hidden="true") &times;
+        h4#totpSecurityTitle.modal-title Account security
+      .modal-body
+        p#lastLoginSummary
+          if previousLogin
+            | Previous successful sign-in: #{previousLogin.at} from #{previousLogin.ip} using #{previousLogin.userAgent}
+          else
+            | No previous sign-in record.
+        p#totpSecurityStatus Loading security settings...
+        #totpDisabledPanel
+          button#totpStartSetup.btn.btn-primary(type="button") Set up authenticator
+        #totpSetupPanel(style="display:none")
+          p Scan the QR code with your authenticator app, then enter its current code.
+          img#totpQrCode(alt="Authenticator setup QR code")
+          p Manual setup key:
+            code#totpManualSecret
+          .form-group
+            label(for="totpSetupCode") Authenticator code
+            input#totpSetupCode.form-control(type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code")
+          button#totpConfirmSetup.btn.btn-primary(type="button") Confirm and enable
+        #totpRecoveryPanel(style="display:none")
+          p Save these recovery codes somewhere private. Each code works once.
+          pre#totpRecoveryCodes
+          button#totpRecoveryDone.btn.btn-default(type="button") Done
+        #totpEnabledPanel(style="display:none")
+          p#totpRecoveryCount
+          .form-group
+            label(for="totpDisablePassword") Password
+            input#totpDisablePassword.form-control(type="password" autocomplete="current-password")
+          .form-group
+            label(for="totpDisableCode") Current authenticator code
+            input#totpDisableCode.form-control(type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code")
+          button#totpDisable.btn.btn-danger(type="button") Disable two-factor authentication
+

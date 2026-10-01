@@ -1,0 +1,43 @@
+#warning-message {
+  display: none;
+}
+
+@media only screen and (orientation: portrait) {
+
+  #warning-message {
+    display: block;
+    font-size: 4vw;
+    font-weight: bold;
+    color: red;
+    text-shadow: 0 0 1.5px grey;
+    height: 10em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media only screen and (orientation: landscape) {
+  #warning-message {
+    display: none;
+  }
+}
+body.home-body #warning-message {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #1e293b;
+  color: #ffffff;
+  padding: 30px;
+  text-align: center;
+  z-index: 99999;
+  font-size: 18px;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (orientation: portrait) and (max-width: 1024px) {
+  body.home-body #warning-message {
+    display: flex;
+  }
+}

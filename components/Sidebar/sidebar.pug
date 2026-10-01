@@ -1,0 +1,56 @@
+aside.sidebar-component
+  #sidebar.nav-collapse
+    //- Sidebar brand (no image — clean icon + text)
+    .sidebar-brand
+      .sidebar-brand-icon
+        i.fa.fa-mobile
+      .sidebar-brand-text
+        span.sidebar-brand-name MSA
+        span.sidebar-brand-sub Mobile Storage
+
+    //- Nav divider label
+    .sidebar-section-label
+      span Navigation
+
+    ul#nav-accordion.sidebar-menu
+      li.active
+        a(data-toggle='tab', href='#dboard', data-tooltip='Dashboard')
+          .nav-icon-wrap
+            i.fa.fa-tachometer
+          span.nav-text Dashboard
+      li.sub-menu
+        a(data-toggle='tab', href='#totallist', data-tooltip='Over-all List')
+          .nav-icon-wrap
+            i.fa.fa-list-alt
+          span.nav-text Over-all List
+      li.sub-menu
+        a(data-toggle='tab', href='#officelist', data-tooltip='Mobiles at Office')
+          .nav-icon-wrap
+            i.fa.fa-building
+          span.nav-text Mobiles at Office
+      li.sub-menu
+        a(data-toggle='tab', href='#returnedlist', data-tooltip='Mobiles Returned')
+          .nav-icon-wrap
+            i.fa.fa-check-circle
+          span.nav-text Mobiles Returned
+      li.sub-menu
+        a(data-toggle='tab', href='#recycle-bin', data-tooltip='Recently Deleted')
+          .nav-icon-wrap
+            i.fa.fa-trash
+          span.nav-text Recently Deleted
+      li.sub-menu
+        a(href='/audit', data-tooltip='Record Activity')
+          .nav-icon-wrap
+            i.fa.fa-history
+          span.nav-text Record Activity
+      li.sub-menu
+        a(data-toggle='tab', href='#search-edit', data-tooltip='Search')
+          .nav-icon-wrap
+            i.fa.fa-search
+          span.nav-text Search
+      li.sub-menu
+        a(data-toggle='tab', href='#contact', data-tooltip='Contact Staff')
+          .nav-icon-wrap
+            i.fa.fa-users
+          span.nav-text Contact Staff
+

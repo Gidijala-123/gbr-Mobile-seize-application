@@ -1,0 +1,121 @@
+#help.tab-pane.fade.align.help-section-component
+  p.anim-typewriter Help tab
+  .conta-fluid
+    .col-md-12
+      p.rr Click on any of the following Questions
+        #navbar
+          ul
+            li
+              a.g2(href="#link1") 1) Button Click functionality is not working
+            li
+              a.g2(href="#link2") 2) Data is not getting updated
+            li
+              a.g2(href="#link3") 3) How to delete particular data?
+            li
+              a.g2(href="#link4") 4) Icons are not loading..
+            li
+              a.g2(href="#link5") 5) Updated data is not showing in Datatables
+            li
+              a.g2(href="#link6") 6) Unable to open MongoShell
+            li
+              a.g2(href="#link7") 7) Some important MongoShell commands
+            li
+              a.g2(href="#link8") 8) Update operation is not working on "rno" field
+              br
+              br
+              br
+              br
+        .conta.dontshow
+          #link1.gg
+            p Check for errors in click.js folder at Template/public/javascripts/click.js
+
+          #link2.gg
+            p a)Check if you missed any ID for that particular field any check the same in index.js folder
+                br
+                |b)Check your database i.e;Monogdb is working in background.if crashed please reinstall the app for concern site and run the app again.
+                br
+                |c)If you're calling an existing fieldname using same ID from anywhere in the code,then such field won't work because an ID should be unique in entire code.
+                br
+
+          #link3.gg
+            p a)Goto monogdb and apply the following steps
+                 br
+                 |>use Mob_db  /* It'll switches to database named 'Mob_db' */
+                 br
+                 |>db.student_data.remove({""})  /* It removes entire collection named 'student_data' */
+                 br
+                 |Eg: db.student_data.remove{{"rno":"17P31F0011"}}  /* To remove specific data matched with rollno '17P31F0011' */
+          #link4.gg
+            p a)Check your internet connection and refresh the page.Some bootstrap links requires internet connection.
+                 br
+                 |b)Make sure that indentation is correct in your main code.
+          #link5.gg
+            p Once refresh your home page and check again. If problem still remains restart npm and check again.
+
+          #link6.gg
+            p If you are unable to open mongoshell i.e;if you try to open mongoshell it forcely closes without mentioning any error.
+            br
+            p Such case arises if the service got stopped in background.
+            br
+            p To solve this problem open task manager>goto services tab>find mongodb>right click on it and click on start.Now reopen the shell and will works fine.
+          #link7.gg
+            p
+            |1)cls
+            br
+            |To clear the screen
+            br
+            br
+            |2)show dbs
+            br
+            |Displays created database list
+            br
+            br
+            |3)use a
+            br
+            |Creates a database with name a if not exists. If it is an existing db name then it switches to that databases
+            br
+            br
+            |4)show collections
+            br
+            |Displays collections in that database
+            br
+            br
+            |5)db.createCollection('a_coll')
+            br
+            |Creates a collection with name student_data
+            br
+            br
+            |6)db.a_coll.drop()
+            br
+            |Removes a_coll collection from database
+            br
+            br
+            |7)db.a_coll.insert({"name":"gbr","rno":111,"tel":89,"eng":90,"sci":88})
+            br
+            |Adds data with fields in a_coll collection
+            br
+            br
+            |8)db.a_coll.find({}).pretty()
+            br
+            |Displays all data from a_coll in a format
+            br
+            br
+            |9)db.a_coll.find({"name":"gbr"}).pretty()
+            br
+            |Displays records that matched with name as gbr
+            br
+            br
+            |10)db.a_coll.update({"name":"gbr"},{$set:{"tel":95}})
+            br
+            |Updates or Modifies data with field name tel when matches with name gbr
+
+          #link8.gg
+            p
+            |This application doesn't support updation of RollNo by clicking on update button.
+            br
+            |You have to do this manually from monogdb application
+            br
+            |>db.student_data.update({"sname":"abc"},{$set:{"rno":"17P31F0011"}})
+            br
+            |It'll changes "rno" to "17P31F0011" whose "sname" is matched with "abc" from the collection name "student_data".
+

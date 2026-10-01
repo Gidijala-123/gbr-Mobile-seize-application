@@ -1,0 +1,375 @@
+@media (max-width: 767px) {
+
+  body.home-body .header {
+    position: fixed !important;
+    top: 0;
+  }
+}
+.header {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1002;
+}
+.app-header,
+body.home-body .header {
+  background: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.18);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1010;
+}
+body.home-body #date_time {
+  color: #e0f2fe;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 600;
+  margin-left: 8px;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  letter-spacing: 0.01em;
+  flex: 1;
+}
+body.home-body .inner-width-neon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+body.home-body .inner-width-neon:hover {
+  background: rgba(251, 191, 36, 0.95);
+  color: #1e293b;
+  border-color: transparent;
+  box-shadow: 0 8px 20px rgba(251, 191, 36, 0.35);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+body.home-body .inner-width-neon .bg-width {
+  display: none;
+}
+
+body.home-body .inner-width-neon .btn-text {
+  position: relative;
+  z-index: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 768px) {
+
+  body.home-body .app-header,
+  body.home-body .header {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    gap: 8px;
+  }
+
+  body.home-body #date_time {
+    order: 3;
+    width: 100%;
+    flex: none;
+    font-size: 12px;
+    margin: 0;
+  }
+
+  body.home-body .header-brand {
+    display: none;
+  }
+
+  body.home-body #date_time {
+    font-size: 11px !important;
+  }
+  body.home-body header.header .header-brand {
+    font-size: 12px !important;
+  }
+
+  body.home-body header.header #date_time {
+    display: none !important;
+  }
+
+  body.home-body header.header a.inner-width-neon {
+    padding: 0 10px !important;
+    font-size: 11.5px !important;
+  }
+
+  body.home-body header.header a.inner-width-neon .btn-text {
+    font-size: 11.5px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body.home-body .inner-width-neon {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+body.home-body .header-brand {
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+body.home-body .header {
+  background: linear-gradient(135deg, #0c1729 0%, #1e293b 50%, #0e2438 100%) !important;
+  box-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.35),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  padding: 0 28px !important;
+}
+
+body.home-body #date_time {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 10px !important;
+  padding: 7px 16px !important;
+  font-size: 12px !important;
+  color: rgba(226, 232, 240, 0.9) !important;
+  letter-spacing: 0.02em;
+  font-weight: 600 !important;
+}
+
+body.home-body .inner-width-neon {
+  padding: 8px 16px !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em;
+  transition: all 0.22s ease !important;
+}
+
+body.home-body .inner-width-neon:hover {
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  color: #0f172a !important;
+  border-color: transparent !important;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(245, 158, 11, 0.35) !important;
+}
+
+body.home-body .inner-width-neon:hover .btn-text {
+  color: #0f172a !important;
+}
+
+body.home-body .inner-width-neon .btn-text {
+  font-size: 12.5px !important;
+}
+body.home-body header.header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 9999 !important;
+  height: 62px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 20px 0 16px !important;
+  background: linear-gradient(135deg, #080f1e 0%, #0f1e38 50%, #091628 100%) !important;
+  border-bottom: 1px solid rgba(6, 182, 212, 0.18) !important;
+  box-shadow:
+    0 2px 20px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(6, 182, 212, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  gap: 12px !important;
+}
+body.home-body header.header>*,
+body.home-body header.header a,
+body.home-body header.header button,
+body.home-body header.header #date_time {
+  float: none !important;
+  position: static !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+body.home-body header.header button.sidebar-toggle-box {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+  border-radius: 9px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  cursor: pointer !important;
+  flex: 0 0 38px !important;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease !important;
+}
+
+body.home-body header.header button.sidebar-toggle-box:hover {
+  background: rgba(6, 182, 212, 0.15) !important;
+  border-color: rgba(6, 182, 212, 0.35) !important;
+}
+
+body.home-body header.header button.sidebar-toggle-box .fa-bars {
+  font-size: 16px !important;
+  color: rgba(203, 213, 225, 0.9) !important;
+  line-height: 1 !important;
+}
+body.home-body header.header .header-brand {
+  display: inline-flex !important;
+  align-items: center !important;
+  margin: 0 !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em !important;
+  white-space: nowrap !important;
+  color: #ffffff !important;
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+body.home-body header.header #date_time {
+  margin-left: auto !important;
+}
+body.home-body header.header #date_time {
+  display: flex !important;
+  align-items: center !important;
+  height: 38px !important;
+  padding: 0 14px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 9px !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: rgba(203, 213, 225, 0.88) !important;
+  letter-spacing: 0.025em !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  line-height: 1.3 !important;
+  text-align: center !important;
+  font-family: "Lato", sans-serif !important;
+}
+body.home-body header.header a.inner-width-neon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 38px !important;
+  padding: 0 16px !important;
+  border-radius: 9px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  color: rgba(226, 232, 240, 0.9) !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  cursor: pointer !important;
+  /* Kill old span-based fake button */
+  overflow: hidden !important;
+}
+
+body.home-body header.header a.inner-width-neon .bg-width {
+  display: none !important;
+}
+
+body.home-body header.header a.inner-width-neon .btn-text {
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  color: inherit !important;
+  letter-spacing: 0.04em !important;
+  line-height: 1 !important;
+}
+body.home-body header.header a.inner-width-neon:first-of-type:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4) !important;
+}
+
+body.home-body header.header a.inner-width-neon:first-of-type:hover .btn-text {
+  color: #ffffff !important;
+}
+body.home-body header.header a.inner-width-neon:last-of-type:hover {
+  background: linear-gradient(135deg, #0891b2, #0e7490) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(8, 145, 178, 0.4) !important;
+}
+
+body.home-body header.header a.inner-width-neon:last-of-type:hover .btn-text {
+  color: #ffffff !important;
+}
+body.home-body header.header::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 2px !important;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(6, 182, 212, 0.7) 20%,
+      rgba(99, 102, 241, 0.6) 50%,
+      rgba(6, 182, 212, 0.6) 80%,
+      transparent 100%) !important;
+  pointer-events: none !important;
+}
+body.home-body:not(.dark-mode) header.header {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f2340 100%) !important;
+}
+body.home-body header.header #date_time::before {
+  content: "" !important;
+  display: block !important;
+  width: 1px !important;
+  height: 22px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  margin-right: 14px !important;
+}
+body.home-body header.header button.sidebar-toggle-box {
+  min-width: 38px !important;
+  flex: 0 0 38px !important;
+}
+
+body.home-body header.header .header-brand {
+  flex: 0 1 280px !important;
+}
+
+@media (max-width: 900px) {
+  body.home-body header.header .header-brand {
+    flex-basis: auto !important;
+  }
+}
+
+@media (max-width: 600px) {
+  body.home-body header.header #date_time {
+    display: none !important;
+  }
+}

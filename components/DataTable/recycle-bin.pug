@@ -1,0 +1,33 @@
+include data-table.pug
+
+#recycle-bin.tab-pane.fade.align.data-table-panel
+  p.anim-typewriter Recently Deleted · 30-day recovery
+  +responsiveTable()
+    table#recycleBinTable.table.table-striped
+      thead
+        tr
+          th Deleted
+          th RollNo
+          th Student
+          th College
+          th Branch
+          th Model
+          th IMEI
+          th Deleted By
+          th Action
+      tbody
+        each member in deletedData
+          tr
+            td #{member.deletedAt}
+            td #{member.rno}
+            td #{member.sname}
+            td #{member.clg}
+            td #{member.brch}
+            td #{member.mmodel}
+            td #{member.imei}
+            td #{member.deletedBy}
+            td
+              button.restore-btn(type="button" data-record-id=member._id title="Restore record")
+                i.fa.fa-undo(aria-hidden="true")
+                |  Restore
+

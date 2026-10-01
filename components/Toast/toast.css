@@ -1,0 +1,124 @@
+#toast-container {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.gbr-toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 300px;
+  max-width: 440px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.18), 0 2px 8px rgba(15, 23, 42, 0.1);
+  border-left: 4px solid #22d3ee;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+  transform: translateX(120%);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
+  pointer-events: all;
+}
+
+.gbr-toast--visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.gbr-toast--success {
+  border-left-color: #10b981;
+}
+
+.gbr-toast--success .toast-icon {
+  color: #10b981;
+}
+
+.gbr-toast--error {
+  border-left-color: #ef4444;
+}
+
+.gbr-toast--error .toast-icon {
+  color: #ef4444;
+}
+
+.gbr-toast--warning {
+  border-left-color: #f59e0b;
+}
+
+.gbr-toast--warning .toast-icon {
+  color: #f59e0b;
+}
+
+.gbr-toast--info {
+  border-left-color: #3b82f6;
+}
+
+.gbr-toast--info .toast-icon {
+  color: #3b82f6;
+}
+
+.toast-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.toast-msg {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 2px;
+  transition: color 0.15s ease;
+}
+
+.toast-close:hover {
+  color: #0f172a;
+}
+body.dark-mode .gbr-toast {
+  background: #1e293b;
+  color: #e2e8f0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+@media (max-width: 768px) {
+  #toast-container {
+    right: 12px;
+    left: 12px;
+    top: 72px;
+  }
+
+  .gbr-toast {
+    min-width: 0;
+    width: 100%;
+  }
+}
+.gbr-toast {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  color: #e2e8f0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.toast-close {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.toast-close:hover {
+  color: #f8fafc !important;
+}

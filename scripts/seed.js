@@ -5,28 +5,8 @@
 
 require('dotenv').config()
 const { MongoClient } = require('mongodb')
-const crypto = require('crypto')
-const { promisify } = require('util')
-
-const pbkdf2 = promisify(crypto.pbkdf2)
-const PASSWORD_HASH_ITERATIONS = 60000
-
-async function hashPassword(password) {
-  const salt = crypto.randomBytes(16).toString('hex')
-  const derivedKey = await pbkdf2(password, salt, PASSWORD_HASH_ITERATIONS, 64, 'sha512')
-  return `pbkdf2$${PASSWORD_HASH_ITERATIONS}$${salt}$${derivedKey.toString('hex')}`
-}
-
-function sanitizeMongoUri(rawUri) {
-  if (typeof rawUri !== 'string') return rawUri
-  try {
-    const url = new URL(rawUri)
-    if (url.searchParams.has('appName')) url.searchParams.delete('appName')
-    return url.toString()
-  } catch {
-    return rawUri
-  }
-}
+const { hashPassword } = require('../utils/crypto')
+const { sanitizeMongoUri } = require('../utils/db')
 
 // ── Seed data ──────────────────────────────────────────────────────────────
 

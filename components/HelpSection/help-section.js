@@ -1,0 +1,1 @@
+/* HelpSection component behavior. */

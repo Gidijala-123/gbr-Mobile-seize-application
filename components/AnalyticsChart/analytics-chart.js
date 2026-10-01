@@ -1,0 +1,1 @@
+/* AnalyticsChart component behavior. */

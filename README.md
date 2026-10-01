@@ -87,11 +87,12 @@ Notes:
 - Express 4
 - Pug 3 for server-side HTML rendering
 - MongoDB Atlas
-- Monk for MongoDB access
+- Mongoose ODM with strict schemas and model-level indexes
+- Joi request schemas with field-level validation responses
 - Express Session with a MongoDB-backed session store
 - Nodemailer for Gmail SMTP email delivery
 - dotenv for environment configuration
-- Cryptr for application-level credential encryption
+- PBKDF2 password hashing with per-password salts
 
 ### Frontend
 
@@ -128,10 +129,13 @@ MongoDB Atlas
 The application follows a server-rendered MVC-style structure:
 
 - `app.js` configures middleware, sessions, static assets, routes, views, and error handling.
-- `routes/index.js` owns authentication, password recovery, dashboard loading, device intake, search, update, status transition, and logout behavior.
+- `models/` defines the user, device-record, visitor, error-report, login-audit, and session schemas.
+- `services/` contains authentication, device, email, error-reporting, login-audit, and visitor use cases.
+- `routes/index.js` handles HTTP/session concerns and delegates persistence and application operations to services.
 - `routes/users.js` contains the default Express users route.
 - `views/` contains Pug pages for authentication, password recovery, dashboard operations, and error handling.
 - `public/` contains stylesheets, images, fonts, and browser-side libraries/scripts.
+- `components/` contains reusable Pug partials and page-scoped CSS/JavaScript assets. See [docs/components.md](docs/components.md) for the component registry and authoring workflow.
 
 ## Main Routes
 
@@ -143,6 +147,11 @@ The application follows a server-rendered MVC-style structure:
 | `POST` | `/postlogin` | Authenticate a user and create a session |
 | `POST` | `/postforgot` | Generate and email a temporary credential |
 | `GET` | `/home` | Render the authenticated dashboard and device lists |
+| `GET` | `/api/records` | Authenticated DataTables paging, search, status filtering, and sorting (`draw`, `start`, `length`, `order`, `columns`, `search[value]`) |
+| `GET` | `/api/recyclebin` | List records deleted within the 30-day recovery window |
+| `GET` | `/audit` | View recent record field changes and lifecycle events |
+| `GET` | `/api/records/:id/audit` | Fetch audit events for one record |
+| `POST` | `/restore/:id` | Restore a recently deleted record by ObjectId |
 | `POST` | `/hh` | Register a seized device |
 | `POST` | `/change` | Mark a device as returned |
 | `POST` | `/edit` | Fetch a record by roll number |
@@ -155,13 +164,14 @@ The application follows a server-rendered MVC-style structure:
 
 Each seizure record stores the following operational fields:
 
-`Date`, `Time`, `sname`, `spno`, `rno`, `clg`, `brch`, `year`, `sec`, `pname`, `ppno`, `ename`, `epno`, `eid`, `rsn`, `mmodel`, `imei`, `mclr`, and `status`.
+`Date`, `Time`, `sname`, `spno`, `rno`, `clg`, `brch`, `year`, `sec`, `pname`, `ppno`, `ename`, `epno`, `eid`, `rsn`, `mmodel`, `imei`, `mclr`, `status`, `deletedAt`, and `deletedBy`. Deleted records stay out of active lists and are purged after 30 days.
 
 ### Supporting collections
 
 - `registration_coll`: registered staff email and encrypted credential data.
 - `visitors_of_page`: login visitor name and visit timestamp.
 - `error_reports`: captured signup/login failure details and timestamps.
+- `record_audit_logs`: field-level record changes, actor, timestamp, and lifecycle action.
 
 ## Getting Started
 
@@ -187,9 +197,10 @@ MONGODB_URI=mongodb+srv://your-user:your-password@your-cluster/mobile_seize_db
 SESSION_SECRET=replace-with-a-long-random-secret
 GMAIL_USER=your-email@example.com
 GMAIL_PASS=your-app-password
+PUBLIC_APP_URL=https://your-domain.example
 ```
 
-Render does not receive your local `.env` file (`.env` is gitignored). Open the web service's **Environment** settings and add `MONGODB_URI`, `SESSION_SECRET`, `GMAIL_USER`, and `GMAIL_PASS` there. Set `NODE_ENV` to `production` if it is not already set; Render provides `PORT` automatically. Generate `SESSION_SECRET` with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` and paste the output as the value. Keep the secret stable between deploys so existing sessions remain valid. After saving the variables, redeploy the service.
+Render does not receive your local `.env` file (`.env` is gitignored). Open the web service's **Environment** settings and add `MONGODB_URI`, `SESSION_SECRET`, `GMAIL_USER`, `GMAIL_PASS`, and `PUBLIC_APP_URL` there. Set `PUBLIC_APP_URL` to the deployed HTTPS origin so verification links point to the correct service. Set `NODE_ENV` to `production` if it is not already set; Render provides `PORT` automatically. Generate `SESSION_SECRET` with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` and paste the output as the value. Keep the secret stable between deploys so existing sessions remain valid. After saving the variables, redeploy the service.
 
 Gmail requires an app password when two-step verification is enabled. Never commit real credentials, database connection strings, or app passwords to source control. Rotate any credentials that were previously present in a local or public `.env` file.
 
@@ -216,7 +227,8 @@ The Express server starts through `bin/www`. Open `http://localhost:4444`, creat
 The repository includes the following production hardening:
 
 - MongoDB credentials and session secrets are environment-based.
-- New credentials use salted scrypt hashes; legacy encrypted credentials migrate on successful login.
+- Credentials use salted PBKDF2 hashes (`pbkdf2$...`). Legacy password formats are not accepted at login; those accounts must use the emailed OTP reset flow to choose a new password.
+- Signup and password reset require 10–128 characters with uppercase, lowercase, number, and symbol characters, and reject passwords from a local 10,000-entry common-password list.
 - Passwords are not written to error reports.
 - Authenticated data routes enforce session access.
 - Sessions use MongoDB persistence through `connect-mongo`.

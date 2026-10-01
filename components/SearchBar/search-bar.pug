@@ -1,0 +1,66 @@
+#search-edit.tab-pane.fade.align.search-bar-component
+  p.anim-typewriter Search & Editing
+  .smart-search-bar
+    .srcbar
+      #wrap
+        .field
+        form.srch(action="#" method="get")
+          input#smartSearch(type="text" placeholder="Live search across all fields — name, roll no, mobile, IMEI, college..." autocomplete="off")
+          .btnwrap
+            .spark
+            .spark
+            .spark
+            .spark
+            .spark
+            .spark
+            b Search
+            .blob
+          input(type="submit" value="Search")
+          button#smartSearchClear.smart-clear(type="button" title="Clear")
+            i.fa.fa-times
+  #example5-wrapper.table-responsive.search-source-data(aria-hidden='true')
+    table#example5.table.table-striped
+      thead
+        tr
+          th Date
+          th Time
+          th Generated_ID
+          th RollNo
+          th Stud_name
+          th College
+          th Branch
+          th Year
+          th Section
+          th Stud_phno
+          th Parent_name
+          th Parent_phno
+          th Mobile_model
+          th IMEI_number
+          th Mobile_color
+          th Reason
+          th Employee_name
+          th Employee_phno
+          th Employee_ID
+      tbody
+        each member in data3
+          tr
+            td #{member.Date}
+            td #{member.Time}
+            td #{member._id}
+            td #{member.rno}
+            td #{member.sname}
+            td #{member.clg}
+            td #{member.brch}
+            td #{member.year}
+            td #{member.sec}
+            td #{member.spno}
+            td #{member.pname}
+            td #{member.ppno}
+            td #{member.mmodel}
+            td #{member.imei}
+            td #{member.mclr}
+            td #{member.rsn}
+            td #{member.ename}
+            td #{member.epno}
+            td #{member.eid}
+

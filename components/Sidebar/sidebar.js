@@ -1,4 +1,14 @@
 /*---LEFT BAR ACCORDION----*/
+$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+  var method = (options.type || options.method || "GET").toUpperCase();
+  if (!/^(GET|HEAD|OPTIONS|TRACE)$/.test(method)) {
+    var tokenElement = document.querySelector('meta[name="csrf-token"]');
+    if (tokenElement && tokenElement.content) {
+      jqXHR.setRequestHeader("X-CSRF-Token", tokenElement.content);
+    }
+  }
+});
+
 $(function () {
   $("#nav-accordion").dcAccordion({
     eventType: "click",

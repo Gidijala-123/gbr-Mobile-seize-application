@@ -68,36 +68,12 @@ a:focus {
 }
 
 /* #sidebar — width/position overridden by body.home-body rules in redesign block */
-#sidebar {
-  min-width: 200px;
-  height: 100%;
-  z-index: 1;
-  position: fixed;
-}
-
-#sidebar ul li {
-  position: relative;
-}
 
 .nav-collapse.collapse {
   display: inline;
 }
 
-ul.sidebar-menu,
-ul.sidebar-menu li ul.sub {
-  margin: 0;
-  padding: 0;
-}
-
-ul.sidebar-menu {
-  margin-top: 8px;
-}
-
 @media (max-width: 991px) {
-  #sidebar {
-    width: 220px;
-    min-width: 220px;
-  }
 
   #main-content {
     margin-left: 220px;
@@ -108,28 +84,6 @@ ul.sidebar-menu {
   body.home-body {
     overflow-x: hidden;
     overflow-y: auto;
-  }
-
-  body.home-body .header {
-    position: fixed !important;
-    top: 0;
-  }
-
-  body.home-body #sidebar.nav-collapse {
-    position: fixed;
-    top: 64px;
-    left: 0;
-    width: 240px;
-    min-width: 200px;
-    height: calc(100vh - 64px);
-    overflow-y: auto;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    z-index: 500;
-  }
-
-  body.home-body #sidebar.nav-collapse.in {
-    transform: translateX(0);
   }
 
   body.home-body .wrapper {
@@ -147,104 +101,9 @@ ul.sidebar-menu {
   section#container {
     display: block;
   }
-
-  ul.sidebar-menu {
-    margin-top: 0;
-  }
-
-  ul.sidebar-menu li a {
-    height: auto;
-    padding: 10px 12px;
-  }
-}
-
-#sidebar>ul>li>ul.sub {
-  display: none;
-}
-
-#sidebar>ul>li.active>ul.sub,
-#sidebar>ul>li>ul.sub>li>a {
-  display: block;
-}
-
-ul.sidebar-menu li ul.sub li {
-  background: #424a5d;
-  margin-bottom: 0;
-  margin-left: 0;
-  margin-right: 0;
-}
-
-ul.sidebar-menu li ul.sub li:last-child {
-  border-radius: 0 0 4px 4px;
-  -webkit-border-radius: 0 0 4px 4px;
-}
-
-ul.sidebar-menu li {
-  margin: 4px 8px;
-}
-
-ul.sidebar-menu li a span {
-  display: inline-block;
-}
-
-ul.sidebar-menu li a {
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  padding: 10px 12px;
-  font-size: 13px;
-  outline: none;
-  transition: all 0.25s ease;
-  border-radius: 8px;
-}
-
-ul.sidebar-menu li a.active,
-ul.sidebar-menu li a:hover,
-ul.sidebar-menu li a:focus {
-  border: none;
-  border-radius: 10px;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  -webkit-transition: all 0.3s ease;
-  -moz-transition: all 0.3s ease;
-  -o-transition: all 0.3s ease;
-  -ms-transition: all 0.3s ease;
-  transition: all 0.3s ease;
-}
-
-ul.sidebar-menu li a:focus {
-  box-shadow: none;
-  border-color: transparent;
-}
-
-ul.sidebar-menu li a:hover {
-  box-shadow: none;
-  border-color: transparent;
-}
-
-ul.sidebar-menu li a i {
-  font-size: 15px;
-  padding-right: 6px;
-}
-
-ul.sidebar-menu li a:hover i,
-ul.sidebar-menu li a:focus i {
-  color: #fff;
-}
-
-ul.sidebar-menu li a.active i {
-  color: #fff;
 }
 
 /* .header — overridden by body.home-body rules in redesign block */
-.header {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 1002;
-}
 
 .black-bg {
   background: #424a5d;
@@ -465,24 +324,9 @@ a.logo span {
 }
 
 /*--sidebar toggle---*/
-.sidebar-toggle-box {
-  float: left;
-  margin: 12px 10px 0 10px;
-}
 
 /* .fa-bars color overridden by body.home-body rules in redesign block */
 /* Sidebar collapsed state */
-.sidebar-closed #main-content {
-  margin-left: 0;
-}
-
-.sidebar-closed .wrapper {
-  margin-left: 0;
-}
-
-.sidebar-closed .anim-typewriter {
-  text-align: center;
-}
 
 #main-content {
   margin-left: 240px;
@@ -504,18 +348,6 @@ label {
 }
 
 /* .dd1, .p1, .pp1 — overridden by body.home-body rules in redesign block */
-.dd1 {
-  /* legacy placeholder */
-}
-
-.p1 {
-  float: left;
-  width: auto;
-}
-
-.pp1 {
-  text-align: center;
-}
 
 #rsn {
   text-align: center;
@@ -542,9 +374,6 @@ label {
 }
 
 /* #fmgrp — overridden by body.home-body rules in redesign block */
-#fmgrp {
-  display: none;
-}
 
 /* .lb / .inp — overridden by body.home-body rules in redesign block */
 .lb {
@@ -695,28 +524,8 @@ label {
 }
 
 /* Source Code Pro font loaded via <link> in head to avoid @import-after-rules issue */
-.gg {
-  white-space: nowrap;
-  overflow: hidden;
-  font-weight: 200;
-  font-size: 20px;
-  line-height: 33px;
-  animation: animated-text 4s linear 1s 1 normal both,
-    animated-cursor 600ms linear infinite;
-}
 
 /* .g2 — base rule kept, overridden for home page by body.home-body block */
-.g2 {
-  color: #1e3a8a;
-  font-weight: 600;
-}
-
-.g2:hover {
-  background-color: rgba(34, 211, 238, 0.1);
-  border: 1px solid #22d3ee;
-  color: #0f172a;
-  border-radius: 6px;
-}
 
 @keyframes animated-text {
   from {
@@ -745,9 +554,6 @@ label {
 }
 
 /* .table-responsive, .bbb — overridden by body.home-body rules in redesign block */
-.table-responsive {
-  overflow-x: auto;
-}
 
 .bbb {
   cursor: pointer;
@@ -810,50 +616,13 @@ td {
   text-align: center;
 }
 
-#warning-message {
-  display: none;
-}
-
 @media only screen and (orientation: portrait) {
   #container {
-    display: none;
-  }
-
-  #warning-message {
-    display: block;
-    font-size: 4vw;
-    font-weight: bold;
-    color: red;
-    text-shadow: 0 0 1.5px grey;
-    height: 10em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-@media only screen and (orientation: landscape) {
-  #warning-message {
     display: none;
   }
 }
 
 /*------------------------------------------------search bar-----------------------------------------------------*/
-.srcbar {
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  align-items: center;
-  background: transparent;
-  height: 28vh;
-  width: 80vw;
-  overflow: hidden;
-  --orange: #ff7b0a;
-  --pink: #fe3a7d;
-  --gray: #ccc;
-}
 
 #wrap {
   position: relative;
@@ -1545,11 +1314,6 @@ body.home-body .tab-pane.active {
 }
 
 /* Hide rules - preserved exact */
-.dnt,
-.dontshow,
-.dontdisplay {
-  display: none;
-}
 
 /* Box sizing reset - scoped to avoid conflicts with jQuery UI / DataTables plugins */
 body.home-body *,
@@ -1559,117 +1323,16 @@ body.home-body *::after {
 }
 
 /* ul/li margin reset scoped to sidebar only to avoid breaking DataTables pagination and Bootstrap dropdowns */
-body.home-body ul.sidebar-menu,
-body.home-body ul.sidebar-menu li {
-  margin: 0;
-  padding: 0;
-}
 
 /* Header */
-.app-header,
-body.home-body .header {
-  background: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%);
-  height: 64px;
-  display: flex;
-  align-items: center;
-  padding: 0 24px;
-  gap: 16px;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.18);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1010;
-}
 
 /* Sidebar toggle icon */
-body.home-body .sidebar-toggle-box {
-  cursor: pointer;
-  color: #ffffff;
-  font-size: 20px;
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 10px;
-  border-radius: 8px;
-  transition: background 0.2s ease;
-}
-
-body.home-body .sidebar-toggle-box:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
 
 /* Clock in header */
-body.home-body #date_time {
-  color: #e0f2fe;
-  font-size: 13px;
-  line-height: 1.4;
-  font-weight: 600;
-  margin-left: 8px;
-  padding: 6px 14px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  letter-spacing: 0.01em;
-  flex: 1;
-}
 
 /* Neon header buttons (Logout / Help) */
-body.home-body .inner-width-neon {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 18px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 13px;
-  text-decoration: none;
-  cursor: pointer;
-  overflow: hidden;
-  transition: all 0.25s ease;
-}
-
-body.home-body .inner-width-neon:hover {
-  background: rgba(251, 191, 36, 0.95);
-  color: #1e293b;
-  border-color: transparent;
-  box-shadow: 0 8px 20px rgba(251, 191, 36, 0.35);
-  transform: translateY(-1px);
-  text-decoration: none;
-}
-
-body.home-body .inner-width-neon .bg-width {
-  display: none;
-}
-
-body.home-body .inner-width-neon .btn-text {
-  position: relative;
-  z-index: 1;
-  font-size: 13px;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.02em;
-}
 
 /* --- Sidebar (Task 3 migrated inline + Task 4) --- */
-.app-sidebar,
-body.home-body #sidebar.nav-collapse {
-  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  position: fixed;
-  top: 64px;
-  left: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  width: 240px;
-  height: calc(100vh - 64px);
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
-  z-index: 100;
-}
 
 /* Centered logo area */
 body.home-body p.centered {
@@ -1741,153 +1404,24 @@ body.home-body .qw i.fa-mobile {
 }
 
 /* Sidebar menu items */
-body.home-body ul.sidebar-menu {
-  padding: 0 10px 20px;
-  list-style: none;
-}
-
-body.home-body ul.sidebar-menu>li {
-  margin-bottom: 4px;
-}
-
-body.home-body ul.sidebar-menu li a {
-  margin-bottom: 0 !important;
-  padding: 11px 10px 11px 14px !important;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #cbd5e1 !important;
-  text-decoration: none;
-  border-radius: 10px;
-  border-left: 3px solid transparent;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.22s ease;
-  position: relative;
-}
-
-body.home-body ul.sidebar-menu li a i {
-  color: #67e8f9 !important;
-  font-size: 15px !important;
-  width: 20px;
-  flex-shrink: 0;
-  text-align: center;
-}
-
-body.home-body ul.sidebar-menu li a span {
-  font-size: 14px !important;
-  color: #e2e8f0 !important;
-  font-family: 'Lato', sans-serif !important;
-  font-weight: 500 !important;
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  position: relative !important;
-  z-index: 2 !important;
-}
 
 /* Ensure sidebar menu spans are always visible when sidebar is expanded */
-body.home-body #container:not(.sidebar-close):not(.sidebar-closed) #sidebar .sidebar-menu li a span,
-body.home-body #sidebar .sidebar-menu li a span {
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  color: #e2e8f0 !important;
-}
 
 /* Override any potential display: none from other CSS files */
-body.home-body #sidebar .sidebar-menu li a span {
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
 
 /* Force text visibility for all sidebar menu items when sidebar is NOT collapsed */
-body.home-body #container:not(.sidebar-close):not(.sidebar-closed) #sidebar .sidebar-menu li a span {
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  color: #e2e8f0 !important;
-  position: relative !important;
-  z-index: 10 !important;
-}
 
 /* Additional specificity to ensure text is visible */
-body.home-body:not(.sidebar-close):not(.sidebar-closed) #sidebar .sidebar-menu li a span {
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  color: #e2e8f0 !important;
-}
 
 /* Force text visibility for normal (non-collapsed) sidebar state */
-body.home-body #sidebar.nav-collapse .sidebar-menu li a span {
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  color: #e2e8f0 !important;
-}
 
 /* Most specific rule to force sidebar text visibility */
-body.home-body section#container aside#sidebar.nav-collapse ul#nav-accordion.sidebar-menu li a span {
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  color: #e2e8f0 !important;
-  position: relative !important;
-  z-index: 100 !important;
-}
 
 /* Ultra-specific rule for sidebar spans - highest specificity */
-body.home-body section#container#container aside#sidebar.nav-collapse ul#nav-accordion.sidebar-menu li.sub-menu a span,
-body.home-body section#container#container aside#sidebar.nav-collapse ul#nav-accordion.sidebar-menu li.active a span {
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  color: #e2e8f0 !important;
-  position: relative !important;
-  z-index: 1000 !important;
-}
 
 /* Force all sidebar spans to be visible - inline style override equivalent */
-#sidebar.nav-collapse .sidebar-menu li a span {
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  color: #e2e8f0 !important;
-}
-
-body.home-body #sidebar.nav-collapse .sidebar-menu li a span {
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  color: #e2e8f0 !important;
-}
 
 /* Final attempt - attribute selector approach */
-body.home-body aside#sidebar ul.sidebar-menu li a span {
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  color: #e2e8f0 !important;
-}
-
-body.home-body ul.sidebar-menu li.active a,
-body.home-body ul.sidebar-menu li a:hover {
-  background: linear-gradient(90deg, rgba(30, 58, 138, 0.45) 0%, rgba(15, 118, 110, 0.3) 100%);
-  color: #ffffff !important;
-  border-left-color: #22d3ee;
-  box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.15);
-}
-
-body.home-body ul.sidebar-menu li.active a span,
-body.home-body ul.sidebar-menu li a:hover span {
-  color: #ffffff !important;
-}
-
-body.home-body ul.sidebar-menu li a:hover i {
-  color: #fbbf24 !important;
-}
 
 /* --- Main content wrapper --- */
 /* #main-content is position:fixed as scroll container — see base rules above */
@@ -1935,14 +1469,6 @@ body.home-body p.anim-typewriter i {
 
 /* --- Dashboard: stat cards + data entry form (Task 5) --- */
 /* Dashboard form card wrapper */
-body.home-body #dboard #form form.form-group {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 28px 24px 32px;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
-  border: 1px solid #e2e8f0;
-  margin-top: 8px;
-}
 
 /* Dashboard tab pane base */
 body.home-body #dboard.tab-pane {
@@ -1953,130 +1479,10 @@ body.home-body #dboard.tab-pane {
   border: none;
 }
 
-body.home-body .dd1 {
-  background: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%);
-  border-radius: 14px;
-  padding: 22px 20px;
-  color: #ffffff;
-  box-shadow: 0 10px 28px rgba(30, 58, 138, 0.25);
-  margin-bottom: 22px;
-  min-height: 128px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-body.home-body .dd1::before {
-  content: '';
-  position: absolute;
-  right: -20px;
-  top: -20px;
-  width: 100px;
-  height: 100px;
-  background: radial-gradient(circle, rgba(251, 191, 36, 0.25) 0%, transparent 70%);
-  border-radius: 50%;
-}
-
-body.home-body .col-md-4:nth-child(2) .dd1 {
-  background: linear-gradient(135deg, #0f766e 0%, #1e3a8a 100%);
-  box-shadow: 0 10px 28px rgba(15, 118, 110, 0.25);
-}
-
-body.home-body .col-md-4:nth-child(3) .dd1 {
-  background: linear-gradient(135deg, #7c3aed 0%, #0f766e 100%);
-  box-shadow: 0 10px 28px rgba(124, 58, 237, 0.25);
-}
-
-body.home-body .dd1:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.18);
-}
-
-body.home-body .dd1 p.p1 {
-  margin: 0 0 10px;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.92);
-  line-height: 1.5;
-  position: relative;
-  z-index: 1;
-}
-
-body.home-body .dd1 p.p1 a,
-body.home-body .dd1 p.p1 a.stat-link {
-  color: #ffffff !important;
-  text-shadow: none !important;
-  text-decoration: none !important;
-  font-weight: 700;
-}
-
-body.home-body .dd1 .pp1 {
-  font-size: 36px;
-  font-weight: 800;
-  margin: 0;
-  line-height: 1;
-  color: #fde68a;
-  font-family: 'Lato', sans-serif;
-  position: relative;
-  z-index: 1;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
 /* Form labels & inputs */
-body.home-body #dboard form label,
-body.home-body #fmgrp label.lb {
-  font-family: 'Lato', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  color: #334155;
-  letter-spacing: 0.02em;
-  margin: 0 0 6px 2px;
-  display: inline-block;
-}
 
 body.home-body #dboard form label::after {
   content: '';
-}
-
-body.home-body .form-control,
-body.home-body input.form-control,
-body.home-body select.form-control,
-body.home-body textarea.form-control,
-body.home-body #fmgrp input.inp,
-body.home-body #fmgrp select.inp,
-body.home-body #fmgrp textarea.inp {
-  height: 42px !important;
-  padding: 9px 14px !important;
-  font-size: 14px !important;
-  line-height: 1.4 !important;
-  color: #0f172a;
-  background: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 10px;
-  transition: all 0.22s ease;
-  box-shadow: none !important;
-  font-family: 'Lato', sans-serif;
-}
-
-body.home-body textarea.form-control,
-body.home-body #fmgrp textarea.inp {
-  height: auto !important;
-  min-height: 110px;
-  resize: vertical;
-}
-
-body.home-body .form-control:focus,
-body.home-body #fmgrp input.inp:focus,
-body.home-body #fmgrp select.inp:focus,
-body.home-body #fmgrp textarea.inp:focus {
-  border-color: #22d3ee !important;
-  outline: none !important;
-  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.15) !important;
-  background: #ffffff;
 }
 
 body.home-body select.form-control {
@@ -2144,12 +1550,6 @@ body.home-body #dboard.tab-pane.fade {
   padding: 24px;
 }
 
-body.home-body .table-responsive {
-  border: none;
-  border-radius: 12px;
-  overflow-x: auto;
-}
-
 body.home-body table.table {
   width: 100% !important;
   margin: 0 !important;
@@ -2204,22 +1604,6 @@ body.home-body table.table thead tr th::after {
   opacity: 0.9;
 }
 
-body.home-body table.table:not(#smart-results-table):not(#example2):not(#example3):not(#example4) thead tr th:nth-child(4),
-body.home-body table.table:not(#smart-results-table):not(#example2):not(#example3):not(#example4) tbody tr td:nth-child(4) {
-  position: sticky;
-  left: 0;
-  z-index: 2;
-  background: #ffffff;
-  box-shadow: none;
-  border-right: 1px solid transparent !important;
-}
-
-body.home-body table.table:not(#smart-results-table):not(#example2):not(#example3):not(#example4) thead tr th:nth-child(4) {
-  z-index: 6;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  border-right: 1px solid transparent !important;
-}
-
 body.home-body #smart-results-table thead tr th:nth-child(2),
 body.home-body #smart-results-table tbody tr td:nth-child(2) {
   position: sticky;
@@ -2228,23 +1612,6 @@ body.home-body #smart-results-table tbody tr td:nth-child(2) {
 }
 
 body.home-body #smart-results-table thead tr th:nth-child(2) {
-  z-index: 6;
-}
-
-body.home-body #example2 thead tr th:nth-child(5),
-body.home-body #example2 tbody tr td:nth-child(5),
-body.home-body #example3 thead tr th:nth-child(5),
-body.home-body #example3 tbody tr td:nth-child(5),
-body.home-body #example4 thead tr th:nth-child(5),
-body.home-body #example4 tbody tr td:nth-child(5) {
-  position: sticky;
-  left: 0;
-  z-index: 2;
-}
-
-body.home-body #example2 thead tr th:nth-child(5),
-body.home-body #example3 thead tr th:nth-child(5),
-body.home-body #example4 thead tr th:nth-child(5) {
   z-index: 6;
 }
 
@@ -2317,98 +1684,8 @@ body.home-body td[style*="height:2vw"] {
 }
 
 /* DataTables wrapper & buttons */
-body.home-body .dataTables_wrapper {
-  padding: 16px 20px;
-  font-family: 'Lato', sans-serif;
-  color: #475569;
-  font-size: 13px;
-}
-
-body.home-body .dataTables_wrapper .dt-buttons {
-  margin-bottom: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-body.home-body .dataTables_wrapper .dt-buttons .dt-button {
-  background: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  color: #334155;
-  padding: 7px 14px;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
-}
-
-body.home-body .dataTables_wrapper .dt-buttons .dt-button:hover {
-  background: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%);
-  color: #ffffff;
-  border-color: transparent;
-  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.22);
-}
-
-body.home-body .dataTables_filter {
-  margin-bottom: 14px;
-}
-
-body.home-body .dataTables_filter input[type="search"] {
-  border: 1.5px solid #cbd5e1;
-  border-radius: 8px;
-  padding: 0;
-  font-size: 13px;
-  margin-left: 8px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-body.home-body .dataTables_filter input[type="search"]:focus {
-  border-color: #22d3ee;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
-}
-
-body.home-body .dataTables_paginate .paginate_button {
-  padding: 5px 12px !important;
-  border-radius: 6px !important;
-  border: 1px solid #e2e8f0 !important;
-  background: #ffffff !important;
-  color: #475569 !important;
-  margin-left: 4px;
-  cursor: pointer;
-}
-
-body.home-body .dataTables_paginate .paginate_button.current,
-body.home-body .dataTables_paginate .paginate_button:hover {
-  background: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%) !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-}
 
 /* --- Search tab + edit form (Task 7) --- */
-body.home-body .srcbar {
-  margin-bottom: 24px;
-}
-
-body.home-body #fmgrp.dontdisplay {
-  display: none;
-}
-
-body.home-body #fmgrp {
-  margin-top: 28px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 24px 28px 32px;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
-}
-
-body.home-body #fmgrp label.lb {
-  width: auto !important;
-  height: auto !important;
-}
 
 body.home-body .btn4 {
   display: inline-block;
@@ -2445,11 +1722,6 @@ body.home-body .slideInDown {
 }
 
 /* --- Help tab (Task 7) --- */
-body.home-body .conta-fluid {
-  max-width: 100%;
-  margin-left: 0 !important;
-  padding: 0;
-}
 
 body.home-body p.rr {
   font-family: 'Lato', sans-serif;
@@ -2473,70 +1745,7 @@ body.home-body #navbar ul li {
   break-inside: avoid;
 }
 
-body.home-body #navbar ul li a.g2 {
-  display: block;
-  padding: 10px 14px;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-left: 3px solid #0f766e;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #334155 !important;
-  text-decoration: none !important;
-  transition: all 0.2s ease;
-}
-
-body.home-body #navbar ul li a.g2:hover {
-  background: linear-gradient(90deg, rgba(34, 211, 238, 0.08) 0%, rgba(251, 191, 36, 0.06) 100%);
-  border-color: #22d3ee;
-  border-left-color: #f59e0b;
-  color: #0f172a !important;
-  transform: translateX(3px);
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
-}
-
-body.home-body .conta.dontshow {
-  display: none;
-}
-
-body.home-body .gg {
-  margin-top: 12px;
-  padding: 18px 22px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 14px;
-  color: #0f172a;
-  line-height: 1.8;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
-  font-family: 'Lato', sans-serif;
-}
-
-body.home-body .gg p {
-  margin: 0 0 8px;
-}
-
 /* --- Landscape warning --- */
-body.home-body #warning-message {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: #1e293b;
-  color: #ffffff;
-  padding: 30px;
-  text-align: center;
-  z-index: 99999;
-  font-size: 18px;
-  align-items: center;
-  justify-content: center;
-}
-
-@media (orientation: portrait) and (max-width: 1024px) {
-  body.home-body #warning-message {
-    display: flex;
-  }
-}
 
 /* --- Utility helpers --- */
 body.home-body .data {
@@ -2572,9 +1781,6 @@ body.home-body * {
 
 /* --- Responsive (Task 8) --- */
 @media (max-width: 992px) {
-  body.home-body ul.sidebar-menu li a span {
-    font-size: 13px !important;
-  }
 
   body.home-body #navbar ul {
     columns: 1;
@@ -2584,41 +1790,12 @@ body.home-body * {
   body.home-body #main-content {
     left: 220px !important;
   }
-
-  body.home-body #sidebar.nav-collapse {
-    width: 220px;
-  }
 }
 
 @media (max-width: 768px) {
   body.home-body #main-content {
     left: 0 !important;
     padding: 20px 16px 120px !important;
-  }
-
-  body.home-body .app-header,
-  body.home-body .header {
-    height: auto;
-    flex-wrap: wrap;
-    padding: 10px 16px;
-    gap: 8px;
-  }
-
-  body.home-body #date_time {
-    order: 3;
-    width: 100%;
-    flex: none;
-    font-size: 12px;
-    margin: 0;
-  }
-
-  body.home-body .dd1 {
-    min-height: 100px;
-    padding: 16px;
-  }
-
-  body.home-body .dd1 .pp1 {
-    font-size: 28px;
   }
 
   body.home-body p.anim-typewriter {
@@ -2629,10 +1806,6 @@ body.home-body * {
     padding: 16px;
   }
 
-  body.home-body #dboard>p+#form>form {
-    padding: 18px 16px 22px;
-  }
-
   body.home-body .btn2 {
     min-width: 100%;
     width: 100%;
@@ -2640,10 +1813,6 @@ body.home-body * {
 }
 
 @media (max-width: 480px) {
-  body.home-body .inner-width-neon {
-    padding: 8px 12px;
-    font-size: 12px;
-  }
 
   body.home-body .form-control,
   body.home-body input.form-control {
@@ -2713,21 +1882,6 @@ body.home-body ::-webkit-scrollbar-thumb:hover {
 }
 
 /* ── Header: add project name beside toggle ──────────────────── */
-body.home-body .sidebar-toggle-box {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  padding: 6px 10px !important;
-}
-
-body.home-body .sidebar-toggle-box::after {
-  content: 'Mobile Storage Application';
-  font-size: 14px;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
 
 /* ── Dashboard tab pane ──────────────────────────────────────── */
 body.home-body #dboard.tab-pane,
@@ -2749,285 +1903,46 @@ body.home-body #dboard>p.anim-typewriter {
 }
 
 /* ── Stat cards ─────────────────────────────────────────────── */
-body.home-body #dboard .dd1 {
-  border-radius: 18px !important;
-  padding: 22px 20px 18px !important;
-  margin-bottom: 24px !important;
-  min-height: 0 !important;
-  height: auto !important;
-  display: block !important;
-  position: relative !important;
-  overflow: hidden !important;
-  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
 
 /* Glow orb decorations */
-body.home-body #dboard .dd1::before {
-  content: '' !important;
-  position: absolute !important;
-  right: -14px;
-  top: -14px;
-  width: 80px;
-  height: 80px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
-  border-radius: 50%;
-  pointer-events: none;
-}
 
 /* Card 1 — blue */
-body.home-body #dboard .col-md-4:nth-child(1) .dd1 {
-  background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 50%, #0891b2 100%) !important;
-  box-shadow: 0 10px 30px rgba(29, 78, 216, 0.35) !important;
-}
 
 /* Card 2 — green */
-body.home-body #dboard .col-md-4:nth-child(2) .dd1 {
-  background: linear-gradient(135deg, #059669 0%, #10b981 50%, #14b8a6 100%) !important;
-  box-shadow: 0 10px 30px rgba(5, 150, 105, 0.35) !important;
-}
 
 /* Card 3 — purple */
-body.home-body #dboard .col-md-4:nth-child(3) .dd1 {
-  background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #0891b2 100%) !important;
-  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.35) !important;
-}
-
-body.home-body #dboard .dd1:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 20px 44px rgba(15, 23, 42, 0.22) !important;
-}
 
 /* Stat label */
-body.home-body #dboard .dd1 p.p1 {
-  float: none !important;
-  width: auto !important;
-  height: auto !important;
-  border-right: none !important;
-  background: transparent !important;
-  font-size: 11px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.1em !important;
-  text-transform: uppercase !important;
-  color: rgba(255, 255, 255, 0.78) !important;
-  margin: 0 0 10px 0 !important;
-  display: block !important;
-  position: relative;
-  z-index: 1;
-}
-
-body.home-body #dboard .dd1 p.p1 a,
-body.home-body #dboard .dd1 p.p1 a.stat-link {
-  color: rgba(255, 255, 255, 0.78) !important;
-  text-decoration: none !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.1em !important;
-  font-size: 11px !important;
-  font-weight: 700 !important;
-}
 
 /* Stat number */
-body.home-body #dboard .dd1 .pp1 {
-  display: block !important;
-  float: none !important;
-  background: transparent !important;
-  font-size: 52px !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-  color: #ffffff !important;
-  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.2) !important;
-  position: relative;
-  z-index: 1;
-  margin: 0 !important;
-}
 
 /* ── Form card wrapper ───────────────────────────────────────── */
-body.home-body #dboard #form {
-  background: #ffffff !important;
-  border-radius: 20px !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.07), 0 1px 4px rgba(15, 23, 42, 0.04) !important;
-  overflow: visible !important;
-  /* must be visible so .col-md-12 clears float */
-}
 
 /* Form card header */
-body.home-body #dboard #form::before {
-  content: none !important;
-  /* remove — header uses a real element below */
-}
 
 /* Card-header strip via form's own styling */
-body.home-body #dboard #form form.form-group {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  margin-top: 0 !important;
-}
 
 /* Real header inside the form card — styled via the div that wraps everything */
-body.home-body #dboard #form>*:first-child::before {
-  content: none;
-}
 
 /* Add a header bar on the form-card using the #form element's first-child injection */
-body.home-body #dboard #form {
-  padding-top: 0 !important;
-  position: relative;
-}
-
-body.home-body #dboard #form .form-header-bar {
-  /* if we could add a div — we can't without changing pug */
-  display: none;
-}
 
 /* Instead: style the form wrapper top padding + use box decoration */
-body.home-body #dboard #form form.form-group::before {
-  content: '\f1c0  New Entry — Storage Record';
-  font-family: FontAwesome, 'Lato', sans-serif !important;
-  display: block;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  color: #f8fafc;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  padding: 15px 28px;
-  border-radius: 20px 20px 0 0;
-  margin: -0px -0px 0 -0px;
-  border-bottom: 3px solid #22d3ee;
-}
-
-body.home-body #dboard #form form.form-group>center:first-of-type>* {
-  /* the three col-md-4 columns */
-  padding-top: 24px;
-}
 
 /* Padding for the actual form content area */
-body.home-body #dboard #form form.form-group>center {
-  padding: 24px 16px 0 !important;
-  display: block !important;
-}
 
 /* ── CRITICAL: .col-md-12 (Reason + Submit) must clear floats ── */
-body.home-body #dboard #form form .col-md-12 {
-  clear: both !important;
-  float: none !important;
-  width: 100% !important;
-  padding: 0 24px 28px !important;
-  margin-top: 8px !important;
-}
 
 /* ── Labels inside form ──────────────────────────────────────── */
 /* Suppress <br> double-spacing — use margin on labels instead */
-body.home-body #dboard #form form br {
-  display: none !important;
-  line-height: 0 !important;
-  font-size: 0 !important;
-}
-
-body.home-body #dboard #form form .col-md-4 br {
-  display: none !important;
-}
-
-body.home-body #dboard #form form label {
-  display: block !important;
-  font-size: 11px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.08em !important;
-  text-transform: uppercase !important;
-  color: #64748b !important;
-  margin: 16px 0 5px 0 !important;
-  padding: 0 !important;
-  font-family: 'Lato', sans-serif !important;
-  line-height: 1.4 !important;
-}
 
 /* ── Inputs in dashboard form ────────────────────────────────── */
-body.home-body #dboard #form form input.form-control,
-body.home-body #dboard #form form select.form-control {
-  height: 44px !important;
-  padding: 10px 14px !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  background: #f8fafc !important;
-  border: 1.5px solid #e2e8f0 !important;
-  border-radius: 10px !important;
-  color: #0f172a !important;
-  width: 100% !important;
-  display: block !important;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
-  box-shadow: none !important;
-}
-
-body.home-body #dboard #form form input.form-control:focus,
-body.home-body #dboard #form form select.form-control:focus {
-  background: #ffffff !important;
-  border-color: #22d3ee !important;
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.14) !important;
-  outline: none !important;
-}
-
-body.home-body #dboard #form form input.form-control[disabled] {
-  background: #f1f5f9 !important;
-  cursor: not-allowed;
-  opacity: 0.65;
-  border-color: #e2e8f0 !important;
-}
 
 /* ── Reason textarea ─────────────────────────────────────────── */
-body.home-body #dboard #form form textarea.form-control {
-  height: auto !important;
-  min-height: 110px !important;
-  resize: vertical !important;
-  padding: 12px 14px !important;
-  font-size: 14px !important;
-  background: #f8fafc !important;
-  border: 1.5px solid #e2e8f0 !important;
-  border-radius: 10px !important;
-  width: 100% !important;
-  display: block !important;
-}
-
-body.home-body #dboard #form form textarea.form-control:focus {
-  background: #ffffff !important;
-  border-color: #22d3ee !important;
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.14) !important;
-  outline: none !important;
-}
 
 /* Reason label */
-body.home-body #dboard #form form .col-md-12>label {
-  margin-top: 4px !important;
-}
 
 /* ── Submit button ───────────────────────────────────────────── */
 /* Override <center> for proper centering */
-body.home-body #dboard #form form .col-md-12 center {
-  display: flex !important;
-  justify-content: center !important;
-  margin-top: 24px !important;
-}
-
-body.home-body #dboard #form form .btn2 {
-  min-width: 240px !important;
-  height: 52px !important;
-  font-size: 15px !important;
-  font-weight: 800 !important;
-  border-radius: 14px !important;
-  background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%) !important;
-  border: none !important;
-  box-shadow: 0 10px 28px rgba(30, 58, 138, 0.32) !important;
-  letter-spacing: 0.04em !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-  color: #ffffff !important;
-}
-
-body.home-body #dboard #form form .btn2:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 18px 38px rgba(30, 58, 138, 0.42) !important;
-}
 
 /* ── Sidebar qw heading (section label) ──────────────────────── */
 body.home-body .qw {
@@ -3057,15 +1972,6 @@ body.home-body .tab-pane.align {
 }
 
 body.home-body #search-edit.tab-pane {
-  background: #ffffff !important;
-  border-radius: 20px !important;
-  padding: 28px 28px 32px !important;
-  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.07) !important;
-  border: 1px solid #e2e8f0 !important;
-}
-
-body.home-body #help.tab-pane,
-body.home-body #contact.tab-pane {
   background: #ffffff !important;
   border-radius: 20px !important;
   padding: 28px 28px 32px !important;
@@ -3103,20 +2009,6 @@ body.home-body #returnedlist>p.anim-typewriter {
 }
 
 /* ── DataTables improvements ─────────────────────────────────── */
-body.home-body .dataTables_wrapper .dataTables_length,
-body.home-body .dataTables_wrapper .dataTables_info {
-  font-size: 13px;
-  color: #64748b;
-}
-
-body.home-body .dataTables_wrapper .dataTables_length select {
-  border: 1.5px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 4px 8px;
-  font-size: 13px;
-  color: #334155;
-  margin: 0 6px;
-}
 
 /* Status badge colour from click.js inline styles */
 body.home-body table.table tbody tr td[style*="FD052E"],
@@ -3134,70 +2026,8 @@ body.home-body table.table tbody tr td[style*="85fd2d"] {
 }
 
 /* ── Search results + edit form spacing cleanup ───────────────── */
-body.home-body #search-edit .table-responsive {
-  margin-bottom: 28px !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 16px !important;
-  overflow-x: auto !important;
-  overflow-y: visible !important;
-  scrollbar-width: thin !important;
-  background: #ffffff !important;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05) !important;
-}
-
-body.home-body #search-edit table#example5 {
-  margin-bottom: 0 !important;
-  border-collapse: separate !important;
-  border-spacing: 0 !important;
-}
-
-body.home-body #search-edit table#example5 thead th {
-  background: linear-gradient(135deg, #0f172a 0%, #334155 100%) !important;
-  color: #f8fafc !important;
-  border-bottom: 2px solid #22d3ee !important;
-  letter-spacing: 0.04em;
-}
-
-body.home-body #search-edit table#example5 tbody tr:last-child td {
-  border-bottom: none !important;
-}
 
 /* ── Edit form (#fmgrp) ──────────────────────────────────────── */
-body.home-body #fmgrp {
-  border-radius: 20px !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.07) !important;
-  margin-top: 12px !important;
-  background: #ffffff !important;
-}
-
-body.home-body #fmgrp .form-panel-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: linear-gradient(135deg, #0891b2 0%, #0f766e 100%);
-  color: #f8fafc;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 16px 28px;
-  border-bottom: 3px solid #22d3ee;
-  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.14);
-}
-
-body.home-body #fmgrp .form-panel-header i {
-  font-size: 13px;
-  opacity: 0.95;
-}
-
-body.home-body #fmgrp .slideInDown {
-  display: block;
-  padding: 22px 24px 18px;
-  animation: formCardIn 0.35s ease;
-}
 
 @keyframes formCardIn {
   from {
@@ -3209,205 +2039,6 @@ body.home-body #fmgrp .slideInDown {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-body.home-body #fmgrp .col-md-4,
-body.home-body #fmgrp .col-md-12 {
-  float: none !important;
-  width: 100% !important;
-  display: block !important;
-  padding: 0 !important;
-  margin: 0 0 18px 0 !important;
-}
-
-body.home-body #fmgrp .field-block {
-  margin-bottom: 18px;
-}
-
-body.home-body #fmgrp .field-block.full-width {
-  margin-bottom: 0;
-}
-
-body.home-body #fmgrp label.lb {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  font-size: 10.5px !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.12em !important;
-  text-transform: uppercase !important;
-  color: #334155 !important;
-  margin: 0 0 8px 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  text-shadow: none !important;
-}
-
-body.home-body #fmgrp label.lb::before {
-  content: "";
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 7px;
-  background: linear-gradient(135deg, #0ea5e9 0%, #14b8a6 100%);
-  color: #ffffff;
-  font-family: FontAwesome, 'Lato', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  box-shadow: 0 8px 18px rgba(14, 165, 233, 0.25);
-}
-
-body.home-body #fmgrp .icon-date::before {
-  content: "\f133";
-}
-
-body.home-body #fmgrp .icon-time::before {
-  content: "\f017";
-}
-
-body.home-body #fmgrp .icon-student::before {
-  content: "\f007";
-}
-
-body.home-body #fmgrp .icon-parent::before {
-  content: "\f0c0";
-}
-
-body.home-body #fmgrp .icon-employee::before {
-  content: "\f2c2";
-}
-
-body.home-body #fmgrp .icon-college::before {
-  content: "\f19c";
-}
-
-body.home-body #fmgrp .icon-branch::before {
-  content: "\f0b1";
-}
-
-body.home-body #fmgrp .icon-year::before {
-  content: "\f073";
-}
-
-body.home-body #fmgrp .icon-section::before {
-  content: "\f0c9";
-}
-
-body.home-body #fmgrp .icon-phone::before {
-  content: "\f095";
-}
-
-body.home-body #fmgrp .icon-roll::before {
-  content: "\f02d";
-}
-
-body.home-body #fmgrp .icon-id::before {
-  content: "\f0b2";
-}
-
-body.home-body #fmgrp .icon-device::before {
-  content: "\f10b";
-}
-
-body.home-body #fmgrp .icon-color::before {
-  content: "\f1fb";
-}
-
-body.home-body #fmgrp .icon-imei::before {
-  content: "\f2db";
-}
-
-body.home-body #fmgrp .icon-reason::before {
-  content: "\f0f6";
-}
-
-body.home-body #fmgrp br {
-  display: none !important;
-}
-
-body.home-body #fmgrp input.inp.form-control,
-body.home-body #fmgrp select.inp.form-control,
-body.home-body #fmgrp textarea.inp.form-control {
-  width: 100% !important;
-  background: #f8fafc !important;
-  border: 1.5px solid #dfe8f3 !important;
-  border-radius: 12px !important;
-  min-height: 44px !important;
-  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
-  transition: all 0.2s ease;
-}
-
-body.home-body #fmgrp input.inp.form-control:hover,
-body.home-body #fmgrp select.inp.form-control:hover,
-body.home-body #fmgrp textarea.inp.form-control:hover {
-  border-color: #bae6fd !important;
-}
-
-body.home-body #fmgrp input.inp.form-control:focus,
-body.home-body #fmgrp select.inp.form-control:focus,
-body.home-body #fmgrp textarea.inp.form-control:focus {
-  background: #ffffff !important;
-  border-color: #22d3ee !important;
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.14) !important;
-  transform: translateY(-1px);
-}
-
-body.home-body #fmgrp .col-md-12 {
-  clear: both !important;
-  padding-top: 12px;
-}
-
-body.home-body #fmgrp .form-submit-actions {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  gap: 12px !important;
-  margin-top: 20px !important;
-  padding-top: 18px !important;
-  border-top: 1px solid #e2e8f0 !important;
-  background: linear-gradient(180deg, rgba(248, 250, 252, 0.35) 0%, rgba(255, 255, 255, 0) 100%);
-}
-
-body.home-body #fmgrp .form-submit-actions .btn4,
-body.home-body #fmgrp .form-submit-actions .btn4-secondary {
-  min-width: 150px !important;
-  min-height: 44px !important;
-  font-weight: 700 !important;
-  border-radius: 12px !important;
-  box-shadow: 0 10px 20px rgba(15, 118, 110, 0.18) !important;
-}
-
-body.home-body #fmgrp .btn4-secondary {
-  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%) !important;
-  color: #0f172a !important;
-  box-shadow: 0 8px 18px rgba(148, 163, 184, 0.24) !important;
-}
-
-@media (max-width: 768px) {
-  body.home-body #fmgrp .slideInDown {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
-    padding: 16px !important;
-  }
-
-  body.home-body #fmgrp .form-submit-actions {
-    flex-direction: column-reverse !important;
-    align-items: stretch !important;
-  }
-
-  body.home-body #fmgrp .form-submit-actions .btn4,
-  body.home-body #fmgrp .form-submit-actions .btn4-secondary {
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-}
-
-body.home-body #fmgrp .btn4-secondary:hover {
-  box-shadow: 0 12px 22px rgba(148, 163, 184, 0.35) !important;
 }
 
 /* ── Help tab FAQ links ───────────────────────────────────────── */
@@ -3422,110 +2053,16 @@ body.home-body #navbar ul li {
   margin-bottom: 8px;
 }
 
-body.home-body #navbar ul li a.g2 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  background: #f8fafc;
-  border: 1.5px solid #e2e8f0;
-  border-left: 3px solid #0f766e;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #334155 !important;
-  text-decoration: none !important;
-  transition: all 0.2s ease;
-}
-
-body.home-body #navbar ul li a.g2::before {
-  content: '\f059';
-  font-family: FontAwesome;
-  color: #0f766e;
-  font-size: 13px;
-  flex-shrink: 0;
-}
-
-body.home-body #navbar ul li a.g2:hover {
-  background: #f0fdfa;
-  border-color: #22d3ee;
-  border-left-color: #22d3ee;
-  color: #0f172a !important;
-  transform: translateX(3px);
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
-}
-
 /* ── Help answers ────────────────────────────────────────────── */
-body.home-body .gg {
-  padding: 18px 22px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-left: 3px solid #1e3a8a;
-  border-radius: 10px;
-  font-size: 13.5px;
-  color: #1e293b;
-  line-height: 1.8;
-  font-family: 'Lato', monospace;
-  margin-top: 10px;
-}
 
 /* ── DataTables export buttons ───────────────────────────────── */
-body.home-body .dt-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-body.home-body .dt-button {
-  background: #ffffff !important;
-  border: 1.5px solid #e2e8f0 !important;
-  border-radius: 8px !important;
-  color: #475569 !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  padding: 7px 14px !important;
-  transition: all 0.2s ease !important;
-  cursor: pointer !important;
-}
-
-body.home-body .dt-button:hover {
-  background: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%) !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.22) !important;
-}
 
 /* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  body.home-body .sidebar-toggle-box::after {
-    display: none;
-  }
-
-  body.home-body .tab-pane.align,
-  body.home-body #search-edit.tab-pane,
-  body.home-body #contact.tab-pane,
-  body.home-body #help.tab-pane {
-    padding: 18px 16px 22px !important;
-    border-radius: 14px !important;
-  }
-
-  body.home-body #dboard #form {
-    border-radius: 14px !important;
-  }
-
-  body.home-body #dboard #form form .col-md-12 {
-    padding: 0 12px 22px !important;
-  }
 
   body.home-body #navbar ul {
     columns: 1;
     -webkit-columns: 1;
-  }
-
-  body.home-body #dboard #form form .btn2 {
-    min-width: 100% !important;
-    width: 100% !important;
   }
 }
 
@@ -3537,130 +2074,10 @@ body.home-body .dt-button:hover {
    ================================================================ */
 
 /* ── Task 2: Toast Notifications ─────────────────────────────── */
-#toast-container {
-  position: fixed;
-  top: 80px;
-  right: 20px;
-  z-index: 99999;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  pointer-events: none;
-}
-
-.gbr-toast {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 300px;
-  max-width: 440px;
-  padding: 14px 18px;
-  border-radius: 14px;
-  background: #ffffff;
-  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.18), 0 2px 8px rgba(15, 23, 42, 0.1);
-  border-left: 4px solid #22d3ee;
-  font-family: 'Lato', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: #0f172a;
-  transform: translateX(120%);
-  opacity: 0;
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
-  pointer-events: all;
-}
-
-.gbr-toast--visible {
-  transform: translateX(0);
-  opacity: 1;
-}
-
-.gbr-toast--success {
-  border-left-color: #10b981;
-}
-
-.gbr-toast--success .toast-icon {
-  color: #10b981;
-}
-
-.gbr-toast--error {
-  border-left-color: #ef4444;
-}
-
-.gbr-toast--error .toast-icon {
-  color: #ef4444;
-}
-
-.gbr-toast--warning {
-  border-left-color: #f59e0b;
-}
-
-.gbr-toast--warning .toast-icon {
-  color: #f59e0b;
-}
-
-.gbr-toast--info {
-  border-left-color: #3b82f6;
-}
-
-.gbr-toast--info .toast-icon {
-  color: #3b82f6;
-}
-
-.toast-icon {
-  font-size: 18px;
-  flex-shrink: 0;
-}
-
-.toast-msg {
-  flex: 1;
-  line-height: 1.4;
-}
-
-.toast-close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #94a3b8;
-  font-size: 18px;
-  line-height: 1;
-  padding: 0 2px;
-  transition: color 0.15s ease;
-}
-
-.toast-close:hover {
-  color: #0f172a;
-}
 
 /* Dark mode toast override */
-body.dark-mode .gbr-toast {
-  background: #1e293b;
-  color: #e2e8f0;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
 
 /* ── Task 3: Confirm Delete Modal ─────────────────────────────── */
-.confirm-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.55);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.confirm-modal-box {
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 36px 32px 28px;
-  max-width: 420px;
-  width: 92%;
-  text-align: center;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
-  animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
 
 @keyframes modalPop {
   from {
@@ -3672,79 +2089,6 @@ body.dark-mode .gbr-toast {
     transform: scale(1);
     opacity: 1;
   }
-}
-
-.confirm-modal-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: #fef3c7;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 18px;
-}
-
-.confirm-modal-icon .fa {
-  font-size: 28px;
-  color: #f59e0b;
-}
-
-.confirm-modal-box h3 {
-  font-size: 20px;
-  font-weight: 800;
-  color: #0f172a;
-  margin: 0 0 10px;
-}
-
-.confirm-modal-box p {
-  font-size: 14px;
-  color: #64748b;
-  line-height: 1.6;
-  margin: 0 0 24px;
-}
-
-.confirm-modal-btns {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
-
-.confirm-btn-cancel,
-.confirm-btn-ok {
-  height: 44px;
-  padding: 0 24px;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: 'Lato', sans-serif;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-}
-
-.confirm-btn-cancel {
-  background: #f1f5f9;
-  color: #475569;
-}
-
-.confirm-btn-cancel:hover {
-  background: #e2e8f0;
-  transform: translateY(-1px);
-}
-
-.confirm-btn-ok {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: #ffffff;
-  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
-}
-
-.confirm-btn-ok:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(239, 68, 68, 0.4);
 }
 
 /* Delete button in table */
@@ -3793,25 +2137,6 @@ body.home-body .print-row-btn:hover {
 }
 
 /* ── Task 4: Dark Mode Toggle button ─────────────────────────── */
-#darkModeToggle {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  color: #ffffff;
-  width: 40px;
-  height: 40px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-#darkModeToggle:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: rotate(20deg) scale(1.1);
-}
 
 /* ── Task 4: Dark Mode global ─────────────────────────────────── */
 body.home-body.dark-mode {
@@ -3821,19 +2146,6 @@ body.home-body.dark-mode {
 
 body.home-body.dark-mode #main-content {
   background: #0f172a !important;
-}
-
-body.home-body.dark-mode .tab-pane.align,
-body.home-body.dark-mode #dboard #form,
-body.home-body.dark-mode #dboard.tab-pane,
-body.home-body.dark-mode #search-edit.tab-pane,
-body.home-body.dark-mode #help.tab-pane,
-body.home-body.dark-mode #contact.tab-pane,
-body.home-body.dark-mode #fmgrp,
-body.home-body.dark-mode .confirm-modal-box {
-  background: #1e293b !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  color: #e2e8f0 !important;
 }
 
 body.home-body.dark-mode p.anim-typewriter,
@@ -3866,36 +2178,6 @@ body.home-body.dark-mode table.table tbody tr:hover td {
   background: #162032 !important;
 }
 
-body.home-body.dark-mode .dataTables_filter input[type="search"] {
-  background: #0f172a;
-  border-color: #334155;
-  color: #e2e8f0;
-}
-
-body.home-body.dark-mode .dt-button {
-  background: #1e293b !important;
-  border-color: #334155 !important;
-  color: #cbd5e1 !important;
-}
-
-body.home-body.dark-mode #navbar ul li a.g2 {
-  background: #0f172a;
-  border-color: #334155;
-  color: #cbd5e1 !important;
-}
-
-body.home-body.dark-mode .gg {
-  background: #0f172a;
-  border-color: #334155;
-  color: #cbd5e1;
-}
-
-body.home-body.dark-mode .smart-search-bar input {
-  background: #0f172a;
-  border-color: #334155;
-  color: #e2e8f0;
-}
-
 body.home-body.dark-mode #smart-results-table {
   background: #1e293b;
   color: #e2e8f0;
@@ -3906,28 +2188,6 @@ body.home-body.dark-mode #smart-results-table td {
 }
 
 /* ── Task 5: Session Timeout Warning ────────────────────────── */
-#session-warning {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  z-index: 99998;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.session-warning-box {
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 40px 36px;
-  max-width: 380px;
-  width: 90%;
-  text-align: center;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.3);
-  animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
 
 .session-icon {
   font-size: 48px;
@@ -3947,25 +2207,6 @@ body.home-body.dark-mode #smart-results-table td {
   50% {
     transform: scale(1.12);
   }
-}
-
-.session-warning-box h3 {
-  font-size: 22px;
-  font-weight: 800;
-  color: #0f172a;
-  margin: 0 0 8px;
-}
-
-.session-warning-box p {
-  font-size: 14px;
-  color: #64748b;
-  margin: 0 0 24px;
-}
-
-#session-warning #countdown {
-  font-weight: 900;
-  color: #ef4444;
-  font-size: 18px;
 }
 
 #session-extend {
@@ -3991,50 +2232,6 @@ body.home-body.dark-mode #smart-results-table td {
 }
 
 /* ── Task 6: Smart Search Bar ────────────────────────────────── */
-.smart-search-bar {
-  margin-bottom: 20px;
-}
-
-.smart-search-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.smart-search-icon {
-  position: absolute;
-  left: 16px;
-  color: #94a3b8;
-  font-size: 16px;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.smart-search-wrap input {
-  width: 100%;
-  height: 52px;
-  padding: 0 52px 0 46px;
-  font-size: 15px;
-  font-family: 'Lato', sans-serif;
-  font-weight: 500;
-  color: #0f172a;
-  background: #ffffff;
-  border: 2px solid #e2e8f0;
-  border-radius: 14px;
-  outline: none;
-  transition: border-color 0.22s ease, box-shadow 0.22s ease;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
-}
-
-.smart-search-wrap input:focus {
-  border-color: #22d3ee;
-  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.12), 0 2px 8px rgba(15, 23, 42, 0.05);
-}
-
-.smart-search-wrap input::placeholder {
-  color: #94a3b8;
-  font-size: 14px;
-}
 
 /* Premium animated-search tuning for the dashboard */
 #search-edit.tab-pane.align {
@@ -4043,133 +2240,6 @@ body.home-body.dark-mode #smart-results-table td {
   border-radius: 28px;
   padding: 22px 20px 20px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 18px 42px rgba(15, 23, 42, 0.06);
-}
-
-.smart-search-bar {
-  margin: 8px 0 16px;
-}
-
-.smart-search-bar .srcbar {
-  width: min(100%, 980px);
-  height: auto;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: transparent;
-}
-
-.smart-search-bar #wrap {
-  width: 100%;
-  max-width: 980px;
-  height: 64px;
-  filter: drop-shadow(0 12px 28px rgba(15, 23, 42, 0.08));
-}
-
-.smart-search-bar .srch {
-  position: relative;
-  width: 100%;
-  height: 64px;
-  display: block;
-  padding-right: 156px;
-  box-sizing: border-box;
-}
-
-.smart-search-bar #wrap form input[type="text"] {
-  width: 100% !important;
-  height: 64px !important;
-  padding: 0 18px 0 46px !important;
-  border-radius: 22px 0 0 22px !important;
-  border: 2px solid rgba(148, 163, 184, 0.9) !important;
-  border-right: none !important;
-  background: rgba(255, 255, 255, 0.98) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 8px 18px rgba(15, 23, 42, 0.05);
-  color: #0f172a !important;
-  font-size: 1.03rem !important;
-  font-weight: 600 !important;
-  box-sizing: border-box;
-  letter-spacing: 0.01em;
-  margin: 0;
-}
-
-.smart-search-bar #wrap form input[type="text"]:focus {
-  border-color: #0ea5e9 !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 0 4px rgba(14, 165, 233, 0.12), 0 12px 26px rgba(15, 23, 42, 0.08);
-}
-
-.smart-search-bar #wrap form input[type="text"]::placeholder {
-  color: #64748b;
-  opacity: 1;
-  font-weight: 500;
-}
-
-.smart-search-bar .btnwrap {
-  right: 0 !important;
-  top: 0 !important;
-  height: 64px !important;
-  width: 158px !important;
-  border-radius: 0 22px 22px 0;
-  overflow: hidden;
-  border: 2px solid rgba(14, 165, 233, 0.8);
-  border-left: none;
-  box-sizing: border-box;
-  background: linear-gradient(135deg, #0ea5e9 0%, #14b8a6 48%, #10b981 100%);
-  box-shadow: 0 10px 22px rgba(14, 165, 233, 0.2);
-}
-
-.smart-search-bar .btnwrap b {
-  font-size: 1.04rem !important;
-  letter-spacing: 0.04em !important;
-  font-weight: 700 !important;
-  transform: translateY(-1px);
-  margin: 0;
-}
-
-.smart-search-bar .smart-clear {
-  position: absolute;
-  right: 164px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 30px;
-  height: 30px;
-  border: none;
-  background: rgba(148, 163, 184, 0.14);
-  color: #475569;
-  border-radius: 50%;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 12;
-  transition: all 0.2s ease;
-}
-
-.smart-search-bar .smart-clear:hover {
-  background: rgba(14, 165, 233, 0.12);
-  color: #0f172a;
-}
-
-.smart-search-bar .smart-clear {
-  display: none;
-}
-
-.smart-clear {
-  position: absolute;
-  right: 14px;
-  background: none;
-  border: none;
-  color: #94a3b8;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 50%;
-  transition: color 0.15s ease, background 0.15s ease;
-  display: none;
-}
-
-.smart-clear:hover {
-  color: #ef4444;
-  background: #fee2e2;
 }
 
 #smart-results-wrapper {
@@ -4209,34 +2279,7 @@ body.home-body.dark-mode #smart-results-table td {
   letter-spacing: 0.04em;
 }
 
-.hl {
-  background: #fde68a;
-  color: #92400e;
-  border-radius: 3px;
-  padding: 0 2px;
-  font-style: normal;
-}
-
-body.dark-mode .hl {
-  background: #92400e;
-  color: #fde68a;
-}
-
 /* ── Task 7: Form Validation ─────────────────────────────────── */
-body.home-body input.field-valid,
-body.home-body select.field-valid,
-body.home-body textarea.field-valid {
-  border-color: #10b981 !important;
-  background: #f0fdf4 !important;
-}
-
-body.home-body input.field-invalid,
-body.home-body select.field-invalid,
-body.home-body textarea.field-invalid {
-  border-color: #ef4444 !important;
-  background: #fff1f2 !important;
-  animation: shake 0.4s ease;
-}
 
 @keyframes shake {
 
@@ -4254,27 +2297,6 @@ body.home-body textarea.field-invalid {
   80% {
     transform: translateX(5px);
   }
-}
-
-.field-hint {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  margin-top: 3px;
-  padding-left: 2px;
-  line-height: 1.4;
-}
-
-.field-hint--error {
-  color: #ef4444;
-}
-
-.field-hint--ok {
-  color: #10b981;
-}
-
-.field-hint i {
-  margin-right: 3px;
 }
 
 /* ── Task 8: Keyboard shortcut tooltip ────────────────────────── */
@@ -4307,27 +2329,6 @@ kbd {
 }
 
 /* ── Responsive features ──────────────────────────────────────── */
-@media (max-width: 768px) {
-  #toast-container {
-    right: 12px;
-    left: 12px;
-    top: 72px;
-  }
-
-  .gbr-toast {
-    min-width: 0;
-    width: 100%;
-  }
-
-  .confirm-modal-box {
-    padding: 28px 20px 22px;
-  }
-
-  .smart-search-wrap input {
-    font-size: 14px;
-    height: 46px;
-  }
-}
 
 
 /* ================================================================
@@ -4336,341 +2337,48 @@ kbd {
    ================================================================ */
 
 /* ── Dashboard form: overall card ──────────────────────────────── */
-body.home-body #dboard #form {
-  border-radius: 20px !important;
-  overflow: visible !important;
-  /* must not clip floated col-md-12 */
-}
 
 /* ── Form field group: label + input together ──────────────────── */
 /* Wrap each label+input into a visual unit using CSS */
-body.home-body #dboard #form form .col-md-4 label,
-body.home-body #dboard #form form .col-md-12 label {
-  display: block !important;
-  font-size: 10.5px !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.1em !important;
-  text-transform: uppercase !important;
-  color: #475569 !important;
-  margin: 20px 0 5px 2px !important;
-  padding: 0 !important;
-  font-family: 'Lato', sans-serif !important;
-  line-height: 1 !important;
-  position: relative;
-}
 
 /* Accent bar on label */
-body.home-body #dboard #form form .col-md-4 label::before,
-body.home-body #dboard #form form .col-md-12 label::before {
-  content: '';
-  display: inline-block;
-  width: 3px;
-  height: 10px;
-  background: linear-gradient(135deg, #1e3a8a, #0f766e);
-  border-radius: 2px;
-  margin-right: 6px;
-  vertical-align: middle;
-}
 
 /* ── All inputs in dashboard form ────────────────────────────────── */
-body.home-body #dboard #form form input.form-control,
-body.home-body #dboard #form form select.form-control {
-  height: 46px !important;
-  padding: 0 16px 0 44px !important;
-  /* left padding for icon space */
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  background: #f8fafc !important;
-  border: 2px solid #e2e8f0 !important;
-  border-radius: 12px !important;
-  color: #0f172a !important;
-  width: 100% !important;
-  display: block !important;
-  transition: border-color 0.22s ease, background 0.22s ease,
-    box-shadow 0.22s ease, transform 0.15s ease !important;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05) !important;
-  position: relative;
-}
-
-body.home-body #dboard #form form input.form-control:hover,
-body.home-body #dboard #form form select.form-control:hover {
-  border-color: #94a3b8 !important;
-  background: #ffffff !important;
-}
-
-body.home-body #dboard #form form input.form-control:focus,
-body.home-body #dboard #form form select.form-control:focus {
-  background: #ffffff !important;
-  border-color: #1e3a8a !important;
-  box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1), 0 2px 8px rgba(15, 23, 42, 0.08) !important;
-  outline: none !important;
-  transform: translateY(-1px) !important;
-}
-
-body.home-body #dboard #form form input.form-control[disabled] {
-  background: #f1f5f9 !important;
-  border-color: #e2e8f0 !important;
-  color: #94a3b8 !important;
-  cursor: not-allowed;
-  opacity: 1;
-}
-
-body.home-body #dboard #form form input.form-control::placeholder {
-  color: #94a3b8;
-  font-weight: 400;
-  font-size: 13px;
-}
 
 /* Inject field icons via ::before on the wrapper div */
-body.home-body #dboard #form form .col-md-4>div,
-body.home-body #dboard #form form .col-md-12>div {
-  position: relative;
-}
 
 /* ── Icon mapping — use a pseudo-element on each input-group ──────
    We target each input by id to apply the right Font Awesome icon
    via CSS ::before on a generated .input-icon-wrap
    ─────────────────────────────────────────────────────────────── */
-body.home-body #dboard #form form input,
-body.home-body #dboard #form form select {
-  position: relative;
-}
 
 /* Field icon — fixed top position so hint spans don't shift it */
-body.home-body #dboard #form .field-icon {
-  position: absolute;
-  left: 14px;
-  top: 23px;
-  /* half of 46px input height — always stays at input centre */
-  transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 14px;
-  pointer-events: none;
-  z-index: 3;
-  transition: color 0.2s ease;
-}
-
-body.home-body #dboard #form .field-icon-wrap {
-  position: relative;
-  display: block;
-}
 
 /* Hint spans must not stretch the icon wrapper */
-body.home-body #dboard #form .field-icon-wrap .field-hint {
-  display: block;
-  position: relative;
-  /* out of flow so wrapper height = input height only */
-}
-
-body.home-body #dboard #form .field-icon-wrap input,
-body.home-body #dboard #form .field-icon-wrap select {
-  padding-left: 42px !important;
-}
-
-body.home-body #dboard #form .field-icon-wrap:focus-within .field-icon {
-  color: #22d3ee !important;
-}
 
 /* ── Textarea (Reason) ──────────────────────────────────────────── */
-body.home-body #dboard #form form textarea.form-control {
-  min-height: 110px !important;
-  padding: 14px 16px !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  background: #f8fafc !important;
-  border: 2px solid #e2e8f0 !important;
-  border-radius: 12px !important;
-  color: #0f172a !important;
-  width: 100% !important;
-  resize: vertical !important;
-  display: block !important;
-  transition: border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease !important;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05) !important;
-  line-height: 1.6 !important;
-}
-
-body.home-body #dboard #form form textarea.form-control:focus {
-  background: #ffffff !important;
-  border-color: #1e3a8a !important;
-  box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1) !important;
-  outline: none !important;
-}
-
-body.home-body #dboard #form form textarea.form-control::placeholder {
-  color: #94a3b8;
-  font-size: 13px;
-  font-weight: 400;
-}
 
 /* ── Select arrow styling ──────────────────────────────────────── */
-body.home-body #dboard #form form select.form-control {
-  appearance: none !important;
-  -webkit-appearance: none !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important;
-  background-repeat: no-repeat !important;
-  background-position: right 14px center !important;
-  background-size: 12px !important;
-  padding-right: 36px !important;
-  cursor: pointer;
-}
 
 /* ── .col-md-12 clear + spacing ────────────────────────────────── */
-body.home-body #dboard #form form .col-md-12 {
-  clear: both !important;
-  float: none !important;
-  width: 100% !important;
-  padding: 4px 24px 32px !important;
-  margin-top: 4px !important;
-  display: block !important;
-}
 
 /* ── Submit button ──────────────────────────────────────────────── */
-body.home-body #dboard #form form center {
-  display: flex !important;
-  justify-content: center !important;
-  margin-top: 24px !important;
-}
-
-body.home-body #dboard #form form .btn2 {
-  min-width: 260px !important;
-  height: 54px !important;
-  font-size: 15px !important;
-  font-weight: 800 !important;
-  border-radius: 14px !important;
-  background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%) !important;
-  border: none !important;
-  box-shadow: 0 10px 28px rgba(30, 58, 138, 0.32) !important;
-  letter-spacing: 0.04em !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease !important;
-  color: #ffffff !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 10px !important;
-  cursor: pointer !important;
-  position: relative;
-  overflow: hidden;
-}
-
-body.home-body #dboard #form form .btn2::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
-  pointer-events: none;
-}
-
-body.home-body #dboard #form form .btn2:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 18px 38px rgba(30, 58, 138, 0.42) !important;
-  filter: brightness(1.06) !important;
-}
-
-body.home-body #dboard #form form .btn2:active {
-  transform: translateY(0) !important;
-}
 
 /* ── Column padding in form ──────────────────────────────────────── */
-body.home-body #dboard #form form .col-md-4 {
-  padding: 0 16px !important;
-}
-
-body.home-body #dboard #form form center>.col-md-4 {
-  padding: 0 10px !important;
-}
 
 /* ── Edit form inputs — same style ──────────────────────────────── */
-body.home-body #fmgrp input.inp.form-control,
-body.home-body #fmgrp select.inp.form-control {
-  height: 46px !important;
-  padding: 0 16px !important;
-  font-size: 14px !important;
-  background: #f8fafc !important;
-  border: 2px solid #e2e8f0 !important;
-  border-radius: 12px !important;
-  transition: border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease !important;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05) !important;
-}
-
-body.home-body #fmgrp input.inp.form-control:focus,
-body.home-body #fmgrp select.inp.form-control:focus {
-  background: #ffffff !important;
-  border-color: #0891b2 !important;
-  box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.1) !important;
-  outline: none !important;
-}
-
-body.home-body #fmgrp select.inp.form-control {
-  appearance: none !important;
-  -webkit-appearance: none !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important;
-  background-repeat: no-repeat !important;
-  background-position: right 14px center !important;
-  background-size: 12px !important;
-  padding-right: 36px !important;
-  cursor: pointer;
-}
 
 /* ── Dark mode form overrides ────────────────────────────────────── */
-body.home-body.dark-mode #dboard #form form input.form-control,
-body.home-body.dark-mode #dboard #form form select.form-control,
-body.home-body.dark-mode #dboard #form form textarea.form-control {
-  background: #0f172a !important;
-  border-color: #334155 !important;
-  color: #e2e8f0 !important;
-  box-shadow: none !important;
-}
-
-body.home-body.dark-mode #dboard #form form input.form-control:focus,
-body.home-body.dark-mode #dboard #form form select.form-control:focus,
-body.home-body.dark-mode #dboard #form form textarea.form-control:focus {
-  background: #1e293b !important;
-  border-color: #22d3ee !important;
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1) !important;
-}
 
 /* ── DataTables search input same style ──────────────────────────── */
-body.home-body .dataTables_filter input[type="search"] {
-  height: 38px !important;
-  padding: 0 14px !important;
-  border: 2px solid #e2e8f0 !important;
-  border-radius: 10px !important;
-  font-size: 13px !important;
-  background: #f8fafc !important;
-  transition: all 0.22s ease !important;
-}
-
-body.home-body .dataTables_filter input[type="search"]:focus {
-  border-color: #1e3a8a !important;
-  background: #ffffff !important;
-  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1) !important;
-  outline: none !important;
-}
 
 /* ── Smart search input ──────────────────────────────────────────── */
-.smart-search-wrap input {
-  border: 2px solid #e2e8f0 !important;
-  border-radius: 14px !important;
-}
-
-.smart-search-wrap input:focus {
-  border-color: #1e3a8a !important;
-  box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1) !important;
-}
 
 /* ── Responsive scroll fix ───────────────────────────────────────── */
 @media (max-width: 768px) {
   body.home-body #main-content {
     margin-left: 0 !important;
     padding: 20px 14px 80px !important;
-  }
-
-  body.home-body #dboard #form form .col-md-4 {
-    padding: 0 8px !important;
-  }
-
-  body.home-body #dboard #form form .col-md-12 {
-    padding: 0 8px 24px !important;
   }
 }
 
@@ -4709,161 +2417,26 @@ body.home-body #dboard>p.anim-typewriter::after {
 }
 
 /* ── Form card: full glass redesign ──────────────────────────── */
-body.home-body #dboard #form {
-  background: rgba(255, 255, 255, 0.04) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 24px !important;
-  box-shadow:
-    0 32px 64px rgba(0, 0, 0, 0.4),
-    0 8px 24px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-  overflow: visible !important;
-}
 
 /* Form header strip */
-body.home-body #dboard #form form.form-group::before {
-  content: '\f044  New Storage Entry' !important;
-  font-family: FontAwesome, 'Lato', sans-serif !important;
-  display: block !important;
-  background: linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(8, 145, 178, 0.9) 100%) !important;
-  color: #ffffff !important;
-  font-size: 13px !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.08em !important;
-  text-transform: uppercase !important;
-  padding: 16px 28px !important;
-  border-radius: 24px 24px 0 0 !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
 
 /* ── STAT CARDS — premium glass cards ──────────────────────── */
-body.home-body #dboard .dd1 {
-  border-radius: 20px !important;
-  padding: 26px 24px 22px !important;
-  margin-bottom: 28px !important;
-  min-height: 0 !important;
-  height: auto !important;
-  display: block !important;
-  position: relative !important;
-  overflow: hidden !important;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-}
 
 /* Card 1 — Indigo blue */
-body.home-body #dboard .col-md-4:nth-child(1) .dd1 {
-  background: linear-gradient(135deg, #312e81 0%, #1e40af 50%, #1d4ed8 100%) !important;
-  box-shadow: 0 16px 40px rgba(29, 78, 216, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-}
 
 /* Card 2 — Emerald green */
-body.home-body #dboard .col-md-4:nth-child(2) .dd1 {
-  background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #059669 100%) !important;
-  box-shadow: 0 16px 40px rgba(5, 150, 105, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-}
 
 /* Card 3 — Violet purple */
-body.home-body #dboard .col-md-4:nth-child(3) .dd1 {
-  background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 50%, #7c3aed 100%) !important;
-  box-shadow: 0 16px 40px rgba(109, 40, 217, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-}
 
 /* Hover lift with spring */
-body.home-body #dboard .dd1:hover {
-  transform: translateY(-6px) scale(1.02) !important;
-  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.35), 0 8px 16px rgba(0, 0, 0, 0.15) !important;
-}
 
 /* Animated shine sweep on hover */
-body.home-body #dboard .dd1::after {
-  content: '' !important;
-  position: absolute !important;
-  top: -50% !important;
-  left: -100% !important;
-  width: 60% !important;
-  height: 200% !important;
-  background: linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, 0.15) 50%, transparent 100%) !important;
-  transform: skewX(-20deg) !important;
-  transition: left 0.6s ease !important;
-  pointer-events: none !important;
-}
-
-body.home-body #dboard .dd1:hover::after {
-  left: 150% !important;
-}
 
 /* Glow orb stays */
-body.home-body #dboard .dd1::before {
-  content: '' !important;
-  position: absolute !important;
-  right: -20px !important;
-  bottom: -20px !important;
-  width: 100px !important;
-  height: 100px !important;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%) !important;
-  border-radius: 50% !important;
-  pointer-events: none !important;
-  z-index: 0 !important;
-}
 
 /* Stat label */
-body.home-body #dboard .dd1 p.p1 {
-  float: none !important;
-  width: auto !important;
-  height: auto !important;
-  border: none !important;
-  background: transparent !important;
-  font-size: 11px !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.14em !important;
-  text-transform: uppercase !important;
-  color: rgba(255, 255, 255, 0.65) !important;
-  margin: 0 0 14px 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  position: relative !important;
-  z-index: 1 !important;
-}
 
 /* Pulse dot before label */
-body.home-body #dboard .col-md-4:nth-child(1) .dd1 p.p1::before {
-  content: '' !important;
-  width: 8px !important;
-  height: 8px !important;
-  border-radius: 50% !important;
-  background: #60a5fa !important;
-  display: inline-block !important;
-  box-shadow: 0 0 8px #60a5fa !important;
-  animation: pulseOrb 2s ease-in-out infinite !important;
-  flex-shrink: 0 !important;
-}
-
-body.home-body #dboard .col-md-4:nth-child(2) .dd1 p.p1::before {
-  content: '' !important;
-  width: 8px !important;
-  height: 8px !important;
-  border-radius: 50% !important;
-  background: #34d399 !important;
-  display: inline-block !important;
-  box-shadow: 0 0 8px #34d399 !important;
-  animation: pulseOrb 2s ease-in-out infinite !important;
-  flex-shrink: 0 !important;
-}
-
-body.home-body #dboard .col-md-4:nth-child(3) .dd1 p.p1::before {
-  content: '' !important;
-  width: 8px !important;
-  height: 8px !important;
-  border-radius: 50% !important;
-  background: #c084fc !important;
-  display: inline-block !important;
-  box-shadow: 0 0 8px #c084fc !important;
-  animation: pulseOrb 2s ease-in-out infinite !important;
-  flex-shrink: 0 !important;
-}
 
 @keyframes pulseOrb {
 
@@ -4879,226 +2452,24 @@ body.home-body #dboard .col-md-4:nth-child(3) .dd1 p.p1::before {
   }
 }
 
-body.home-body #dboard .dd1 p.p1 a,
-body.home-body #dboard .dd1 p.p1 a.stat-link {
-  color: rgba(255, 255, 255, 0.65) !important;
-  text-decoration: none !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.14em !important;
-  font-size: 11px !important;
-  font-weight: 800 !important;
-  transition: color 0.2s ease !important;
-}
-
-body.home-body #dboard .dd1 p.p1 a:hover {
-  color: #ffffff !important;
-}
-
 /* Stat number */
-body.home-body #dboard .dd1 .pp1 {
-  display: block !important;
-  float: none !important;
-  background: transparent !important;
-  font-size: 56px !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-  color: #ffffff !important;
-  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
-  position: relative !important;
-  z-index: 1 !important;
-  margin: 0 !important;
-  letter-spacing: -0.02em !important;
-}
 
 /* ── Form fields: dark glass inputs ──────────────────────────── */
 /* Labels */
-body.home-body #dboard #form form label {
-  display: block !important;
-  font-size: 11px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.1em !important;
-  text-transform: uppercase !important;
-  color: rgba(255, 255, 255, 0.55) !important;
-  margin: 18px 0 6px 2px !important;
-  padding: 0 !important;
-  font-family: 'Lato', sans-serif !important;
-}
 
 /* Input & select glass style */
-body.home-body #dboard #form form input.form-control,
-body.home-body #dboard #form form select.form-control {
-  height: 48px !important;
-  padding: 0 16px 0 44px !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 12px !important;
-  color: #f1f5f9 !important;
-  width: 100% !important;
-  display: block !important;
-  transition: all 0.25s ease !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
-  backdrop-filter: blur(8px) !important;
-}
-
-body.home-body #dboard #form form input.form-control:hover,
-body.home-body #dboard #form form select.form-control:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-}
-
-body.home-body #dboard #form form input.form-control:focus,
-body.home-body #dboard #form form select.form-control:focus {
-  background: rgba(255, 255, 255, 0.12) !important;
-  border-color: #22d3ee !important;
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
-  outline: none !important;
-  color: #ffffff !important;
-}
-
-body.home-body #dboard #form form input.form-control[disabled] {
-  background: rgba(255, 255, 255, 0.03) !important;
-  border-color: rgba(255, 255, 255, 0.05) !important;
-  color: rgba(255, 255, 255, 0.3) !important;
-  cursor: not-allowed;
-}
-
-body.home-body #dboard #form form input.form-control::placeholder {
-  color: rgba(255, 255, 255, 0.3) !important;
-  font-size: 13px !important;
-}
 
 /* Select dark glass */
-body.home-body #dboard #form form select.form-control {
-  appearance: none !important;
-  -webkit-appearance: none !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.5)' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important;
-  background-repeat: no-repeat !important;
-  background-position: right 14px center !important;
-  background-size: 12px !important;
-  padding-right: 36px !important;
-  cursor: pointer;
-}
-
-body.home-body #dboard #form form select.form-control option {
-  background: #1e293b !important;
-  color: #f1f5f9 !important;
-}
 
 /* Textarea glass */
-body.home-body #dboard #form form textarea.form-control {
-  min-height: 110px !important;
-  padding: 14px 16px !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 12px !important;
-  color: #f1f5f9 !important;
-  width: 100% !important;
-  resize: vertical !important;
-  display: block !important;
-  transition: all 0.25s ease !important;
-  line-height: 1.6 !important;
-}
-
-body.home-body #dboard #form form textarea.form-control:focus {
-  background: rgba(255, 255, 255, 0.12) !important;
-  border-color: #22d3ee !important;
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.18) !important;
-  outline: none !important;
-}
-
-body.home-body #dboard #form form textarea.form-control::placeholder {
-  color: rgba(255, 255, 255, 0.3) !important;
-  font-size: 13px !important;
-}
 
 /* Field icons for dark theme — same fixed top */
-body.home-body #dboard #form .field-icon {
-  top: 23px !important;
-  color: rgba(255, 255, 255, 0.4) !important;
-}
-
-body.home-body #dboard #form .field-icon-wrap:focus-within .field-icon {
-  color: #22d3ee !important;
-}
 
 /* Column separator lines */
-body.home-body #dboard #form form center>.col-md-4 {
-  padding: 0 14px !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
-}
-
-body.home-body #dboard #form form center>.col-md-4:last-child {
-  border-right: none !important;
-}
 
 /* ── col-md-12 Reason row ────────────────────────────────────── */
-body.home-body #dboard #form form .col-md-12 {
-  clear: both !important;
-  float: none !important;
-  width: 100% !important;
-  padding: 8px 28px 32px !important;
-  margin-top: 0 !important;
-  display: block !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
-}
-
-body.home-body #dboard #form form .col-md-12>label {
-  margin-top: 16px !important;
-}
 
 /* ── Submit button ───────────────────────────────────────────── */
-body.home-body #dboard #form form center {
-  display: flex !important;
-  justify-content: center !important;
-  margin-top: 24px !important;
-}
-
-body.home-body #dboard #form form .btn2 {
-  min-width: 260px !important;
-  height: 56px !important;
-  font-size: 15px !important;
-  font-weight: 800 !important;
-  border-radius: 14px !important;
-  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 50%, #0e7490 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  box-shadow: 0 12px 32px rgba(6, 182, 212, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-  letter-spacing: 0.06em !important;
-  text-transform: uppercase !important;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, filter 0.2s ease !important;
-  color: #ffffff !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 12px !important;
-  cursor: pointer !important;
-  position: relative !important;
-  overflow: hidden !important;
-}
-
-body.home-body #dboard #form form .btn2::before {
-  content: '\f02f' !important;
-  /* print icon */
-  font-family: FontAwesome !important;
-  font-size: 16px !important;
-}
-
-body.home-body #dboard #form form .btn2::after {
-  content: '' !important;
-  position: absolute !important;
-  inset: 0 !important;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 60%) !important;
-  pointer-events: none !important;
-}
-
-body.home-body #dboard #form form .btn2:hover {
-  transform: translateY(-4px) scale(1.02) !important;
-  box-shadow: 0 20px 48px rgba(6, 182, 212, 0.5), 0 6px 16px rgba(0, 0, 0, 0.25) !important;
-  filter: brightness(1.08) !important;
-}
 
 /* ── Page-level glow orbs (decorative) ──────────────────────── */
 body.home-body #dboard.tab-pane::before {
@@ -5128,19 +2499,9 @@ body.home-body #dboard.tab-pane::after {
 }
 
 /* ── Sidebar on dark bg ──────────────────────────────────────── */
-body.home-body #sidebar.nav-collapse {
-  background: linear-gradient(180deg, #0d1117 0%, #161b27 100%) !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
-}
 
 body.home-body p.centered {
   border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-}
-
-body.home-body ul.sidebar-menu li.active a,
-body.home-body ul.sidebar-menu li a:hover {
-  background: linear-gradient(90deg, rgba(6, 182, 212, 0.2) 0%, rgba(30, 58, 138, 0.15) 100%) !important;
-  border-left-color: #22d3ee !important;
 }
 
 /* ── Other tab panes on dark bg ─────────────────────────────── */
@@ -5176,69 +2537,8 @@ body.home-body table.table tbody tr:hover td {
 }
 
 /* ── DataTables controls on dark ─────────────────────────────── */
-body.home-body .dataTables_wrapper {
-  color: #94a3b8 !important;
-}
-
-body.home-body .dataTables_filter input[type="search"] {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 10px !important;
-  color: #f1f5f9 !important;
-}
-
-body.home-body .dataTables_filter input[type="search"]:focus {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: #22d3ee !important;
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15) !important;
-}
-
-body.home-body .dt-button {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 8px !important;
-  color: #94a3b8 !important;
-}
-
-body.home-body .dt-button:hover {
-  background: rgba(6, 182, 212, 0.2) !important;
-  border-color: #22d3ee !important;
-  color: #22d3ee !important;
-  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2) !important;
-}
-
-body.home-body .dataTables_paginate .paginate_button {
-  background: rgba(255, 255, 255, 0.04) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 6px !important;
-  color: #94a3b8 !important;
-}
-
-body.home-body .dataTables_paginate .paginate_button.current,
-body.home-body .dataTables_paginate .paginate_button:hover {
-  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3) !important;
-}
 
 /* ── Search tab + Help tab on dark ──────────────────────────── */
-body.home-body #search-edit.tab-pane,
-body.home-body #help.tab-pane,
-body.home-body #contact.tab-pane {
-  background: rgba(255, 255, 255, 0.04) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 24px !important;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3) !important;
-}
-
-body.home-body #search-edit.tab-pane>p.anim-typewriter,
-body.home-body #help.tab-pane>p.anim-typewriter,
-body.home-body #contact.tab-pane>p.anim-typewriter {
-  color: #f8fafc !important;
-}
 
 body.home-body #contact.tab-pane>p.anim-typewriter {
   margin-left: 4px !important;
@@ -5248,128 +2548,15 @@ body.home-body p.rr {
   color: #e2e8f0 !important;
 }
 
-body.home-body #navbar ul li a.g2 {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  color: #cbd5e1 !important;
-}
-
-body.home-body #navbar ul li a.g2:hover {
-  background: rgba(34, 211, 238, 0.1) !important;
-  border-color: #22d3ee !important;
-  color: #f8fafc !important;
-}
-
-body.home-body .gg {
-  background: rgba(255, 255, 255, 0.04) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  color: #cbd5e1 !important;
-}
-
 /* Smart search bar dark */
-.smart-search-wrap input {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-  color: #f1f5f9 !important;
-}
-
-.smart-search-wrap input::placeholder {
-  color: rgba(255, 255, 255, 0.3) !important;
-}
-
-.smart-search-wrap input:focus {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: #22d3ee !important;
-  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.15) !important;
-}
-
-.smart-search-icon {
-  color: rgba(255, 255, 255, 0.4) !important;
-}
 
 /* ── Edit form dark ──────────────────────────────────────────── */
-body.home-body #fmgrp {
-  background: rgba(255, 255, 255, 0.04) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 20px !important;
-}
-
-body.home-body #fmgrp label.lb {
-  color: rgba(255, 255, 255, 0.55) !important;
-}
-
-body.home-body #fmgrp input.inp.form-control,
-body.home-body #fmgrp select.inp.form-control,
-body.home-body #fmgrp textarea.inp.form-control {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.1) !important;
-  color: #f1f5f9 !important;
-}
-
-body.home-body #fmgrp input.inp.form-control:focus,
-body.home-body #fmgrp select.inp.form-control:focus {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: #22d3ee !important;
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15) !important;
-}
 
 /* ── Toast dark theme ────────────────────────────────────────── */
-.gbr-toast {
-  background: rgba(15, 23, 42, 0.95) !important;
-  backdrop-filter: blur(20px) !important;
-  color: #e2e8f0 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-}
-
-.toast-close {
-  color: rgba(255, 255, 255, 0.4) !important;
-}
-
-.toast-close:hover {
-  color: #f8fafc !important;
-}
 
 /* ── Confirm modal dark ──────────────────────────────────────── */
-.confirm-modal-box {
-  background: rgba(15, 23, 42, 0.98) !important;
-  backdrop-filter: blur(24px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: #e2e8f0 !important;
-}
-
-.confirm-modal-box h3 {
-  color: #f8fafc !important;
-}
-
-.confirm-modal-box p {
-  color: #94a3b8 !important;
-}
-
-.confirm-btn-cancel {
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: #94a3b8 !important;
-}
-
-.confirm-btn-cancel:hover {
-  background: rgba(255, 255, 255, 0.14) !important;
-}
 
 /* ── Session warning dark ────────────────────────────────────── */
-.session-warning-box {
-  background: rgba(15, 23, 42, 0.98) !important;
-  backdrop-filter: blur(24px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: #e2e8f0 !important;
-}
-
-.session-warning-box h3 {
-  color: #f8fafc !important;
-}
-
-.session-warning-box p {
-  color: #94a3b8 !important;
-}
 
 /* ── Scrollbar dark: neutral, not sky-blue or overly dominant ── */
 body.home-body ::-webkit-scrollbar-track {
@@ -5389,14 +2576,6 @@ body.home-body ::-webkit-scrollbar-thumb:hover {
 @media (max-width: 768px) {
   body.home-body #main-content {
     padding: 20px 16px 140px !important;
-  }
-
-  body.home-body #dboard .dd1 {
-    margin-bottom: 16px !important;
-  }
-
-  body.home-body #dboard #form form center>.col-md-4 {
-    border-right: none !important;
   }
 }
 
@@ -5451,11 +2630,6 @@ body.home-body #dboard.tab-pane.fade {
 }
 
 /* 5. The form card and form itself */
-body.home-body #dboard #form,
-body.home-body #dboard #form form.form-group {
-  overflow: visible !important;
-  height: auto !important;
-}
 
 /* 6. Responsive */
 @media (max-width: 992px) {
@@ -5490,16 +2664,6 @@ body.home-body {
 }
 
 /* Sidebar: NO visible scrollbar (it's fixed height, content rarely overflows) */
-body.home-body #sidebar.nav-collapse {
-  overflow-y: auto !important;
-  scrollbar-width: none !important;
-  /* Firefox — hide scrollbar */
-}
-
-body.home-body #sidebar.nav-collapse::-webkit-scrollbar {
-  display: none !important;
-  /* Chrome — hide scrollbar */
-}
 
 /* Main content: NO independent scrollbar — inherits from body */
 body.home-body #main-content {
@@ -5521,22 +2685,6 @@ body.home-body section#container {
 }
 
 /* Tables keep their own horizontal scroll but no extra vertical bar */
-body.home-body .table-responsive {
-  overflow-x: auto !important;
-  overflow-y: visible !important;
-  scrollbar-width: thin !important;
-  scrollbar-color: rgba(100, 116, 139, 0.4) transparent !important;
-}
-
-body.home-body .table-responsive::-webkit-scrollbar {
-  height: 6px !important;
-  width: 6px !important;
-}
-
-body.home-body .table-responsive::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.45) !important;
-  border-radius: 999px !important;
-}
 
 /* Single thin page scrollbar style */
 body.home-body::-webkit-scrollbar {
@@ -5559,33 +2707,6 @@ body.home-body::-webkit-scrollbar-thumb:hover {
 /* ── Fix 2: Edit form (#fmgrp) text always readable ─────────────── */
 
 /* Light theme — dark text on light background */
-body.home-body #fmgrp input.inp.form-control,
-body.home-body #fmgrp select.inp.form-control,
-body.home-body #fmgrp textarea.inp.form-control,
-body.home-body #fmgrp input.form-control,
-body.home-body #fmgrp select.form-control,
-body.home-body #fmgrp textarea.form-control {
-  color: #0f172a !important;
-  background: #f8fafc !important;
-  border: 1.5px solid #e2e8f0 !important;
-  -webkit-text-fill-color: #0f172a !important;
-  /* overrides webkit autofill */
-}
-
-body.home-body #fmgrp input.inp.form-control::placeholder,
-body.home-body #fmgrp input.form-control::placeholder {
-  color: #94a3b8 !important;
-  -webkit-text-fill-color: #94a3b8 !important;
-}
-
-body.home-body #fmgrp input.inp.form-control:focus,
-body.home-body #fmgrp select.inp.form-control:focus,
-body.home-body #fmgrp textarea.inp.form-control:focus {
-  color: #0f172a !important;
-  background: #ffffff !important;
-  border-color: #22d3ee !important;
-  -webkit-text-fill-color: #0f172a !important;
-}
 
 /* ── Fix 3: Search tab result table text readable in light theme ─── */
 #smart-results-table tbody td {
@@ -5609,12 +2730,6 @@ body.home-body #fmgrp textarea.inp.form-control:focus {
 }
 
 /* Highlight mark readable */
-.hl {
-  background: #fde68a !important;
-  color: #92400e !important;
-  border-radius: 3px;
-  padding: 1px 3px;
-}
 
 /* ── Fix 4: Search tab existing table also readable ──────────────── */
 body.home-body #search-edit table.table tbody tr td {
@@ -5632,48 +2747,6 @@ body.home-body #search-edit table.table tbody tr:hover td {
 }
 
 /* ── Keep dark mode overrides for edit form ──────────────────────── */
-body.home-body.dark-mode #fmgrp {
-  background: rgba(15, 23, 42, 0.92) !important;
-  border: 1px solid rgba(148, 163, 184, 0.18) !important;
-  box-shadow: 0 20px 48px rgba(2, 6, 23, 0.42) !important;
-}
-
-body.home-body.dark-mode #fmgrp::before {
-  background: linear-gradient(135deg, #0ea5e9 0%, #0f766e 100%) !important;
-  border-bottom: 3px solid rgba(125, 211, 252, 0.8) !important;
-}
-
-body.home-body.dark-mode #fmgrp label.lb {
-  color: #cbd5e1 !important;
-}
-
-body.home-body.dark-mode #fmgrp label.lb::before {
-  color: #67e8f9 !important;
-}
-
-body.home-body.dark-mode #fmgrp input.inp.form-control,
-body.home-body.dark-mode #fmgrp select.inp.form-control,
-body.home-body.dark-mode #fmgrp textarea.inp.form-control,
-body.home-body.dark-mode #fmgrp input.form-control,
-body.home-body.dark-mode #fmgrp select.form-control,
-body.home-body.dark-mode #fmgrp textarea.form-control {
-  color: #f1f5f9 !important;
-  -webkit-text-fill-color: #f1f5f9 !important;
-  background: rgba(15, 23, 42, 0.65) !important;
-  border-color: rgba(148, 163, 184, 0.18) !important;
-  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.3) !important;
-}
-
-body.home-body.dark-mode #fmgrp input.inp.form-control:focus,
-body.home-body.dark-mode #fmgrp select.inp.form-control:focus,
-body.home-body.dark-mode #fmgrp textarea.inp.form-control:focus {
-  border-color: #67e8f9 !important;
-  box-shadow: 0 0 0 3px rgba(103, 232, 249, 0.15) !important;
-}
-
-body.home-body.dark-mode #fmgrp .form-submit-actions {
-  border-top-color: rgba(148, 163, 184, 0.18) !important;
-}
 
 body.home-body.dark-mode #smart-results-table tbody td {
   color: #e2e8f0 !important;
@@ -5949,46 +3022,8 @@ body.home-body table.table .bbb+.edit {
 }
 
 /* ── 5. Table container card ─────────────────────────────────────── */
-body.home-body .tab-pane.align .table-responsive {
-  border-radius: 12px !important;
-  overflow-x: auto !important;
-  overflow-y: visible !important;
-  scrollbar-width: thin !important;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06) !important;
-  border: 1px solid #e2e8f0 !important;
-}
 
 /* ── 6. DataTables pagination redesign ───────────────────────────── */
-body.home-body .dataTables_paginate {
-  margin-top: 16px !important;
-}
-
-body.home-body .dataTables_paginate .paginate_button {
-  display: inline-block !important;
-  padding: 6px 12px !important;
-  border-radius: 8px !important;
-  font-size: 12.5px !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-  border: 1.5px solid #e2e8f0 !important;
-  background: #ffffff !important;
-  color: #475569 !important;
-  margin: 0 2px !important;
-  transition: all 0.18s ease !important;
-}
-
-body.home-body .dataTables_paginate .paginate_button.current {
-  background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%) !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-  box-shadow: 0 4px 10px rgba(30, 58, 138, 0.28) !important;
-}
-
-body.home-body .dataTables_paginate .paginate_button:hover:not(.current) {
-  background: #f0f9ff !important;
-  border-color: #0891b2 !important;
-  color: #0891b2 !important;
-}
 
 /* ── 7. Dark mode table overrides (properly scoped) ──────────────── */
 body.home-body.dark-mode table.table tbody tr td {
@@ -6004,11 +3039,6 @@ body.home-body.dark-mode table.table tbody tr:nth-child(even) td {
 body.home-body.dark-mode table.table tbody tr:hover td {
   background: rgba(34, 211, 238, 0.06) !important;
   color: #f1f5f9 !important;
-}
-
-body.home-body.dark-mode .tab-pane.align .table-responsive {
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: none !important;
 }
 
 
@@ -6121,28 +3151,8 @@ body.home-body section#container {
 }
 
 /* ── sidebar: scrollable but hidden scrollbar ── */
-body.home-body #sidebar.nav-collapse {
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
-  scrollbar-width: none !important;
-}
-
-body.home-body #sidebar.nav-collapse::-webkit-scrollbar {
-  display: none !important;
-}
 
 /* ── Everything else inside main: NO overflow ── */
-body.home-body section.wrapper,
-body.home-body .tab-content,
-body.home-body .tab-pane,
-body.home-body #dboard,
-body.home-body #dboard #form,
-body.home-body #dboard #form form,
-body.home-body .col-md-12,
-body.home-body .col-md-13 {
-  overflow: visible !important;
-  height: auto !important;
-}
 
 /* ── Responsive ── */
 @media (max-width: 992px) {
@@ -6187,70 +3197,8 @@ body.home-body:not(.dark-mode) table.table tbody tr:hover td {
 }
 
 /* ── DataTables controls: readable in light ── */
-body.home-body:not(.dark-mode) .dataTables_wrapper {
-  color: #475569 !important;
-}
-
-body.home-body:not(.dark-mode) .dataTables_filter input[type="search"] {
-  background: #f8fafc !important;
-  border: 1.5px solid #e2e8f0 !important;
-  color: #0f172a !important;
-}
-
-body.home-body:not(.dark-mode) .dt-button {
-  background: #ffffff !important;
-  border: 1.5px solid #e2e8f0 !important;
-  color: #475569 !important;
-}
-
-body.home-body:not(.dark-mode) .dt-button:hover {
-  background: #f0f9ff !important;
-  border-color: #0891b2 !important;
-  color: #0891b2 !important;
-  box-shadow: none !important;
-}
-
-body.home-body:not(.dark-mode) .dataTables_paginate .paginate_button {
-  background: #ffffff !important;
-  border: 1.5px solid #e2e8f0 !important;
-  color: #475569 !important;
-}
-
-body.home-body:not(.dark-mode) .dataTables_paginate .paginate_button.current {
-  background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%) !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-}
-
-body.home-body:not(.dark-mode) .dataTables_paginate .paginate_button:hover:not(.current) {
-  background: #f0f9ff !important;
-  border-color: #0891b2 !important;
-  color: #0891b2 !important;
-}
-
-body.home-body:not(.dark-mode) .dataTables_info,
-body.home-body:not(.dark-mode) .dataTables_length label,
-body.home-body:not(.dark-mode) .dataTables_filter label {
-  color: #64748b !important;
-}
-
-body.home-body:not(.dark-mode) .dataTables_length select {
-  color: #0f172a !important;
-  background: #ffffff !important;
-  border-color: #e2e8f0 !important;
-}
 
 /* ── Tab panes: opaque white bg, dark text ── */
-body.home-body:not(.dark-mode) .tab-pane.align,
-body.home-body:not(.dark-mode) #search-edit.tab-pane,
-body.home-body:not(.dark-mode) #help.tab-pane,
-body.home-body:not(.dark-mode) #contact.tab-pane {
-  background: #ffffff !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.07) !important;
-}
 
 body.home-body:not(.dark-mode) .tab-pane>p.anim-typewriter {
   color: #0f172a !important;
@@ -6264,50 +3212,10 @@ body.home-body:not(.dark-mode) p.rr {
 }
 
 /* ── Help FAQ links (#navbar .g2) ── */
-body.home-body:not(.dark-mode) #navbar ul li a.g2 {
-  background: #f8fafc !important;
-  border: 1.5px solid #e2e8f0 !important;
-  border-left: 3px solid #0f766e !important;
-  color: #1e293b !important;
-}
-
-body.home-body:not(.dark-mode) #navbar ul li a.g2::before {
-  color: #0f766e !important;
-}
-
-body.home-body:not(.dark-mode) #navbar ul li a.g2:hover {
-  background: #f0fdfa !important;
-  border-color: #22d3ee !important;
-  border-left-color: #22d3ee !important;
-  color: #0f172a !important;
-}
 
 /* ── Help answers (.gg boxes) ── */
-body.home-body:not(.dark-mode) .gg {
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-  border-left: 3px solid #1e3a8a !important;
-  color: #1e293b !important;
-}
-
-body.home-body:not(.dark-mode) .gg p {
-  color: #334155 !important;
-}
 
 /* ── Smart search bar: light ── */
-body.home-body:not(.dark-mode) .smart-search-wrap input {
-  background: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  color: #0f172a !important;
-}
-
-body.home-body:not(.dark-mode) .smart-search-wrap input::placeholder {
-  color: #94a3b8 !important;
-}
-
-body.home-body:not(.dark-mode) .smart-search-icon {
-  color: #94a3b8 !important;
-}
 
 body.home-body:not(.dark-mode) #smart-results-table tbody td {
   color: #1e293b !important;
@@ -6320,32 +3228,6 @@ body.home-body:not(.dark-mode) #smart-results-table thead th {
 }
 
 /* ── Edit form (#fmgrp): light readable ── */
-body.home-body:not(.dark-mode) #fmgrp {
-  background: #ffffff !important;
-  backdrop-filter: none !important;
-  border: 1px solid #e2e8f0 !important;
-}
-
-body.home-body:not(.dark-mode) #fmgrp label.lb {
-  color: #475569 !important;
-}
-
-body.home-body:not(.dark-mode) #fmgrp input.inp.form-control,
-body.home-body:not(.dark-mode) #fmgrp select.inp.form-control,
-body.home-body:not(.dark-mode) #fmgrp textarea.inp.form-control,
-body.home-body:not(.dark-mode) #fmgrp input.form-control,
-body.home-body:not(.dark-mode) #fmgrp select.form-control {
-  background: #f8fafc !important;
-  border: 1.5px solid #e2e8f0 !important;
-  color: #0f172a !important;
-  -webkit-text-fill-color: #0f172a !important;
-}
-
-body.home-body:not(.dark-mode) #fmgrp input::placeholder,
-body.home-body:not(.dark-mode) #fmgrp textarea::placeholder {
-  color: #94a3b8 !important;
-  -webkit-text-fill-color: #94a3b8 !important;
-}
 
 /* ── Contact tab: light ── */
 body.home-body:not(.dark-mode) .main,
@@ -6380,42 +3262,6 @@ body.home-body:not(.dark-mode) p.anim-typewriter {
 }
 
 /* ── Dashboard form card: white bg ── */
-body.home-body:not(.dark-mode) #dboard #form {
-  background: #ffffff !important;
-  backdrop-filter: none !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.07) !important;
-}
-
-body.home-body:not(.dark-mode) #dboard #form form label {
-  color: #475569 !important;
-}
-
-body.home-body:not(.dark-mode) #dboard #form form input.form-control,
-body.home-body:not(.dark-mode) #dboard #form form select.form-control {
-  background: #f8fafc !important;
-  border: 1.5px solid #e2e8f0 !important;
-  color: #0f172a !important;
-}
-
-body.home-body:not(.dark-mode) #dboard #form form textarea.form-control {
-  background: #f8fafc !important;
-  border: 1.5px solid #e2e8f0 !important;
-  color: #0f172a !important;
-}
-
-body.home-body:not(.dark-mode) #dboard #form .field-icon {
-  color: #94a3b8 !important;
-}
-
-body.home-body:not(.dark-mode) #dboard #form .field-icon-wrap:focus-within .field-icon {
-  color: #1e3a8a !important;
-}
-
-body.home-body:not(.dark-mode) #dboard #form form select.form-control option {
-  background: #ffffff !important;
-  color: #0f172a !important;
-}
 
 
 /* ================================================================
@@ -6423,272 +3269,18 @@ body.home-body:not(.dark-mode) #dboard #form form select.form-control option {
    ================================================================ */
 
 /* ── Hide legacy dl-menu (it's still in DOM for click.js compat) ── */
-.contact-legacy-hidden {
-  display: none !important;
-}
 
 /* ── Hero card ── */
-.contact-hero {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  background: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%);
-  border-radius: 18px;
-  padding: 24px 28px;
-  margin-bottom: 24px;
-  box-shadow: 0 12px 32px rgba(30, 58, 138, 0.25);
-  flex-wrap: wrap;
-}
-
-.contact-hero-icon {
-  width: 56px;
-  height: 56px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.contact-hero-icon .fa {
-  font-size: 26px;
-  color: #ffffff;
-}
-
-.contact-hero-text {
-  flex: 1;
-  min-width: 200px;
-}
-
-.contact-hero-text h2.contact-inst-name {
-  font-size: 20px;
-  font-weight: 800;
-  color: #ffffff;
-  margin: 0 0 4px 0;
-  letter-spacing: 0.01em;
-}
-
-.contact-hero-text .contact-inst-tagline {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.72);
-  margin: 0;
-  font-style: italic;
-}
-
-.contact-hero-address {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.contact-address-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
-  font-weight: 500;
-}
-
-.contact-address-item .fa {
-  color: #a5f3fc;
-  font-size: 13px;
-  width: 16px;
-  text-align: center;
-  flex-shrink: 0;
-}
 
 /* ── Selector section ── */
-.contact-selector-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #475569;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.contact-selector-label .fa {
-  color: #0f766e;
-  font-size: 16px;
-}
 
 /* ── Department card grid ── */
-.contact-dept-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 8px;
-}
-
-@media (max-width: 768px) {
-  .contact-dept-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .contact-hero {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-.dept-card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 20px 18px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
-}
-
-.dept-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.1);
-  border-color: #22d3ee;
-}
-
-.dept-card-icon {
-  width: 46px;
-  height: 46px;
-  background: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
-}
-
-.dept-card-icon .fa {
-  font-size: 20px;
-  color: #ffffff;
-}
-
-.dept-card-name {
-  font-size: 16px;
-  font-weight: 800;
-  color: #1e293b;
-  margin-bottom: 14px;
-  letter-spacing: 0.02em;
-}
-
-.dept-years {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.year-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 7px 13px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #334155;
-  background: #f8fafc;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.18s ease;
-  font-family: 'Lato', sans-serif;
-  white-space: nowrap;
-}
-
-.year-btn:hover {
-  background: linear-gradient(135deg, #1e3a8a 0%, #0f766e 100%);
-  color: #ffffff;
-  border-color: transparent;
-  box-shadow: 0 4px 10px rgba(30, 58, 138, 0.25);
-}
-
-.year-btn--active {
-  background: linear-gradient(135deg, #0f766e 0%, #22d3ee 100%) !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-  box-shadow: 0 4px 10px rgba(15, 118, 110, 0.3) !important;
-}
 
 /* ── Faculty panels container ── */
-.faculty-panels-container {
-  display: none;
-}
-
-.contact-back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  margin-bottom: 20px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #1e3a8a;
-  background: #f0f9ff;
-  border: 1.5px solid #bfdbfe;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.18s ease;
-  font-family: 'Lato', sans-serif;
-}
-
-.contact-back-btn:hover {
-  background: #1e3a8a;
-  color: #ffffff;
-  border-color: transparent;
-  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
-}
 
 /* ── Faculty panel heading ── */
-body.home-body .asd h4 {
-  font-size: 16px;
-  font-weight: 800;
-  color: #1e3a8a;
-  margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #e2e8f0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-body.home-body .asd h4::before {
-  content: '\f0c0';
-  font-family: FontAwesome;
-  font-size: 14px;
-  color: #0f766e;
-}
 
 /* ── Dark mode contact ── */
-body.home-body.dark-mode .dept-card {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-}
-
-body.home-body.dark-mode .dept-card-name {
-  color: #e2e8f0 !important;
-}
-
-body.home-body.dark-mode .year-btn {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-  color: #cbd5e1 !important;
-}
-
-body.home-body.dark-mode .contact-selector-label {
-  color: #94a3b8 !important;
-}
-
-body.home-body.dark-mode .contact-back-btn {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-  color: #67e8f9 !important;
-}
-
-body.home-body.dark-mode .asd h4 {
-  color: #67e8f9 !important;
-  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
-}
 
 
 /* ================================================================
@@ -6716,34 +3308,9 @@ body.home-body:not(.dark-mode) .tab-pane.align {
   padding: 0 0 28px 0 !important;
 }
 
-body.home-body:not(.dark-mode) #search-edit.tab-pane,
-body.home-body:not(.dark-mode) #help.tab-pane,
-body.home-body:not(.dark-mode) #contact.tab-pane {
-  background: transparent !important;
-  border: none !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  padding: 0 0 28px 0 !important;
-}
-
 /* ── Table container: clean bordered box only, no shadow card ── */
-body.home-body:not(.dark-mode) .tab-pane.align .table-responsive {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0 !important;
-  border-radius: 14px !important;
-  overflow-x: auto !important;
-  overflow-y: visible !important;
-  scrollbar-width: thin !important;
-  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06) !important;
-}
 
 /* ── DataTables export buttons + search: clean, no extra boxing ── */
-body.home-body:not(.dark-mode) .dataTables_wrapper {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  margin-bottom: 16px;
-}
 
 /* ── Dashboard: remove the outer white card around everything ── */
 body.home-body:not(.dark-mode) #dboard.tab-pane,
@@ -6755,48 +3322,15 @@ body.home-body:not(.dark-mode) #dboard.tab-pane.fade {
 }
 
 /* ── Dashboard form card: clean white card with subtle shadow ── */
-body.home-body:not(.dark-mode) #dboard #form {
-  background: #ffffff !important;
-  border: 1.5px solid #e2e8f0 !important;
-  border-radius: 16px !important;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06) !important;
-  overflow: visible !important;
-}
 
 /* ── Dashboard form card header strip ── */
-body.home-body:not(.dark-mode) #dboard #form form.form-group::before {
-  border-radius: 14px 14px 0 0 !important;
-}
 
 /* ── Stat cards: no double border, clean ── */
 body.home-body:not(.dark-mode) #dboard .col-md-4 {
   padding: 0 8px !important;
 }
 
-body.home-body:not(.dark-mode) #dboard .dd1 {
-  border: none !important;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12) !important;
-}
-
 /* ── Help, Contact, Search: flush layout, no card boxing ── */
-body.home-body:not(.dark-mode) #help.tab-pane .conta-fluid,
-body.home-body:not(.dark-mode) #help.tab-pane .col-md-12 {
-  background: transparent !important;
-}
-
-body.home-body:not(.dark-mode) #navbar ul li a.g2 {
-  background: #ffffff !important;
-  border: 1.5px solid #e2e8f0 !important;
-  border-left: 3px solid #0f766e !important;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
-}
-
-body.home-body:not(.dark-mode) .gg {
-  background: #ffffff !important;
-  border: 1.5px solid #e2e8f0 !important;
-  border-left: 3px solid #1e3a8a !important;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
-}
 
 /* ── Heading underline bar ── */
 body.home-body:not(.dark-mode) p.anim-typewriter {
@@ -6813,34 +3347,10 @@ body.home-body:not(.dark-mode) #main-content {
 }
 
 /* ── Search tab: flush layout ── */
-body.home-body:not(.dark-mode) #search-edit.tab-pane .srcbar {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 16px;
-  border: 1.5px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
-  margin-bottom: 16px;
-}
-
-body.home-body:not(.dark-mode) #search-edit.tab-pane .table-responsive {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0 !important;
-  border-radius: 14px !important;
-  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06) !important;
-}
 
 /* ── Edit form (#fmgrp) ── */
-body.home-body:not(.dark-mode) #fmgrp {
-  background: #ffffff !important;
-  border: 1.5px solid #e2e8f0 !important;
-  border-radius: 16px !important;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06) !important;
-}
 
 /* ── Contact page ── */
-body.home-body:not(.dark-mode) #contact.tab-pane .faculty-panels-container {
-  background: transparent !important;
-}
 
 /* ── Dark mode: keep glass effect ── */
 body.home-body.dark-mode .tab-pane.align {
@@ -6850,17 +3360,6 @@ body.home-body.dark-mode .tab-pane.align {
   border: 1px solid rgba(255, 255, 255, 0.07) !important;
   border-radius: 20px !important;
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.28) !important;
-  padding: 24px !important;
-}
-
-body.home-body.dark-mode #search-edit.tab-pane,
-body.home-body.dark-mode #help.tab-pane,
-body.home-body.dark-mode #contact.tab-pane {
-  background: rgba(255, 255, 255, 0.04) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.07) !important;
-  border-radius: 20px !important;
   padding: 24px !important;
 }
 
@@ -6885,43 +3384,11 @@ body.home-body.dark-mode #contact.tab-pane {
    Move project name to a separate sibling span in the header. */
 
 /* Remove project name from the toggle pseudo-element */
-body.home-body .sidebar-toggle-box::after {
-  content: none !important;
-  display: none !important;
-}
 
 /* The sidebar toggle box: just the icon, nothing else */
-body.home-body .sidebar-toggle-box {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 0 !important;
-  padding: 8px 12px !important;
-  cursor: pointer !important;
-  border-radius: 8px !important;
-  flex-shrink: 0 !important;
-  width: auto !important;
-}
-
-body.home-body .sidebar-toggle-box .fa-bars {
-  font-size: 20px !important;
-  color: #ffffff !important;
-  display: block !important;
-  line-height: 1 !important;
-  pointer-events: none;
-}
 
 /* Project name: shown in the header via #date_time sibling approach.
    We inject it via the header's own layout — keep it in the clock area */
-body.home-body .header-brand {
-  font-size: 15px;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  flex-shrink: 0;
-  margin-left: 4px;
-}
 
 /* ── FIX 2: Remove white background box behind "DashBoard" ────── */
 /* p.anim-typewriter is `display: inline-block` which causes the
@@ -6954,42 +3421,12 @@ body.home-body #dboard>p.anim-typewriter {
    clip it due to overflow:hidden on #form. */
 
 /* Remove overflow:hidden from #form so border-radius shows */
-body.home-body #dboard #form {
-  overflow: visible !important;
-}
 
 /* The header strip: full 16px radius at top, 0 at bottom */
-body.home-body #dboard #form form.form-group::before {
-  content: '\f1c0  MOBILE STORAGE · NEW ENTRY RECORD' !important;
-  font-family: FontAwesome, 'Lato', sans-serif !important;
-  display: block !important;
-  background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%) !important;
-  color: #f8fafc !important;
-  font-size: 12.5px !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.08em !important;
-  text-transform: uppercase !important;
-  padding: 14px 24px !important;
-  border-radius: 16px 16px 0 0 !important;
-  /* matches parent card radius */
-  border-bottom: 2px solid rgba(34, 211, 238, 0.5) !important;
-  margin: 0 !important;
-}
 
 /* Ensure the card itself has matching border-radius */
-body.home-body:not(.dark-mode) #dboard #form {
-  border-radius: 16px !important;
-  overflow: hidden !important;
-  /* clip card but strip uses padding-top workaround */
-}
 
 /* Override the overflow for the strip to show corners */
-body.home-body #dboard #form form.form-group {
-  overflow: hidden !important;
-  /* THIS clips the strip to the card's radius */
-  border-radius: 16px !important;
-  background: #ffffff !important;
-}
 
 /* ── Dark mode: same fixes ─────────────────────────────────────── */
 body.home-body.dark-mode p.anim-typewriter {
@@ -7008,13 +3445,3 @@ body.home-body.dark-mode #dboard>p.anim-typewriter {
 }
 
 /* ── Responsive ─────────────────────────────────────────────────── */
-@media (max-width: 768px) {
-  body.home-body .sidebar-toggle-box::after {
-    content: none !important;
-    display: none !important;
-  }
-
-  body.home-body .header-brand {
-    display: none;
-  }
-}

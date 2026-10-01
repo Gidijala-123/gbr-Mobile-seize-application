@@ -1,0 +1,1 @@
+/* Shared dashboard foundations are styled in shared.css. */

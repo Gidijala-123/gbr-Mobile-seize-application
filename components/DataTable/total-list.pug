@@ -1,0 +1,58 @@
+include data-table.pug
+
+#totallist.tab-pane.fade.align.ttlist.data-table-panel
+  p.anim-typewriter List of Total Mobiles
+  +responsiveTable()
+    table#example2.table.table-striped
+      thead
+        tr
+          th Date
+          th Time
+          th Generated_ID
+          th RollNo
+          th Stud_name
+          th College
+          th Branch
+          th Year
+          th Section
+          th Stud_phno
+          th Parent_name
+          th Parent_phno
+          th Mobile_model
+          th IMEI_number
+          th Mobile_color
+          th Reason
+          th Employee_name
+          th Employee_phno
+          th Employee_ID
+          th Status
+          th Action
+      tbody
+        each member in data
+          tr
+            td #{member.Date}
+            td #{member.Time}
+            td #{member._id}
+            td #{member.rno}
+            td #{member.sname}
+            td #{member.clg}
+            td #{member.brch}
+            td #{member.year}
+            td #{member.sec}
+            td #{member.spno}
+            td #{member.pname}
+            td #{member.ppno}
+            td #{member.mmodel}
+            td #{member.imei}
+            td #{member.mclr}
+            td #{member.rsn}
+            td #{member.ename}
+            td #{member.epno}
+            td #{member.eid}
+            td #{member.status}
+            td
+              button.bbb(data-record-id=member._id value=member.rno) Transfer
+              |
+              button.del-btn(data-record-id=member._id data-rno=member.rno data-name=member.sname title="Delete record")
+                i.fa.fa-trash
+

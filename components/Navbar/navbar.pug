@@ -1,0 +1,14 @@
+header.header.navbar-component
+  button.sidebar-toggle-box(type='button', aria-label='Toggle navigation', aria-expanded='true')
+    i.fa.fa-bars.tooltips(data-placement='right', data-original-title='Toggle Navigation', aria-hidden='true')
+  span.header-brand Mobile Storage Application
+  #date_time
+  a.inner-width-neon(href='/logout')
+    span.bg-width
+    span.btn-text Logout
+  a.inner-width-neon(data-toggle='tab', href='#help')
+    span.bg-width
+    span.btn-text Help
+  include ../DarkModeToggle/dark-mode-toggle.pug
+  button#totpSecurityButton.security-settings-button(type="button" data-toggle="modal" data-target="#totp-security-modal" title="Two-factor authentication" aria-label="Two-factor authentication")
+    i.fa.fa-shield

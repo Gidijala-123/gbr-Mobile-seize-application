@@ -2,89 +2,14 @@ html
   head
     title Forgot Password — Mobile Storage Application
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="csrf-token" content=csrfToken)
     link(href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet" type="text/css")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
-    link(rel='stylesheet' type='text/css' href='stylesheets/signlog.css')
+    include components/forgot-component-styles.pug
     script(src="/javascripts/jquery.js")
     script(src="/javascripts/bootstrap.min.js")
     script(type="text/javascript" src="javascripts/angular.min.js")
 
   body(ng-app="forgotapp")
-    .forgot-wrap
-      .forgot-card(ng-controller="forgotController")
-        h1 Forgot Password
-        hr
-        p.sub-desc Enter your registered email address and we'll send a password reset OTP to your inbox.
-        form.form-group(ng-submit="forgot(a)" novalidate)
-          .fg-field
-            span.fg-icon.fa.fa-envelope
-            input.form-control(type="email" ng-model="a.email" placeholder="Enter your registered email" required autocomplete="off")
-          .note-box
-            b Note:
-            |  &nbsp;Please enter the email you used to register your account.
-          button.btn-send(type="submit")
-            i.fa.fa-paper-plane(style="margin-right:6px;")
-            | Send OTP
-        .back-wrap
-          a.back-link(href="/")
-            i.fa.fa-chevron-left
-            | Back to Login
-
-  script.
-    var app = angular.module('forgotapp', []);
-    app.controller('forgotController', function($scope, $http) {
-      $scope.forgot = function(a) {
-        if (!a || !a.email) {
-          alert('Enter your registered email address.');
-          return;
-        }
-        $http({
-          method: 'POST',
-          url: '/postforgot',
-          data: a
-        }).then(function success(response) {
-          alert('Check your mail for OTP');
-          window.location.href = '/';
-        }, function error(response) {
-          alert(response.data || 'Unable to send the reset email.');
-        });
-      };
-    });
-
-  script.
-    window.onload = function() {
-      document.addEventListener("contextmenu", function(e) {
-        e.preventDefault();
-      }, false);
-      document.addEventListener("keydown", function(e) {
-        // "J" key
-        if (e.ctrlKey && e.shiftKey && e.keyCode == 74) {
-          alert('not allowed');
-          disabledEvent(e);
-        }
-        // "F12" key
-        if (e.keyCode == 123) {
-          alert('Too smart!\nBut you are not allowed for this action');
-          disabledEvent(e);
-        }
-      }, false);
-      function disabledEvent(e) {
-        if (e.stopPropagation) {
-          e.stopPropagation();
-        } else if (window.event) {
-          window.event.cancelBubble = true;
-        }
-        e.preventDefault();
-        return false;
-      }
-    };
-
-  script.
-    document.onkeydown = function(e) {
-      if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 73 || e.keyCode === 85 || e.keyCode === 117)) {
-        alert('Too smart!\nBut you are not allowed for this action');
-        return false;
-      } else {
-        return true;
-      }
-    };
+  include ../components/ForgotCard/forgot-card.pug
+  include components/forgot-component-scripts.pug

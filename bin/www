@@ -7,6 +7,8 @@
 var app = require("../app");
 var debug = require("debug")("bus:server");
 var http = require("http");
+var mongoose = require("mongoose");
+var { installProcessErrorHandlers } = require("../middleware/processErrorHandlers");
 
 /**
  * Get port from environment and store in Express.
@@ -21,6 +23,39 @@ app.set("port", port);
  */
 
 var server = http.createServer(app);
+installProcessErrorHandlers({ server });
+
+async function gracefulShutdown(signal) {
+  const shutdownSignal = signal || "SIGTERM";
+  console.log(`Received ${shutdownSignal}; shutting down gracefully...`);
+  const timeout = setTimeout(() => {
+    console.error("Graceful shutdown timed out; forcing exit.");
+    process.exit(1);
+  }, 10000);
+  timeout.unref();
+
+  try {
+    await new Promise((resolve, reject) => {
+      if (!server.listening) return resolve();
+      server.close((error) => {
+        if (error) return reject(error);
+        resolve();
+      });
+    });
+    if (mongoose.connection && mongoose.connection.readyState) {
+      await mongoose.connection.close();
+    }
+  } catch (error) {
+    console.error("Error during graceful shutdown:", error);
+    process.exitCode = 1;
+  } finally {
+    clearTimeout(timeout);
+    process.exit(0);
+  }
+}
+
+process.once("SIGINT", gracefulShutdown);
+process.once("SIGTERM", gracefulShutdown);
 
 /**
  * Listen on provided port, on all network interfaces.

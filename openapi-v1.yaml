@@ -1,0 +1,433 @@
+openapi: 3.1.0
+info:
+  title: GBR Mobile Storage API
+  version: 1.0.0
+  license: { name: Proprietary, identifier: LicenseRef-Proprietary }
+  description: >-
+    Versioned JSON API. Authenticated requests use the secure session cookie.
+    State-changing requests also require the X-CSRF-Token header. Legacy browser
+    routes remain available and advertise their v1 successor with Deprecation
+    and Link response headers.
+servers:
+  - url: /api/v1
+security:
+  - sessionCookie: []
+paths:
+  /auth/signup:
+    post:
+      operationId: signUp
+      summary: Register an account
+      security:
+        - sessionCookie: []
+          csrfToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, pwd]
+              properties:
+                email: { type: string, format: email }
+                pwd: { type: string, minLength: 10, maxLength: 128 }
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+  /auth/login:
+    post:
+      operationId: signIn
+      summary: Sign in
+      security:
+        - sessionCookie: []
+          csrfToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, pwd]
+              properties:
+                email: { type: string, format: email }
+                pwd: { type: string }
+                uname: { type: string, maxLength: 120 }
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "202": { description: Two-factor challenge required }
+        "401": { $ref: "#/components/responses/ApiError" }
+  /auth/login/totp:
+    post:
+      operationId: completeTotpSignIn
+      summary: Complete two-factor sign-in
+      security:
+        - sessionCookie: []
+          csrfToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code]
+              properties:
+                code: { type: string, pattern: '^\\d{6}$' }
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "401": { $ref: "#/components/responses/ApiError" }
+  /auth/totp:
+    get:
+      operationId: getTotpStatus
+      summary: Get the current user's two-factor status
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "401": { $ref: "#/components/responses/ApiError" }
+  /auth/totp/setup:
+    post:
+      operationId: setupTotp
+      summary: Start two-factor enrollment
+      parameters:
+        - $ref: "#/components/parameters/CsrfToken"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "401": { $ref: "#/components/responses/ApiError" }
+        "409": { $ref: "#/components/responses/ApiError" }
+  /auth/totp/confirm:
+    post:
+      operationId: confirmTotp
+      summary: Confirm two-factor enrollment and receive recovery codes
+      parameters:
+        - $ref: "#/components/parameters/CsrfToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code]
+              properties:
+                code: { type: string, pattern: '^\\d{6}$' }
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "400": { $ref: "#/components/responses/ApiError" }
+        "401": { $ref: "#/components/responses/ApiError" }
+  /auth/totp/disable:
+    post:
+      operationId: disableTotp
+      summary: Disable two-factor authentication
+      parameters:
+        - $ref: "#/components/parameters/CsrfToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [password, code]
+              properties:
+                password: { type: string }
+                code: { type: string }
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "400": { $ref: "#/components/responses/ApiError" }
+        "401": { $ref: "#/components/responses/ApiError" }
+  /auth/verify-email:
+    post:
+      operationId: verifyEmail
+      summary: Verify an email address
+      security:
+        - sessionCookie: []
+          csrfToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token]
+              properties:
+                token: { type: string, pattern: "^[a-fA-F0-9]{64}$" }
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "400": { $ref: "#/components/responses/ApiError" }
+  /auth/password-reset/requests:
+    post:
+      operationId: requestPasswordReset
+      summary: Request a password reset
+      security:
+        - sessionCookie: []
+          csrfToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "429": { $ref: "#/components/responses/ApiError" }
+  /auth/password-reset/confirm:
+    post:
+      operationId: confirmPasswordReset
+      summary: Confirm a password reset
+      security:
+        - sessionCookie: []
+          csrfToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, otp, pwd]
+              properties:
+                email: { type: string, format: email }
+                otp: { type: string, pattern: '^\\d{6}$' }
+                pwd: { type: string, minLength: 10, maxLength: 128 }
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "400": { $ref: "#/components/responses/ApiError" }
+  /auth/password:
+    put:
+      operationId: changePassword
+      summary: Change the current user's password
+      parameters:
+        - $ref: "#/components/parameters/CsrfToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [currentPwd, pwd]
+              properties:
+                currentPwd: { type: string }
+                pwd: { type: string, minLength: 10, maxLength: 128 }
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "401": { $ref: "#/components/responses/ApiError" }
+  /auth/logout:
+    post:
+      operationId: signOut
+      summary: Sign out
+      parameters:
+        - $ref: "#/components/parameters/CsrfToken"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "403": { $ref: "#/components/responses/ApiError" }
+  /users/me:
+    get:
+      operationId: getCurrentUser
+      summary: Get the current user's public profile
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "401": { $ref: "#/components/responses/ApiError" }
+    patch:
+      operationId: updateCurrentUser
+      summary: Update the current user's display name
+      parameters:
+        - $ref: "#/components/parameters/CsrfToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fullName]
+              properties:
+                fullName: { type: string, maxLength: 120 }
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "401": { $ref: "#/components/responses/ApiError" }
+  /records:
+    get:
+      operationId: listRecords
+      summary: List active records
+      parameters:
+        - {
+            name: page,
+            in: query,
+            schema: { type: integer, minimum: 1, default: 1 },
+          }
+        - {
+            name: pageSize,
+            in: query,
+            schema: { type: integer, minimum: 1, maximum: 100, default: 25 },
+          }
+        - {
+            name: status,
+            in: query,
+            schema: { type: string, enum: [At_office, Returned] },
+          }
+        - { name: search, in: query, schema: { type: string, maxLength: 128 } }
+        - { name: sortBy, in: query, schema: { type: string } }
+        - {
+            name: sortDirection,
+            in: query,
+            schema: { type: string, enum: [asc, desc] },
+          }
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "401": { $ref: "#/components/responses/ApiError" }
+    post:
+      operationId: createRecord
+      summary: Create a record
+      parameters:
+        - $ref: "#/components/parameters/CsrfToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [sname, rno, clg, brch, year, sec, mmodel, imei]
+              properties:
+                sname: { type: string, maxLength: 120 }
+                rno: { type: string, maxLength: 32 }
+                clg: { type: string, maxLength: 120 }
+                brch: { type: string, maxLength: 80 }
+                year: { type: string, maxLength: 12 }
+                sec: { type: string, maxLength: 16 }
+                mmodel: { type: string, maxLength: 120 }
+                imei: { type: string, pattern: '^\\d{15}$' }
+      responses:
+        "201": { $ref: "#/components/responses/Success" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+  /records/deleted:
+    get:
+      operationId: listDeletedRecords
+      summary: List recently deleted records
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "401": { $ref: "#/components/responses/ApiError" }
+  /records/{id}:
+    parameters:
+      - {
+          name: id,
+          in: path,
+          required: true,
+          schema: { type: string, pattern: "^[a-fA-F0-9]{24}$" },
+        }
+    get:
+      operationId: getRecord
+      summary: Get a record by ID
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "404": { $ref: "#/components/responses/ApiError" }
+    put:
+      operationId: updateRecord
+      summary: Replace a record
+      parameters:
+        - $ref: "#/components/parameters/CsrfToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              {
+                type: object,
+                description: Complete record fields; see POST /records.,
+              }
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "404": { $ref: "#/components/responses/ApiError" }
+    delete:
+      operationId: deleteRecord
+      summary: Soft-delete a record
+      parameters:
+        - $ref: "#/components/parameters/CsrfToken"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "404": { $ref: "#/components/responses/ApiError" }
+  /records/{id}/return:
+    post:
+      operationId: returnRecord
+      summary: Mark a record returned
+      parameters:
+        - {
+            name: id,
+            in: path,
+            required: true,
+            schema: { type: string, pattern: "^[a-fA-F0-9]{24}$" },
+          }
+        - $ref: "#/components/parameters/CsrfToken"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "404": { $ref: "#/components/responses/ApiError" }
+  /records/{id}/restore:
+    post:
+      operationId: restoreRecord
+      summary: Restore a recently deleted record
+      parameters:
+        - {
+            name: id,
+            in: path,
+            required: true,
+            schema: { type: string, pattern: "^[a-fA-F0-9]{24}$" },
+          }
+        - $ref: "#/components/parameters/CsrfToken"
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "404": { $ref: "#/components/responses/ApiError" }
+  /records/{id}/audit:
+    get:
+      operationId: getRecordAuditHistory
+      summary: Get record audit history
+      parameters:
+        - {
+            name: id,
+            in: path,
+            required: true,
+            schema: { type: string, pattern: "^[a-fA-F0-9]{24}$" },
+          }
+      responses:
+        "200": { $ref: "#/components/responses/Success" }
+        "400": { $ref: "#/components/responses/ApiError" }
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: session
+    csrfToken:
+      type: apiKey
+      in: header
+      name: X-CSRF-Token
+  parameters:
+    CsrfToken:
+      name: X-CSRF-Token
+      in: header
+      required: true
+      schema: { type: string }
+  schemas:
+    SuccessResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success: { const: true }
+        data: { type: object }
+    ErrorResponse:
+      type: object
+      required: [success, error]
+      properties:
+        success: { const: false }
+        error: { type: string }
+        field: { type: string }
+  responses:
+    Success:
+      description: Request completed successfully
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/SuccessResponse" }
+    ApiError:
+      description: API request failed
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+    ValidationError:
+      description: Request validation failed
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }

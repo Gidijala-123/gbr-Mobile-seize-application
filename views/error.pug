@@ -16,6 +16,8 @@ block content
     h2.error-title= message
     if message
       p.error-msg We ran into an unexpected issue. You can head back home or try again in a moment.
+    if requestId
+      p.error-msg Request ID: #[code= requestId]
     if error.stack
       pre.error-stack #{error.stack}
     .error-actions

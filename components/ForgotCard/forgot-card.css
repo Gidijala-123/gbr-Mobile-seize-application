@@ -1,0 +1,91 @@
+/* ForgotCard component styles; keep selectors namespaced. */
+a.forgot-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: #10b981;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a.forgot-link:hover { color: #059669; text-decoration: underline; }
+.forgot-wrap {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px 16px;
+  background:
+    radial-gradient(circle at top left, rgba(16, 185, 129, 0.16), transparent 26%),
+    radial-gradient(circle at bottom right, rgba(6, 182, 212, 0.18), transparent 28%),
+    linear-gradient(135deg, rgba(3, 7, 18, 0.88), rgba(15, 23, 42, 0.9));
+}
+.forgot-card {
+  width: 100%; max-width: 430px;
+  padding: 38px 34px 32px;
+  background: rgba(15, 23, 42, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 24px;
+  box-shadow: 0 32px 80px rgba(2,6,23,0.5), 0 10px 30px rgba(15,23,42,0.28);
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+.forgot-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(16,185,129,0.26), transparent 70%);
+  pointer-events: none;
+}
+.forgot-card h1 {
+  font-size: 26px; font-weight: 800;
+  text-align: center; margin-bottom: 4px;
+  color: #f8fafc;
+}
+.forgot-card hr {
+  border: 0; border-top: 1px solid rgba(255,255,255,0.09);
+  margin: 14px 0 18px;
+}
+.forgot-card .sub-desc {
+  text-align: center; color: rgba(255,255,255,0.7);
+  font-size: 13.5px; margin-bottom: 22px; line-height: 1.6;
+}
+.forgot-card .fg-field { position: relative; margin-bottom: 16px; }
+.forgot-card .fg-field .fg-icon {
+  position: absolute; left: 14px; top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.58); font-size: 14px;
+  pointer-events: none; z-index: 2;
+}
+.forgot-card input.form-control {
+  width: 100%; height: 48px;
+  padding: 0 14px 0 42px; font-size: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 12px; color: #ffffff;
+  outline: none; font-family: inherit;
+  transition: all 0.25s ease;
+  box-shadow: inset 0 1px 1px rgba(15, 23, 42, 0.18);
+}
+.forgot-card input.form-control::placeholder { color: rgba(255,255,255,0.38); }
+.forgot-card input.form-control:focus {
+  background: rgba(255,255,255,0.09);
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16,185,129,0.18);
+}
+.btn-send {
+  width: 100%; height: 50px; border: none; border-radius: 12px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #10b981 0%, #059669 52%, #0f766e 100%);
+  font-weight: 800; font-size: 15px; letter-spacing: 0.03em;
+  box-shadow: 0 10px 28px rgba(16,185,129,0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer; font-family: inherit;
+}
+.btn-send:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(16,185,129,0.5); }
+.back-wrap { margin-top: 18px; text-align: center; }
+@media (max-width: 480px) {
+  .forgot-card { padding: 28px 20px; border-radius: 18px; }
+}

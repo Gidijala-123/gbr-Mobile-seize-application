@@ -1,0 +1,61 @@
+#darkModeToggle {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+#darkModeToggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(20deg) scale(1.1);
+}
+
+#darkModeToggle {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  font-size: 15px !important;
+  transition: all 0.22s ease !important;
+}
+
+#darkModeToggle:hover {
+  transform: rotate(20deg) scale(1.08);
+  background: rgba(251, 191, 36, 0.2) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(251, 191, 36, 0.3) !important;
+}
+body.home-body header.header #darkModeToggle,
+body.home-body header.header button.dark-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 9px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  font-size: 15px !important;
+  color: rgba(203, 213, 225, 0.85) !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  transition: all 0.22s ease !important;
+  padding: 0 !important;
+}
+
+body.home-body header.header #darkModeToggle:hover,
+body.home-body header.header button.dark-toggle:hover {
+  background: rgba(251, 191, 36, 0.18) !important;
+  border-color: rgba(251, 191, 36, 0.35) !important;
+  color: #fbbf24 !important;
+  transform: rotate(22deg) scale(1.1) !important;
+}

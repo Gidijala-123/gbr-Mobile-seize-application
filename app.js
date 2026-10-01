@@ -1,14 +1,34 @@
 require("dotenv").config();
 var createError = require("http-errors");
 var express = require("express");
+var timeout = require("connect-timeout");
+var compression = require("compression");
+var zlib = require("node:zlib");
+var crypto = require("crypto");
 var path = require("path");
 var cookieParser = require("cookie-parser");
+var cors = require("cors");
 var logger = require("morgan");
 var session = require("express-session");
 var MongoStore = require("connect-mongo").default;
+var csrf = require("@dr.pogodin/csurf").default;
+var helmet = require("helmet");
+var mongoSanitize = require("express-mongo-sanitize");
+var { errorHandler } = require("./middleware/errorHandler");
+var { createBodyParsers } = require("./middleware/bodyParsers");
+var { requestIdMiddleware } = require("./middleware/requestContext");
 var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
 var app = express();
+var registeredComponents = require("./components/registry");
+app.locals.components = registeredComponents.filter(
+  (component) => !["LoginCard", "ForgotCard"].includes(component.name),
+);
+app.locals.loginComponents = registeredComponents.filter(
+  (component) => component.name === "LoginCard",
+);
+app.locals.forgotComponents = registeredComponents.filter(
+  (component) => component.name === "ForgotCard",
+);
 
 function normalizeEnvValue(value, defaultValue) {
   if (typeof value !== "string") return defaultValue;
@@ -30,6 +50,12 @@ function sanitizeMongoUri(rawUri) {
 const mongoUri = sanitizeMongoUri(
   normalizeEnvValue(process.env.MONGODB_URI, ""),
 );
+const allowedCorsOrigins = new Set(
+  String(process.env.CORS_ORIGINS || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+);
 const sessionSecret = normalizeEnvValue(process.env.SESSION_SECRET, "");
 const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
 
@@ -41,12 +67,89 @@ if (process.env.NODE_ENV === "production" && !sessionSecret) {
   );
 }
 
-app.use(logger("dev"));
+logger.token("id", (req) => req.id || "-");
+app.use(requestIdMiddleware);
+app.use(timeout("30s"));
+app.use(function haltOnTimedout(req, res, next) {
+  if (req.timedout) {
+    return next(createError(504, "Gateway Timeout"));
+  }
+  next();
+});
+app.use(logger(":id :method :url :status :response-time ms - :res[content-length]"));
 app.disable("x-powered-by");
-app.use(express.json({ limit: "100kb" }));
+app.use(function (req, res, next) {
+  res.locals.cspNonce = crypto.randomBytes(16).toString("base64");
+  next();
+});
 app.use(
-  express.urlencoded({ extended: false, limit: "100kb", parameterLimit: 100 }),
+  helmet({
+    contentSecurityPolicy: {
+      useDefaults: false,
+      directives: {
+        defaultSrc: ["'self'"],
+        baseUri: ["'self'"],
+        connectSrc: ["'self'"],
+        fontSrc: [
+          "'self'",
+          "https://fonts.gstatic.com",
+          "https://cdnjs.cloudflare.com",
+          "data:",
+        ],
+        formAction: ["'self'"],
+        frameAncestors: ["'self'"],
+        imgSrc: ["'self'", "data:", "blob:"],
+        objectSrc: ["'none'"],
+        scriptSrc: [
+          "'self'",
+          (req, res) => `'nonce-${res.locals.cspNonce}'`,
+          "https://unpkg.com",
+        ],
+        scriptSrcAttr: ["'none'"],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://fonts.googleapis.com",
+          "https://cdnjs.cloudflare.com",
+        ],
+      },
+    },
+    crossOriginEmbedderPolicy: false,
+    frameguard: { action: "sameorigin" },
+    hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+    noSniff: true,
+    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+  }),
 );
+app.use(function (req, res, next) {
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  next();
+});
+app.use(
+  compression({
+    threshold: 1024,
+    brotli: {
+      params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 4 },
+    },
+  }),
+);
+app.use(
+  cors({
+    origin(origin, callback) {
+      callback(null, Boolean(origin && allowedCorsOrigins.has(origin)));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "X-CSRF-Token", "CSRF-Token", "X-Requested-With"],
+    maxAge: 600,
+    optionsSuccessStatus: 204,
+  }),
+);
+var requestBodyParsers = createBodyParsers(express, process.env);
+app.locals.requestBodyLimits = requestBodyParsers.limits;
+app.use(requestBodyParsers.json);
+app.use(requestBodyParsers.urlencoded);
+app.use(mongoSanitize());
 app.use(cookieParser());
 app.use(
   express.static(path.join(__dirname, "public"), {
@@ -54,6 +157,14 @@ app.use(
     etag: true,
   }),
 );
+var serveComponentAssets = express.static(path.join(__dirname, "components"), {
+  maxAge: process.env.NODE_ENV === "production" ? "7d" : 0,
+  etag: true,
+});
+app.use("/components", function (req, res, next) {
+  if (!/\.(css|js)$/.test(req.path)) return res.sendStatus(404);
+  serveComponentAssets(req, res, next);
+});
 
 app.use(
   session({
@@ -66,7 +177,7 @@ app.use(
     }),
     cookie: {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: "strict",
       secure: process.env.NODE_ENV === "production",
       maxAge: SESSION_TTL_SECONDS * 1000,
     },
@@ -75,8 +186,24 @@ app.use(
     resave: false,
   }),
 );
+app.use(csrf());
+function issueCsrfToken(req, res) {
+  const csrfToken = req.csrfToken();
+  res.locals.csrfToken = csrfToken;
+  res.cookie("XSRF-TOKEN", csrfToken, {
+    httpOnly: false,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: SESSION_TTL_SECONDS * 1000,
+  });
+  return csrfToken;
+}
+app.locals.issueCsrfToken = issueCsrfToken;
+app.use(function (req, res, next) {
+  issueCsrfToken(req, res);
+  next();
+});
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -87,15 +214,14 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+app.use(function timeoutErrorHandler(error, req, res, next) {
+  if (req.timedout || error && error.code === "ETIMEDOUT") {
+    return res.status(504).json({
+      error: "Gateway Timeout",
+      ...(req.id ? { requestId: req.id } : {}),
+    });
+  }
+  return errorHandler(error, req, res, next);
 });
 
 module.exports = app;

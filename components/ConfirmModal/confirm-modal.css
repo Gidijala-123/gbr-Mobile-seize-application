@@ -1,0 +1,137 @@
+.confirm-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-modal-box {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 36px 32px 28px;
+  max-width: 420px;
+  width: 92%;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
+  animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.confirm-modal-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fef3c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+}
+
+.confirm-modal-icon .fa {
+  font-size: 28px;
+  color: #f59e0b;
+}
+
+.confirm-modal-box h3 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 10px;
+}
+
+.confirm-modal-box p {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+
+.confirm-modal-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.confirm-btn-cancel,
+.confirm-btn-ok {
+  height: 44px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Lato', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.confirm-btn-cancel {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.confirm-btn-cancel:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+.confirm-btn-ok {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+}
+
+.confirm-btn-ok:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(239, 68, 68, 0.4);
+}
+
+body.home-body.dark-mode .tab-pane.align,
+body.home-body.dark-mode #dboard #form,
+body.home-body.dark-mode #dboard.tab-pane,
+body.home-body.dark-mode #search-edit.tab-pane,
+body.home-body.dark-mode #help.tab-pane,
+body.home-body.dark-mode #contact.tab-pane,
+body.home-body.dark-mode #fmgrp,
+body.home-body.dark-mode .confirm-modal-box {
+  background: #1e293b !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #e2e8f0 !important;
+}
+@media (max-width: 768px) {
+
+  .confirm-modal-box {
+    padding: 28px 20px 22px;
+  }
+}
+.confirm-modal-box {
+  background: rgba(15, 23, 42, 0.98) !important;
+  backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #e2e8f0 !important;
+}
+
+.confirm-modal-box h3 {
+  color: #f8fafc !important;
+}
+
+.confirm-modal-box p {
+  color: #94a3b8 !important;
+}
+
+.confirm-btn-cancel {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #94a3b8 !important;
+}
+
+.confirm-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.14) !important;
+}

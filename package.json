@@ -1,6 +1,6 @@
 {
-  "name": "bus",
-  "version": "0.0.0",
+  "name": "gbr-mobile-storage",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
@@ -8,26 +8,43 @@
     "check": "node --check app.js && node --check routes/index.js",
     "test": "node scripts/app-tests.js"
   },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9"
+  },
   "dependencies": {
+    "@dr.pogodin/csurf": "^1.18.1",
+    "compression": "^1.8.2",
     "connect-mongo": "^6.0.0",
+    "connect-timeout": "^1.9.1",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
     "debug": "^4.4.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^8.7.0",
     "express-session": "^1.18.2",
+    "geoip-lite": "^2.0.3",
+    "helmet": "^8.3.0",
     "http-errors": "^2.0.0",
+    "joi": "^18.2.9",
     "mongodb": "^6.21.0",
-    "monk": "^7.3.4",
+    "mongoose": "^9.10.3",
     "morgan": "^1.10.0",
     "nodemailer": "^10.0.10",
+    "otplib": "^13.5.0",
     "pug": "^3.0.3",
-    "randomstring": "^1.3.0"
+    "qrcode": "^1.5.4",
+    "sanitize-html": "^2.17.7",
+    "validator": "^13.15.35",
+    "wildleek": "^2.0.0"
   },
   "main": "app.js",
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "GBR College Staff",
+  "license": "UNLICENSED",
+  "description": "GBR College Mobile Storage / Seizure Tracking System",
   "devDependencies": {
     "mock-require": "^3.0.3",
     "supertest": "^7.1.4"

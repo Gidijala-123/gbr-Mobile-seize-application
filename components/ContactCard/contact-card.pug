@@ -1,0 +1,265 @@
+#contact.tab-pane.fade.align.contact-card-component
+  p.anim-typewriter Contact Staff
+  //- Institution header card
+  .contact-hero
+    .contact-hero-icon
+      i.fa.fa-university
+    .contact-hero-text
+      h2.contact-inst-name Aditya College of Institutions
+      p.contact-inst-tagline A place for Versatile and Experienced faculty
+    .contact-hero-address
+      .contact-address-item
+        i.fa.fa-map-marker
+        span Aditya PG College, Ayodhya Nagar
+      .contact-address-item
+        i.fa.fa-phone
+        span 0884-2346661
+      .contact-address-item
+        i.fa.fa-map-pin
+        span Kakinada, Andhra Pradesh — 533437
+
+  .staff-directory(hidden)
+    button#staffDirectoryBack.staff-directory-back(type="button")
+      i.fa.fa-arrow-left(aria-hidden="true")
+      |  All departments
+    .staff-directory-heading
+      .staff-directory-title
+        span.staff-directory-kicker Faculty directory
+        h2 Faculty and staff
+        p Browse the educators referenced in the storage records.
+      .staff-directory-count
+        strong#staffDirectoryTotal 0
+        span Faculty
+
+    .staff-directory-toolbar
+      label(for="staffDirectorySearch") Find a staff member
+      .staff-search-input
+        i.fa.fa-search(aria-hidden="true")
+        input#staffDirectorySearch(type="search" placeholder="Search by name or employee ID" autocomplete="off")
+      p#staffDirectoryStatus(role="status" aria-live="polite") Loading faculty directory
+
+    #staffDirectoryGrid.staff-directory-grid
+
+    p#staffDirectoryEmpty.staff-directory-empty(hidden) No faculty match that search.
+
+  //- Department selector
+  .contact-selector-section
+    p.contact-selector-label
+      i.fa.fa-hand-pointer-o
+      |  Select Department &amp; Year to view faculty details
+    .contact-dept-grid
+      //- MCA cards
+      .dept-card(data-dept="mca")
+        .dept-card-icon
+          i.fa.fa-laptop
+        .dept-card-name MCA
+        button.dept-directory-open(type="button" aria-label="View faculty directory from MCA")
+          span View faculty
+          i.fa.fa-arrow-right(aria-hidden="true")
+        .dept-years
+          button.year-btn(data-target="m11") 1st Yr · ACET
+          button.year-btn(data-target="m12") 1st Yr · ADTP
+          button.year-btn(data-target="m21") 2nd Yr · ACET
+          button.year-btn(data-target="m22") 2nd Yr · ADTP
+          button.year-btn(data-target="m31") 3rd Yr · ACET
+          button.year-btn(data-target="m32") 3rd Yr · ADTP
+      //- BCA cards
+      .dept-card(data-dept="bca")
+        .dept-card-icon
+          i.fa.fa-code
+        .dept-card-name BCA
+        button.dept-directory-open(type="button" aria-label="View faculty directory from BCA")
+          span View faculty
+          i.fa.fa-arrow-right(aria-hidden="true")
+        .dept-years
+          button.year-btn(data-target="b11") 1st Yr · ACET
+          button.year-btn(data-target="b12") 1st Yr · ADTP
+          button.year-btn(data-target="b21") 2nd Yr · ACET
+          button.year-btn(data-target="b22") 2nd Yr · ADTP
+          button.year-btn(data-target="b31") 3rd Yr · ACET
+          button.year-btn(data-target="b32") 3rd Yr · ADTP
+      //- Animation
+      .dept-card(data-dept="anim")
+        .dept-card-icon
+          i.fa.fa-paint-brush
+        .dept-card-name Animation
+        button.dept-directory-open(type="button" aria-label="View faculty directory from Animation")
+          span View faculty
+          i.fa.fa-arrow-right(aria-hidden="true")
+        .dept-years
+          button.year-btn(data-target="a11") 1st Yr · ASCS
+          button.year-btn(data-target="a21") 2nd Yr · ASCS
+          button.year-btn(data-target="a31") 3rd Yr · ASCS
+
+  //- Legacy dl-menu (kept for JS click.js compatibility, hidden)
+  .contact-legacy-hidden
+    .containerr.demo-4
+      .main.clearfix
+        .x2
+          #dl-menu.dl-menuwrapper
+            button.dl-trigger.btn6
+            ul.dl-menu
+              li
+                a.x3 MCA
+                ul.dl-submenu
+                  li
+                    a.x3 1st Year
+                    ul.dl-submenu
+                      li
+                        a.x3#cntm11 ACET
+                      li
+                        a.x3#cntm12 ADTP
+                  li
+                    a.x3 2nd Year
+                    ul.dl-submenu
+                      li
+                        a.x3#cntm21 ACET
+                      li
+                        a.x3#cntm22 ADTP
+                  li
+                    a.x3 3rd Year
+                    ul.dl-submenu
+                      li
+                        a.x3#cntm31 ACET
+                      li
+                        a.x3#cntm32 ADTP
+              li
+                a.x3 BCA
+                ul.dl-submenu
+                  li
+                    a.x3 1st Year
+                    ul.dl-submenu
+                      li
+                        a.x3#cntb11 ACET
+                      li
+                        a.x3#cntb12 ADTP
+                  li
+                    a.x3 2nd Year
+                    ul.dl-submenu
+                      li
+                        a.x3#cntb21 ACET
+                      li
+                        a.x3#cntb22 ADTP
+                  li
+                    a.x3 3rd Year
+                    ul.dl-submenu
+                      li
+                        a.x3#cntb31 ACET
+                      li
+                        a.x3#cntb32 ADTP
+              li
+                a.x3 Animation
+                ul.dl-submenu
+                  li
+                    a.x3 1st Year
+                    ul.dl-submenu
+                      li
+                        a.x3#cnta11 ASCS
+                  li
+                    a.x3 2nd Year
+                    ul.dl-submenu
+                      li
+                        a.x3#cnta21 ASCS
+                  li
+                    a.x3 3rd Year
+                    ul.dl-submenu
+                      li
+                        a.x3#cnta31 ASCS
+
+  //- Faculty detail panels (shown by new year-btn + legacy click.js)
+  .faculty-panels-container
+    button#contact-back-btn.contact-back-btn(style="display:none;")
+      i.fa.fa-arrow-left
+      |  Back to Departments
+
+    .asd
+      #m11.dnt.slideInDown
+        h4 MCA · 1st Year · ACET — Faculty Details
+        .cnt0
+          .cnth1(style='background:url("images/nrk.jpg");background-size:cover;background-position:center top;')
+          .cnth2
+            span.mn Class Teacher
+            .teacher-details
+              .cnthc1
+                |Name
+                br
+                |Employee ID
+                br
+                |Subject
+                br
+                |Phone
+              .cnthc2
+                |N. Ramakrishna
+                br
+                |YUU8EKK3
+                br
+                |OOAD
+                br
+                |9898839892
+            .cnthc2(style="margin-top:10px;color:#64748b;font-size:13px;")
+              i.fa.fa-map-marker(style="margin-right:6px;color:#0f766e;")
+              |Ayodhya Nagar, Kakinada — 533004
+
+        .cntf0.faculty-grid
+          .cntr
+            .cntf1(style="background:url('images/princy.jpg');background-size:cover;background-position:center top;")
+            .cntf2
+              strong D. Beulah
+              span.fi-label Subject
+              span.fi-value STM
+              span.fi-label Employee ID
+              span.fi-value YU097J6
+          .cntr
+            .cntf1(style="background:url('images/satya.jpg');background-size:cover;background-position:center top;")
+            .cntf2
+              strong G. Satya
+              span.fi-label Subject
+              span.fi-value Computer Networks
+              span.fi-label Employee ID
+              span.fi-value LDK0097J6
+          .cntr
+            .cntf1(style="background:url('images/kumar.jpg');background-size:cover;background-position:center top;")
+            .cntf2
+              strong U.L.N. Kumar
+              span.fi-label Subject
+              span.fi-value Bigdata Analytics
+              span.fi-label Employee ID
+              span.fi-value GH8818F4
+          .cntr
+            .cntf1(style="background:url('images/chandra.jpg');background-size:cover;background-position:center top;")
+            .cntf2
+              strong V. Chandrakumar
+              span.fi-label Subject
+              span.fi-value E-Commerce
+              span.fi-label Employee ID
+              span.fi-value KP32AS412
+
+      #m12.dnt.slideInDown
+        h4 MCA · 1st Year · ADTP — Faculty Details
+      #m21.dnt.slideInDown
+        h4 MCA · 2nd Year · ACET — Faculty Details
+      #m22.dnt.slideInDown
+        h4 MCA · 2nd Year · ADTP — Faculty Details
+      #m31.dnt.slideInDown
+        h4 MCA · 3rd Year · ACET — Faculty Details
+      #m32.dnt.slideInDown
+        h4 MCA · 3rd Year · ADTP — Faculty Details
+      #b11.dnt.slideInDown
+        h4 BCA · 1st Year · ACET — Faculty Details
+      #b12.dnt.slideInDown
+        h4 BCA · 1st Year · ADTP — Faculty Details
+      #b21.dnt.slideInDown
+        h4 BCA · 2nd Year · ACET — Faculty Details
+      #b22.dnt.slideInDown
+        h4 BCA · 2nd Year · ADTP — Faculty Details
+      #b31.dnt.slideInDown
+        h4 BCA · 3rd Year · ACET — Faculty Details
+      #b32.dnt.slideInDown
+        h4 BCA · 3rd Year · ADTP — Faculty Details
+      #a11.dnt.slideInDown
+        h4 Animation · 1st Year · ASCS — Faculty Details
+      #a21.dnt.slideInDown
+        h4 Animation · 2nd Year · ASCS — Faculty Details
+      #a31.dnt.slideInDown
+        h4 Animation · 3rd Year · ASCS — Faculty Details
+

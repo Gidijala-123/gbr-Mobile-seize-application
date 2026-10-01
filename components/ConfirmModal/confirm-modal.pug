@@ -1,0 +1,15 @@
+//- Confirm modal (Task 3)
+#confirm-modal.confirm-modal-backdrop.confirm-modal-component(style="display:none;")
+  .confirm-modal-box
+    .confirm-modal-icon
+      i.fa.fa-exclamation-triangle
+    h3#confirm-title Confirm Action
+    p#confirm-message Are you sure you want to delete this record? This cannot be undone.
+    .confirm-modal-btns
+      button#confirm-cancel.confirm-btn-cancel
+        i.fa.fa-times
+        |  Cancel
+      button#confirm-ok.confirm-btn-ok
+        i.fa.fa-trash
+        |  Delete
+

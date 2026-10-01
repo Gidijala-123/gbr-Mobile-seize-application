@@ -1,0 +1,6 @@
+mixin statCard(icon, target, label, value, variant)
+	.dd1.stat-card-component(class=variant)
+		p.p1
+			i.fa(class=icon + " stat-ico")
+			a.stat-link(data-toggle="tab", href=target)= label
+		.pp1= value
