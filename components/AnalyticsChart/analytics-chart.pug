@@ -1,1 +1,163 @@
-// AnalyticsChart component markup is staged for its owning feature.
+-
+  function buildAnalyticsCounts(entries, titleGetter) {
+    const counts = {};
+    for (const record of entries || []) {
+      const label = titleGetter(record) || 'Unspecified';
+      counts[label] = (counts[label] || 0) + 1;
+    }
+    return Object.entries(counts).sort((left, right) => right[1] - left[1]).slice(0, 5);
+  }
+
+  function buildMonthCounts(entries) {
+    const counts = {};
+    for (const record of entries || []) {
+      if (!record || !record.createdAt) continue;
+      const monthLabel = new Date(record.createdAt).toLocaleString('en-US', {
+        month: 'short',
+        year: '2-digit',
+      });
+      counts[monthLabel] = (counts[monthLabel] || 0) + 1;
+    }
+    return Object.entries(counts).sort((left, right) => new Date('01 ' + left[0]).getTime() - new Date('01 ' + right[0]).getTime()).slice(-6);
+  }
+
+  const analyticsData = Array.isArray(data) ? data : [];
+  const analyticsReasonRows = buildAnalyticsCounts(analyticsData, function (record) {
+    return String(record && record.rsn ? record.rsn : '').trim() || 'Unspecified';
+  });
+  const analyticsCollegeRows = buildAnalyticsCounts(analyticsData, function (record) {
+    return String(record && record.clg ? record.clg : '').trim() || 'Unknown';
+  });
+  const analyticsBranchRows = buildAnalyticsCounts(analyticsData, function (record) {
+    return String(record && record.brch ? record.brch : '').trim() || 'Unknown';
+  });
+  const analyticsMonthRows = buildMonthCounts(analyticsData);
+  const analyticsRecordCount = analyticsData.length;
+  const analyticsAtOffice = analyticsData.filter(function (record) {
+    return record && record.status === 'At_office';
+  }).length;
+  const analyticsReturned = analyticsData.filter(function (record) {
+    return record && record.status === 'Returned';
+  }).length;
+  const analyticsTimelineRecords = analyticsData.filter(function (record) {
+    return record && record.createdAt;
+  });
+  const analyticsAverageHoldDays = analyticsTimelineRecords.length
+    ? Math.round(
+        analyticsTimelineRecords.reduce(function (total, record) {
+          const createdAt = new Date(record.createdAt).getTime();
+          if (!Number.isFinite(createdAt)) return total;
+          return total + Math.max(0, (Date.now() - createdAt) / 86400000);
+        }, 0) / analyticsTimelineRecords.length,
+      )
+    : 0;
+  const maxAnalyticsValue = analyticsMonthRows.length ? Math.max.apply(null, analyticsMonthRows.map(function (row) { return row[1]; }).concat(1)) : 1;
+
+#analytics.tab-pane.fade.analytics-root
+  #analytics-panel.analytics-shell
+    .analytics-header
+      .analytics-header-copy
+        span.analytics-kicker Analytics
+        h2 Dashboard insights
+      .analytics-summary-pill
+        span Latest view
+        strong= analyticsRecordCount + ' records'
+    .analytics-kpis
+      .analytics-kpi
+        span Avg hold days
+        strong= analyticsAverageHoldDays
+        small= analyticsAtOffice + ' still at office'
+      .analytics-kpi
+        span Top reason
+        strong= analyticsReasonRows[0] ? analyticsReasonRows[0][0] : 'N/A'
+        small= analyticsReasonRows[0] ? analyticsReasonRows[0][1] + ' cases' : 'No data'
+      .analytics-kpi
+        span Return rate
+        strong= analyticsRecordCount ? Math.round((analyticsReturned / analyticsRecordCount) * 100) + '%' : '0%'
+        small= analyticsReturned + ' returned'
+    .analytics-grid
+      .analytics-card.analytics-card--wide
+        h3 Reason mix
+        if analyticsReasonRows.length
+          each row in analyticsReasonRows
+            - const [label, value] = row
+            .analytics-bar-row
+              .analytics-bar-meta
+                span= label
+                strong= value
+              .analytics-track
+                span.analytics-fill(style='width:' + Math.max(12, (value / Math.max(analyticsRecordCount, 1)) * 100) + '%')
+        else
+          p.analytics-empty No reason data yet.
+      .analytics-card
+        h3 College mix
+        if analyticsCollegeRows.length
+          each row in analyticsCollegeRows
+            - const [label, value] = row
+            .analytics-mini-row
+              span= label
+              strong= value
+        else
+          p.analytics-empty No college data yet.
+      .analytics-card
+        h3 Branch mix
+        if analyticsBranchRows.length
+          each row in analyticsBranchRows
+            - const [label, value] = row
+            .analytics-mini-row
+              span= label
+              strong= value
+        else
+          p.analytics-empty No branch data yet.
+      .analytics-card.analytics-card--wide
+        h3 Intake trend
+        .analytics-months
+          if analyticsMonthRows.length
+            each row in analyticsMonthRows
+              - const [label, value] = row
+              .analytics-month
+                .analytics-month-bar-wrap
+                  span.analytics-month-bar(style='height:' + Math.max(18, (value / maxAnalyticsValue) * 100) + '%')
+                small= label
+          else
+            p.analytics-empty Not enough records for trend data.
+    .analytics-report-panel
+      .analytics-report-header
+        .analytics-report-title
+          span.analytics-kicker Report
+          h3 Monthly summary
+        .analytics-report-actions
+          button.analytics-export-btn(type='button' data-export='csv') Export CSV
+          button.analytics-export-btn(type='button' data-export='print') Print report
+      .analytics-report-grid
+        .analytics-report-kpi
+          span Total seized
+          strong= analyticsRecordCount
+        .analytics-report-kpi
+          span At office
+          strong= analyticsAtOffice
+        .analytics-report-kpi
+          span Returned
+          strong= analyticsReturned
+        .analytics-report-kpi
+          span Avg hold
+          strong= analyticsAverageHoldDays + 'd'
+      table.analytics-report-table
+        thead
+          tr
+            th Month
+            th Seized
+        tbody
+          if analyticsMonthRows.length
+            each row in analyticsMonthRows
+              - const [label, value] = row
+              tr
+                td= label
+                td= value
+          else
+            tr
+              td(colspan='2') No monthly data yet.
+
+script.
+  window.analyticsData = !{JSON.stringify(analyticsData)};
+  window.analyticsMonthRows = !{JSON.stringify(analyticsMonthRows)};

@@ -1,1 +1,32 @@
-// RecordDetailModal component markup is staged for its owning feature.
+#record-detail-modal.record-detail-backdrop(role="dialog" aria-modal="true" aria-labelledby="record-detail-title" tabindex="-1" style="display:none;")
+  .record-detail-panel
+    .record-detail-header
+      div
+        p.record-detail-kicker Device record
+        h3#record-detail-title Record details
+      button#record-detail-close.record-detail-close(type="button" aria-label="Close record details")
+        i.fa.fa-times(aria-hidden="true")
+    .record-detail-body
+      .record-detail-summary
+        .record-detail-summary-card
+          span.record-detail-label Record ID
+          strong#record-detail-id —
+        .record-detail-summary-card
+          span.record-detail-label Roll number
+          strong#record-detail-subtitle —
+      .record-detail-photo-panel
+        h4.record-detail-history-title Device photos
+        .record-detail-photo-gallery#record-detail-photo-gallery
+          .record-detail-photo-empty No device photos stored for this record.
+      .record-detail-sections
+        .record-detail-history-block
+          h4.record-detail-history-title Status history
+          ul.record-detail-history-list#record-detail-status-history
+            li No status history available yet.
+        .record-detail-history-block
+          h4.record-detail-history-title Return history
+          ul.record-detail-history-list#record-detail-return-history
+            li No return history recorded.
+      .record-detail-list#record-detail-list
+    .record-detail-footer
+      button#record-detail-dismiss.record-detail-dismiss(type="button") Close details

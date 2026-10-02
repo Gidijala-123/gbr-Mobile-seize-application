@@ -1,17 +1,25 @@
 html
   head
     title GBR | Mobile Storage Application — Login
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover")
+    meta(name="apple-mobile-web-app-capable" content="yes")
+    meta(name="apple-mobile-web-app-status-bar-style" content="black-translucent")
+    meta(name="apple-mobile-web-app-title" content="MSA")
     meta(name="csrf-token" content=csrfToken)
-    link(href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet")
+    link(rel='icon' href='/favicon.ico')
+    link(rel='apple-touch-icon' href='/images/adityalogo.png')
+    link(rel='preconnect' href='https://fonts.googleapis.com' crossorigin)
+    link(rel='preconnect' href='https://fonts.gstatic.com' crossorigin)
+    link(rel='dns-prefetch' href='https://fonts.googleapis.com')
+    link(rel='dns-prefetch' href='https://fonts.gstatic.com')
+    link(href='https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap' rel='stylesheet')
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
     include components/login-component-styles.pug
 
-  body(ng-app="loginapp")
+  body
 
   include ../components/LoginCard/login-card.pug
-  script(src="/javascripts/jquery.js")
-  script(src="/javascripts/bootstrap.min.js")
-  script(type="text/javascript" src="javascripts/angular.min.js")
-
+  script(src="/vendor/jquery/jquery.min.js?v=3.7.1" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous")
+  script(src="/vendor/bootstrap/js/bootstrap.min.js?v=3.4.1" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous")
+  script(src="/javascripts/auth-http.js")
   include components/login-component-scripts.pug

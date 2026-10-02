@@ -1,0 +1,176 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0, viewport-fit=cover")
+    meta(name="csrf-token", content=csrfToken)
+    title My Profile | GBR Mobile Storage
+    link(rel="icon" href="/favicon.ico")
+    link(rel="stylesheet", href="/vendor/bootstrap/css/bootstrap.min.css?v=3.4.1")
+    link(rel="stylesheet", href="/stylesheets/component.css?v=20260925-02")
+    link(rel="stylesheet", href="/stylesheets/style.css?v=20260925-02")
+    style.
+      body.profile-page {
+        background: linear-gradient(135deg, #ecfeff 0%, #f8fafc 100%);
+        min-height: 100vh;
+        color: #1f2937;
+        margin: 0;
+      }
+      body.dark-mode.profile-page {
+        background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+        color: #e5e7eb;
+      }
+      .profile-shell {
+        max-width: 980px;
+        margin: 48px auto;
+        padding: 0 16px 40px;
+      }
+      .profile-card {
+        background: rgba(255,255,255,0.9);
+        border-radius: 18px;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+      }
+      body.dark-mode .profile-card {
+        background: rgba(15, 23, 42, 0.86);
+        border-color: rgba(148, 163, 184, 0.22);
+        box-shadow: 0 20px 40px rgba(2, 6, 23, 0.5);
+      }
+      .profile-header {
+        padding: 28px 32px 20px;
+        border-bottom: 1px solid rgba(148,163,184,0.25);
+      }
+      .profile-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 1fr;
+        gap: 0;
+      }
+      .profile-section {
+        padding: 28px 32px;
+      }
+      .profile-section + .profile-section {
+        border-left: 1px solid rgba(148,163,184,0.25);
+      }
+      .profile-label {
+        display: block;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #64748b;
+        margin-bottom: 8px;
+      }
+      .profile-value {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 18px;
+        word-break: break-word;
+      }
+      .profile-form .form-group {
+        margin-bottom: 18px;
+      }
+      .profile-form input {
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid rgba(148,163,184,0.55);
+        padding: 12px 14px;
+        background: rgba(255,255,255,0.7);
+      }
+      body.dark-mode .profile-form input {
+        background: rgba(15,23,42,0.7);
+        border-color: rgba(148,163,184,0.4);
+        color: #f8fafc;
+      }
+      .profile-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .btn-submit {
+        background: linear-gradient(135deg, #0f766e, #14b8a6);
+        border: none;
+        color: #fff;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-weight: 700;
+      }
+      .btn-secondary {
+        background: transparent;
+        border: 1px solid rgba(148,163,184,0.45);
+        color: inherit;
+        border-radius: 10px;
+        padding: 12px 18px;
+      }
+      @media (max-width: 768px) {
+        .profile-grid {
+          grid-template-columns: 1fr;
+        }
+        .profile-section + .profile-section {
+          border-left: none;
+          border-top: 1px solid rgba(148,163,184,0.25);
+        }
+      }
+  body.profile-page(class=darkMode ? "dark-mode" : null, data-session-expires-at=sessionExpiresAt || 0, data-session-ttl-ms=sessionTtlMs || 28800000)
+    if sessionUser
+      include ../components/SessionWarning/session-warning.pug
+    .profile-shell
+      .profile-card
+        .profile-header
+          h1 My Profile
+          p.lead Manage your account details and update your password.
+        .profile-grid
+          .profile-section
+            span.profile-label Email
+            .profile-value= user.email
+            span.profile-label Full name
+            .profile-value= user.fullName || "Not set"
+            span.profile-label Designation
+            .profile-value= user.designation || "Not set"
+            span.profile-label Phone number
+            .profile-value= user.phoneNumber || "Not added"
+            span.profile-label Account created
+            .profile-value= user.createdAt ? user.createdAt.toLocaleString() : "Unknown"
+          .profile-section
+            h3 Edit profile
+            form.profile-form(action="/profile/update", method="post")
+              input(type="hidden", name="_csrf", value=csrfToken)
+              .form-group
+                label(for="fullName") Full name
+                input#fullName(type="text", name="fullName", value=user.fullName || "", maxlength="120")
+              .form-group
+                label(for="designation") Designation
+                input#designation(type="text", name="designation", value=user.designation || "", maxlength="80")
+              .form-group
+                label(for="phoneNumber") Phone number
+                input#phoneNumber(type="tel", name="phoneNumber", value=user.phoneNumber || "", maxlength="20", autocomplete="tel")
+              .form-group
+                label(for="avatarUrl") Avatar URL
+                input#avatarUrl(type="url", name="avatarUrl", value=user.avatarUrl || "", maxlength="512", placeholder="https://example.com/avatar.png")
+              .profile-actions
+                button.btn-submit(type="submit") Save profile
+            hr
+            h3 Change password
+            form.profile-form(action="/postchangepassword", method="post")
+              input(type="hidden", name="_csrf", value=csrfToken)
+              .form-group
+                label(for="currentPwd") Current password
+                input#currentPwd(type="password", name="currentPwd", autocomplete="current-password", required)
+              .form-group
+                label(for="newPwd") New password
+                input#newPwd(type="password", name="pwd", autocomplete="new-password", required)
+              .profile-actions
+                button.btn-submit(type="submit") Update password
+                a.btn-secondary(href="/home") Go back to dashboard
+            hr
+            h3 Delete account
+            form.profile-form(action="/profile/delete", method="post")
+              input(type="hidden", name="_csrf", value=csrfToken)
+              .form-group
+                label(for="deleteCurrentPwd") Confirm password
+                input#deleteCurrentPwd(type="password", name="currentPwd", autocomplete="current-password", required)
+              .profile-actions
+                button.btn-submit(type="submit", style="background: linear-gradient(135deg, #b91c1c, #ef4444);") Delete account
+    script(src="/vendor/jquery/jquery.min.js?v=3.7.1")
+    script(src="/vendor/bootstrap/js/bootstrap.min.js?v=3.4.1")
+    script(src="/javascripts/click.js?v=20260929-02")

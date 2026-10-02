@@ -29,7 +29,7 @@ canvas#bg-canvas
 
   //- ── LOGIN form ───────────────────────────────────────────────
   .form-container.sign-in-container
-    form(ng-controller="loginController" ng-submit="login(log)" novalidate)
+    form#login-form(novalidate)
       //- Animated phone illustration
       .phone-illustration
         .phone-device
@@ -42,28 +42,28 @@ canvas#bg-canvas
       h2 Sign In
       p.form-sub Access your storage dashboard
 
-      .input-group(ng-show="loginStep !== 'totp'")
+      .input-group(data-login-primary)
         span.input-icon.fa.fa-envelope
-        input#loginname(type="email" ng-model="log.email" placeholder="Email address" required autocomplete="off" ng-disabled="loginLoading")
+        input#loginname(type="email" name="email" aria-label="Email address" placeholder="Email address" required autocomplete="username")
 
-      .input-group(ng-show="loginStep !== 'totp'")
+      .input-group(data-login-primary)
         span.input-icon.fa.fa-lock
-        input#password3(type="password" ng-model="log.pwd" placeholder="Password (min 10 chars)" required minlength="10" autocomplete="off" ng-disabled="loginLoading")
-        span.pw-toggle.fa.fa-eye.toggle-password(toggle="#password3")
+        input#password3(type="password" name="pwd" aria-label="Password" placeholder="Password (min 10 chars)" required minlength="10" autocomplete="current-password")
+        button.pw-toggle.toggle-password(type="button" toggle="#password3" aria-label="Show password" aria-pressed="false")
+          i.fa.fa-eye(aria-hidden="true")
 
-      .input-group(ng-show="loginStep === 'totp'")
+      .input-group#totp-login-group(hidden)
         span.input-icon.fa.fa-shield
-        input#totpLoginCode(type="text" ng-model="loginCode" ng-attr-placeholder="{{loginUsingRecovery ? 'Recovery code' : '6-digit authenticator code'}}" inputmode="numeric" maxlength="16" autocomplete="one-time-code" ng-disabled="loginLoading" required)
+        input#totpLoginCode(type="text" name="code" aria-label="Authenticator or recovery code" placeholder="6-digit authenticator code" inputmode="numeric" maxlength="16" autocomplete="one-time-code" required)
 
-      button.forgot-link(type="button" ng-show="loginStep === 'totp'" ng-click="loginUsingRecovery = !loginUsingRecovery")
-        | {{loginUsingRecovery ? 'Use authenticator code' : 'Use a recovery code'}}
+      button.forgot-link#toggle-recovery(type="button" hidden)
+        | Use a recovery code
 
       //- Error message only (below inputs, not as floating bar)
-      p.login-error-msg(ng-show="loginStatus === 'error'")
+      p.login-error-msg#login-error-msg(hidden role="alert" aria-live="assertive")
         i.fa.fa-exclamation-circle
-        |  {{loginMsg}}
 
-      .form-links(ng-show="loginStep !== 'totp'")
+      .form-links(data-login-primary)
         a.forgot-link(href="/forgot")
           i.fa.fa-key
           |  Forgot password?
@@ -71,57 +71,67 @@ canvas#bg-canvas
       //- Button: 3 states — default / loading / success
       button.submit-btn.login-btn(
         type="submit"
-        ng-disabled="loginLoading || loginStatus === 'success'"
-        ng-class="{'login-btn--loading': loginStatus === 'loading', 'login-btn--success': loginStatus === 'success'}"
+        id="login-submit"
       )
         //- Default state
-        span.login-btn-default(ng-show="!loginStatus || loginStatus === 'error'")
-          | {{loginStep === 'totp' ? 'Verify code' : 'Login'}}
+        span.login-btn-default#login-btn-default
+          | Login
           i.fa.fa-arrow-right
         //- Loading state
-        span.login-btn-loading(ng-show="loginStatus === 'loading'")
+        span.login-btn-loading#login-btn-loading(hidden)
           span.login-spinner
           | Signing in...
         //- Success state
-        span.login-btn-success(ng-show="loginStatus === 'success'")
+        span.login-btn-success#login-btn-success(hidden)
           i.fa.fa-check
           | Redirecting...
 
       .mobile-switch
         | New here?&nbsp;
-        span#mobileSignupLink Create an account
+        button#mobileSignupLink.mobile-switch-link(type="button") Create an account
 
   //- ── SIGNUP form ──────────────────────────────────────────────
   .form-container.sign-up-container
-    form(ng-controller="signupController" ng-submit="signup(reg)" novalidate)
+    form#signup-form(novalidate)
       h2 Create Account
       p.form-sub Join Mobile Storage Application
 
       .input-group
         span.input-icon.fa.fa-envelope
-        input#signupname(type="email" ng-model="reg.email" placeholder="Email address" required="" autocomplete="off")
+        input#signupname(type="email" name="email" aria-label="Email address" placeholder="Email address" required autocomplete="email")
 
       .input-group
         span.input-icon.fa.fa-lock
-        input#password1(type="password" ng-model="reg.pwd" placeholder="Password (upper, lower, number, symbol)" minlength="10" maxlength="128" required autocomplete="new-password")
-        span.pw-toggle.fa.fa-eye.toggle-password(toggle="#password1")
+        input#password1(type="password" name="pwd" aria-label="Password" placeholder="Password (upper, lower, number, symbol)" minlength="10" maxlength="128" required autocomplete="new-password")
+        button.pw-toggle.toggle-password(type="button" toggle="#password1" aria-label="Show password" aria-pressed="false")
+          i.fa.fa-eye(aria-hidden="true")
+
+      .password-strength-wrap
+        .password-strength-bar
+          span#password-strength-fill
+        .password-strength-meta
+          span#password-strength-label Password strength: Waiting...
+          span#password-strength-hint Minimum 10 chars, mixed case, number, symbol
 
       .input-group
         span.input-icon.fa.fa-check-circle
-        input#password2(type="password" ng-model="reg.pwd2" placeholder="Confirm password" minlength="10" maxlength="128" required autocomplete="new-password")
-        span.pw-toggle.fa.fa-eye.toggle-password(toggle="#password2")
+        input#password2(type="password" name="pwd2" aria-label="Confirm password" placeholder="Confirm password" minlength="10" maxlength="128" required autocomplete="new-password")
+        button.pw-toggle.toggle-password(type="button" toggle="#password2" aria-label="Show password" aria-pressed="false")
+          i.fa.fa-eye(aria-hidden="true")
 
       p.password-policy-hint Use 10-128 characters with uppercase, lowercase, a number, and a symbol.
 
-      #message.match-msg
+      #message.match-msg(role="status" aria-live="polite")
 
-      button.submit-btn(type="submit")
+      button.submit-btn(type="submit" id="signupSubmitBtn" disabled)
         span Sign Up
         i.fa.fa-arrow-right
 
       .mobile-switch
         | Already a member?&nbsp;
-        span#mobileLoginLink Sign in
+        button#mobileLoginLink.mobile-switch-link(type="button") Sign in
 
-//- hidden flipper checkbox for Angular/JS compatibility
-input#flippercheckbox.flippercheckbox(type="checkbox" name="flippercheckbox" checked hidden="" style="display:none")
+
+
+
+

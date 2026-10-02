@@ -30,6 +30,7 @@ $(document).ready(function(){
         var mclr = $('#mcl2').val();
         var imei = $('#ime2').val();
         var rsn = $('#rsn2').val();
+        var receiptName = [rno || sname || 'receipt', 'pdf'].join('.');
 
         doc.setTextColor("black");
         doc.setFontSize(9);
@@ -86,7 +87,6 @@ $(document).ready(function(){
 	    doc.text(imei, 148, 263.3);
 	    doc.text(rsn, 47.5, 272.1);
 
-	    doc.save('#sname'.pdf);
-		doc.setFontSize(2);
+    doc.save(receiptName);    doc.setFontSize(2);
 	})
 })

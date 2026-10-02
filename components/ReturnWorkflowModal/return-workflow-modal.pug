@@ -1,0 +1,64 @@
+#return-workflow-modal.return-workflow-backdrop(role="dialog" aria-modal="true" aria-labelledby="return-workflow-title" tabindex="-1" style="display:none;")
+  .return-workflow-panel
+    .return-workflow-header
+      div
+        p.return-workflow-kicker Device return
+        h3#return-workflow-title Record acknowledgement
+      button#return-workflow-close.return-workflow-close(type="button" aria-label="Close return form")
+        i.fa.fa-times(aria-hidden="true")
+
+    form#return-workflow-form.return-workflow-form(method="POST" action="/change")
+      input(type="hidden" name="_id" id="return-record-id")
+      input(type="hidden" name="returnSignature" id="return-signature")
+      input(type="hidden" name="_csrf" id="return-csrf")
+
+      .return-workflow-summary
+        .return-workflow-summary-card
+          span.return-workflow-label Record ID
+          strong#return-workflow-record-id —
+        .return-workflow-summary-card
+          span.return-workflow-label Roll number
+          strong#return-workflow-roll-number —
+
+      .return-workflow-grid
+        .return-workflow-field
+          label(for="return-returned-by") Returned by
+          input#return-returned-by(name="returnedBy" type="text" maxlength="120" placeholder="Parent / student name" required)
+        .return-workflow-field
+          label(for="return-relation") Relation
+          select#return-relation(name="returnRelation" required)
+            option(value="") Select relation
+            option(value="Parent") Parent
+            option(value="Guardian") Guardian
+            option(value="Student") Student
+            option(value="Other") Other
+        .return-workflow-field.return-workflow-field-full
+          label(for="return-returned-at") Returned at
+          input#return-returned-at(name="returnedAt" type="datetime-local" required)
+        .return-workflow-field.return-workflow-field-full
+          label(for="return-return-notes") Return notes
+          textarea#return-return-notes(name="returnNotes" maxlength="1000" rows="3" placeholder="Pickup details, handover comments, or remarks")
+
+      .return-signature-section
+        .return-signature-header
+          h4 Acknowledgement signature
+          span Sign on pad or type a name
+        .return-signature-toggle
+          label
+            input#return-signature-mode-canvas(type="radio" name="signature-mode" value="canvas" checked)
+            span Draw signature
+          label
+            input#return-signature-mode-text(type="radio" name="signature-mode" value="text")
+            span Type name
+
+        .return-signature-canvas-wrap
+          canvas#return-signature-pad.return-signature-pad(width="640" height="220" aria-label="Signature pad")
+          .return-signature-placeholder#return-signature-placeholder Draw your signature here
+        .return-signature-input-wrap
+          input#return-signature-text(name="returnSignatureText" type="text" maxlength="120" placeholder="Type the name to acknowledge the return")
+
+      .return-workflow-actions
+        button#return-signature-clear.return-workflow-secondary(type="button") Clear signature
+        button#return-workflow-submit.return-workflow-primary(type="submit") Confirm return
+
+    .return-workflow-status#return-workflow-status(role="alert" aria-live="polite")

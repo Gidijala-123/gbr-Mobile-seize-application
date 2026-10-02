@@ -68,21 +68,35 @@ function createAuthService({
     return null;
   }
 
+  function isDeletedEmailMarker(value) {
+    return typeof value === "string" && /@deleted\.invalid$/i.test(value);
+  }
+
+  function isActiveUser(user) {
+    if (!user) return false;
+    if (isDeletedEmailMarker(user.emailCanonical)) return false;
+    if (isDeletedEmailMarker(user.emailDisplay)) return false;
+    if (isDeletedEmailMarker(user.email)) return false;
+    const deletedAt = user.deletedAt;
+    return deletedAt === null || deletedAt === undefined;
+  }
+
   async function findUserByEmail(email) {
     const canonicalEmail = normalizeEmail(email);
     const users = getUserRepository();
     const canonicalUser = await users.findOne({
       emailCanonical: canonicalEmail,
     });
-    if (canonicalUser) return canonicalUser;
+    if (canonicalUser && isActiveUser(canonicalUser)) return canonicalUser;
 
     const legacyUser = await users.findOne({ email: canonicalEmail });
-    if (legacyUser) return legacyUser;
+    if (legacyUser && isActiveUser(legacyUser)) return legacyUser;
 
     const legacyUsers = await users.find({});
     return (
       legacyUsers.find(
-        (user) => normalizeEmail(user.email) === canonicalEmail,
+        (user) =>
+          normalizeEmail(user.email) === canonicalEmail && isActiveUser(user),
       ) || null
     );
   }
@@ -116,11 +130,60 @@ function createAuthService({
 
   async function authenticate(email, password) {
     const user = await findUserByEmail(email);
-    return user && (await verifyPassword(password, user.pwd)) ? user : null;
+    if (!user || !isActiveUser(user) || !user.pwd) return null;
+    return (await verifyPassword(password, user.pwd)) ? user : null;
   }
 
   function updateUser(filter, updateDoc) {
     return getUserRepository().update(filter, updateDoc);
+  }
+
+  async function deleteAccount(email, password) {
+    const user = await findUserByEmail(email);
+    if (!user || !(await verifyPassword(password, user.pwd))) {
+      return { error: "Current password is incorrect.", status: 400 };
+    }
+
+    const deletedAt = new Date();
+    const replacementPassword = await hashPassword(
+      `deleted-account-${deletedAt.getTime()}`,
+    );
+
+    const deletedEmail = `deleted-${user._id}@deleted.invalid`;
+    const result = await updateUser(
+      { _id: user._id },
+      {
+        $set: {
+          deletedAt,
+          deletedBy: email,
+          emailCanonical: deletedEmail,
+          emailDisplay: deletedEmail,
+          pwd: replacementPassword,
+          emailVerificationTokenHash: null,
+          emailVerificationExpiresAt: null,
+          passwordResetOtpHash: null,
+          passwordResetOtpExpiresAt: null,
+          failedLoginAttempts: 0,
+          lockedUntil: null,
+          passwordHistory: [],
+        },
+      },
+    );
+
+    if (result.matchedCount === 0 || result.ok === 0)
+      return { error: "Unable to delete this account right now.", status: 409 };
+
+    return {
+      user: {
+        ...user,
+        deletedAt,
+        deletedBy: email,
+        emailCanonical: deletedEmail,
+        emailDisplay: deletedEmail,
+        pwd: replacementPassword,
+      },
+      result,
+    };
   }
 
   async function findUserByVerificationToken(tokenHash) {
@@ -263,6 +326,7 @@ function createAuthService({
     clearPasswordResetCode,
     consumeTotpRecoveryCode,
     createUser,
+    deleteAccount,
     findUserByEmail,
     findUserByVerificationToken,
     getNextPasswordHistory,

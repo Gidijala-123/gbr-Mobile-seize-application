@@ -1,11 +1,83 @@
 #search-edit.tab-pane.fade.align.search-bar-component
   p.anim-typewriter Search & Editing
+  .advanced-filter-panel#advanced-filter-panel
+    .advanced-filter-header
+      .advanced-filter-title
+        i.fa.fa-filter(aria-hidden='true')
+        span Advanced Filters
+      button#advanced-filter-toggle.advanced-filter-toggle(type='button' aria-expanded='true')
+        span Hide
+    .advanced-filter-body
+      .advanced-filter-grid
+        .filter-field
+          label(for='filter-college') College
+          select#filter-college
+            option(value='') All colleges
+        .filter-field
+          label(for='filter-branch') Branch
+          select#filter-branch
+            option(value='') All branches
+        .filter-field
+          label(for='filter-year') Year
+          select#filter-year
+            option(value='') All years
+        .filter-field
+          label(for='filter-section') Section
+          select#filter-section
+            option(value='') All sections
+        .filter-field.filter-field--full
+          label(for='filter-status') Status
+          .status-chip-group
+            label.status-chip
+              input#status-all(type='radio' name='status-filter' value='' checked)
+              span All
+            label.status-chip
+              input#status-office(type='radio' name='status-filter' value='At_office')
+              span At Office
+            label.status-chip
+              input#status-returned(type='radio' name='status-filter' value='Returned')
+              span Returned
+            label.status-chip
+              input#status-on-hold(type='radio' name='status-filter' value='On_hold')
+              span On Hold
+            label.status-chip
+              input#status-transferred(type='radio' name='status-filter' value='Transferred_out')
+              span Transferred Out
+            label.status-chip
+              input#status-confiscated(type='radio' name='status-filter' value='Confiscated_permanently')
+              span Confiscated Permanently
+            label.status-chip
+              input#status-pending-disposal(type='radio' name='status-filter' value='Pending_disposal')
+              span Pending Disposal
+        .filter-field
+          label(for='filter-date-from') From date
+          input#filter-date-from(type='date')
+        .filter-field
+          label(for='filter-date-to') To date
+          input#filter-date-to(type='date')
+        .filter-field.filter-field--full
+          label Quick date ranges
+          .date-range-presets
+            button.date-range-btn(type='button' data-range='today') Today
+            button.date-range-btn(type='button' data-range='week') This Week
+            button.date-range-btn(type='button' data-range='month') This Month
+            button.date-range-btn(type='button' data-range='30d') Last 30 Days
+            button.date-range-btn(type='button' data-range='clear') Clear
+        .filter-field
+          label(for='filter-student') Student name
+          input#filter-student(type='text' placeholder='Search by student')
+        .filter-field
+          label(for='filter-employee') Employee name
+          input#filter-employee(type='text' placeholder='Search by employee')
+      .advanced-filter-actions
+        button#apply-advanced-filters.btn2(type='button') Apply Filters
+        button#clear-advanced-filters.btn2.btn2--secondary(type='button') Clear All
   .smart-search-bar
     .srcbar
       #wrap
         .field
         form.srch(action="#" method="get")
-          input#smartSearch(type="text" placeholder="Live search across all fields — name, roll no, mobile, IMEI, college..." autocomplete="off")
+          input#smartSearch(type="text" aria-label="Search records" placeholder="Live search across all fields — name, roll no, mobile, IMEI, college..." autocomplete="off")
           .btnwrap
             .spark
             .spark

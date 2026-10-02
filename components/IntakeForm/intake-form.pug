@@ -5,119 +5,241 @@ include ../StatCard/stat-card.pug
   #form.form-card
     form.form-group(action='/hh',method='post')
         input(type='hidden' name='_csrf' value=csrfToken)
-        center
-          .col-md-4
-            +statCard("fa-database", ".ttlist", "Total Mobiles", count, "stat-card--blue")
-            +statCard("fa-trash", "#recycle-bin", "Recently Deleted", deletedCount, "stat-card--blue")
-            label Date
-            br
-            input.form-control#dat2(type="Date" name="Date" required="")
-            br
-            br
-            label Time
-            br
-            input.form-control#tim2(type="Time" name="Time" required="")
-            br
-            br
-            label Student Name
-            br
-            input.form-control#snm2(type="text" name="sname" required="")
-            br
-            br
-            label Parent Name
-            br
-            input.form-control#pnm2(type="text" name="pname" required="")
-            br
-            br
-            label Employee Name
-            br
-            input.form-control#enm2(type="text" name="ename" required="")
-            br
-            br
-            label College
-            br
-            select.form-control#clg2(type="" name="clg" required="")
-              option ACET
-              option ADTP
-              option ASCS
-              option T-Hub
-              option Others
-            br
-            br
-
-          .col-md-4
-            +statCard("fa-building-o", ".tolist", "Mobiles at Office", count1, "stat-card--green")
-            label Branch
-            br
-            select.form-control#brc2(name="brch" required="")
-              option(value='MCA') MCA
-              option(value='BCA') BCA
-              option(value='Animation') Animation
-            br
-            br
-            label Year of Study
-            br
-            input.form-control#yr2(type="text" name="year" required="")
-            br
-            br
-            label Section
-            br
-            select.form-control#sec2(type="text" name="sec" required="")
-              option I
-              option II
-              option III
-            br
-            br
-            label Student Mobile number
-            br
-            input.form-control#spn2(type="number" name="spno" required="" )
-            br
-            br
-            label Parent Mobile number
-            br
-            input.form-control#ppn2(type="number" name="ppno" required="" )
-            br
-            br
-            label Employee Mobile number
-            br
-            input.form-control#epn2(type="number" name="epno" required="" )
-
-          .col-md-4
-            +statCard("fa-check-circle-o", ".trlist", "Returned Mobiles", count2, "stat-card--purple")
-            label Roll number
-            br
-            input.form-control#rno2(type="text" name="rno" required="" )
-            br
-            br
-            label Generated_ID
-            br
-            input.form-control#gid2(type="text" name="gid" disabled)
-            br
-            br
-            label Employee_ID
-            br
-            input.form-control#eid2(type="text" name="eid" required="" )
-            br
-            br
-            label Mobile model
-            br
-            input.form-control#mdl2(type="text" name="mmodel" required="" )
-            br
-            br
-            label Mobile color
-            br
-            input.form-control#mcl2(type="text" name="mclr" required="" )
-            br
-            br
-            label IMEI number
-            br
-            input.form-control#ime2(type="number" name="imei" placeholder="Press *#06# for IMEI number" required="" )
-          .col-md-12
-            label Reason
-            br
-            textarea.form-control#rsn2(rows="5" cols="56" placeholder="Enter proper reason for seizing" type="text" name="rsn" required="" )
-            br
-            br
+        div#intake-wizard.intake-wizard
+          .intake-step-indicator#intake-step-indicator(role="tablist" aria-label="Intake form steps")
+            button.intake-step.is-active(type="button" data-step-index="0")
+              span 1
+              small Intake
+            button.intake-step(type="button" data-step-index="1")
+              span 2
+              small Student
+            button.intake-step(type="button" data-step-index="2")
+              span 3
+              small Device
+            button.intake-step(type="button" data-step-index="3")
+              span 4
+              small Review
+          .intake-step-panel.is-active(data-step="1")
             center
-              button.pdf.btn2 Submit and Print
+              .col-md-4
+                +statCard("fa-database", ".ttlist", "Total Mobiles", count, "stat-card--blue", dashboardKpis && dashboardKpis.total)
+                +statCard("fa-trash", "#recycle-bin", "Recently Deleted", deletedCount, "stat-card--blue")
+                label(for="dat2") Date
+                br
+                input.form-control#dat2(type="Date" name="Date" required="")
+                br
+                br
+                label(for="tim2") Time
+                br
+                input.form-control#tim2(type="Time" name="Time" required="")
+                br
+                br
+                label(for="clg2") College
+                br
+                select.form-control#clg2(type="" name="clg" required="")
+                  option ACET
+                  option ADTP
+                  option ASCS
+                  option T-Hub
+                  option Others
+                br
+                br
+          .intake-step-panel(data-step="2")
+            center
+              .col-md-4
+                label(for="snm2") Student Name
+                br
+                input.form-control#snm2(type="text" name="sname" required="")
+                br
+                br
+                label(for="pnm2") Parent Name
+                br
+                input.form-control#pnm2(type="text" name="pname" required="")
+                br
+                br
+                label(for="enm2") Employee Name
+                br
+                input.form-control#enm2(type="text" name="ename" required="")
+                br
+                br
+              .col-md-4
+                label(for="spn2") Student Mobile number
+                br
+                input.form-control#spn2(type="number" name="spno" required="" )
+                br
+                br
+                label(for="ppn2") Parent Mobile number
+                br
+                input.form-control#ppn2(type="number" name="ppno" required="" )
+                br
+                br
+                label(for="epn2") Employee Mobile number
+                br
+                input.form-control#epn2(type="number" name="epno" required="" )
+          .intake-step-panel(data-step="3")
+            center
+              .col-md-4
+                +statCard("fa-building-o", ".tolist", "Mobiles at Office", count1, "stat-card--green", dashboardKpis && dashboardKpis.atOffice)
+                label(for="brc2") Branch
+                br
+                select.form-control#brc2(name="brch" required="")
+                  option(value='MCA') MCA
+                  option(value='BCA') BCA
+                  option(value='Animation') Animation
+                br
+                br
+                label(for="yr2") Year of Study
+                br
+                input.form-control#yr2(type="text" name="year" required="")
+                br
+                br
+                label(for="sec2") Section
+                br
+                select.form-control#sec2(type="text" name="sec" required="")
+                  option I
+                  option II
+                  option III
+                br
+                br
+              .col-md-4
+                +statCard("fa-check-circle-o", ".trlist", "Returned Mobiles", count2, "stat-card--purple", dashboardKpis && dashboardKpis.returned)
+                label(for="rno2") Roll number
+                br
+                input.form-control#rno2(type="text" name="rno" required="" )
+                br
+                br
+                label(for="gid2") Generated_ID
+                br
+                input.form-control#gid2(type="text" name="gid" disabled)
+                br
+                br
+                label(for="eid2") Employee_ID
+                br
+                input.form-control#eid2(type="text" name="eid" required="" )
+                br
+                br
+              .col-md-4
+                label(for="mdl2") Mobile model
+                br
+                input.form-control#mdl2(type="text" name="mmodel" required="" )
+                br
+                br
+                label(for="mcl2") Mobile color
+                br
+                input.form-control#mcl2(type="text" name="mclr" required="" )
+                br
+                br
+                label(for="ime2") IMEI number
+                br
+                input.form-control#ime2(type="number" name="imei" placeholder="Press *#06# for IMEI number" required="" )
+          .intake-step-panel(data-step="4")
+            .col-md-12
+              if visitorSummary
+                .visitor-summary-panel
+                  .heatmap-header
+                    h3 Visitor activity
+                    span Live counts
+                  .visitor-summary-grid
+                    .visitor-summary-item
+                      span.visitor-label Today
+                      strong= visitorSummary.today
+                    .visitor-summary-item
+                      span.visitor-label This month
+                      strong= visitorSummary.thisMonth
+                    .visitor-summary-item
+                      span.visitor-label All time
+                      strong= visitorSummary.allTime
+              .dashboard-heatmap-panel
+                .heatmap-header
+                  h3 12 month activity
+                  span 2025–2026
+                .dashboard-heatmap
+                  each day in dashboardHeatmap || []
+                    span.heatmap-day(class='level-' + (day.count === 0 ? '0' : day.count >= 5 ? '5' : day.count), title=day.date + ': ' + day.count + ' records', aria-label=day.date + ': ' + day.count + ' records')
+              if repeatOffenders && repeatOffenders.length
+                .repeat-offenders-panel
+                  .heatmap-header
+                    h3 Repeat offenders
+                    span Top 10
+                  ol.repeat-offender-list
+                    each offender, index in repeatOffenders
+                      li.repeat-offender-item
+                        span.repeat-rank= index + 1
+                        span.repeat-name= offender.name
+                        span.repeat-count= offender.count + (offender.count === 1 ? ' time' : ' times')
+              if employeeLeaderboard && employeeLeaderboard.length
+                .employee-leaderboard-panel
+                  .heatmap-header
+                    h3 Staff intakes
+                    span Top 5
+                  ol.employee-leaderboard-list
+                    each employee, index in employeeLeaderboard
+                      li.employee-leaderboard-item
+                        span.repeat-rank= index + 1
+                        span.employee-leaderboard-name= employee.name
+                        span.employee-leaderboard-total= employee.totalIntakes + (employee.totalIntakes === 1 ? ' intake' : ' intakes')
+                        span.employee-leaderboard-month= employee.monthIntakes + ' this month'
+              if dashboardActivity && dashboardActivity.length
+                .dashboard-activity-panel
+                  .heatmap-header
+                    h3 Today's activity
+                    span Latest 20
+                  ol.dashboard-activity-list
+                    each activity in dashboardActivity
+                      li.dashboard-activity-item
+                        .dashboard-activity-copy
+                          strong= activity.summary
+                          if activity.recordRno
+                            span.dashboard-activity-record= ' · ' + activity.recordRno
+                          span.dashboard-activity-actor= activity.changedByEmail
+                        time.dashboard-activity-time(datetime=activity.changedAt.toISOString())= activity.changedAt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
+              if agingKpis
+                .aging-kpis-panel
+                  .heatmap-header
+                    h3 Aging KPIs
+                    span At office
+                  .aging-kpis-grid
+                    .aging-kpi
+                      span.aging-label > 7 days
+                      strong= agingKpis.over7Days
+                    .aging-kpi
+                      span.aging-label > 30 days
+                      strong= agingKpis.over30Days
+                    .aging-kpi
+                      span.aging-label > 90 days
+                      strong= agingKpis.over90Days
+              label(for="reason-preset") Reason preset
+              br
+              select.form-control#reason-preset(name="reasonPreset")
+                option(value="") Select a common reason
+                option(value="Used during class") Used during class
+                option(value="Ringing in exam") Ringing in exam
+                option(value="Playing games") Playing games
+                option(value="Social media") Social media
+                option(value="Other (specify)") Other (specify)
+              br
+              .reason-custom-wrap(style="display:none;")
+                label(for="reason-custom") Other reason details
+                br
+                input.form-control#reason-custom(type="text" name="reasonCustom" placeholder="Describe the specific reason" maxlength="250")
+              br
+              .device-photo-field
+                label(for="device-photo-input") Device photos (max 3)
+                br
+                input.form-control#device-photo-input(type="file" accept="image/*" multiple)
+                input(type="hidden" name="devicePhotos" id="device-photos-input" value="")
+                #device-photo-preview.device-photo-preview
+              br
+              label(for="rsn2") Reason summary
+              br
+              textarea.form-control#rsn2(rows="5" cols="56" placeholder="Enter proper reason for seizing" type="text" name="rsn" required="" )
+              br
+              br
+              .intake-form-actions
+                button.btn2#reset-intake-form(type="button") Reset Form
+                button.pdf.btn2#undo-intake-form(type="button") Undo
+                button.btn2.btn2--secondary#discard-intake-draft(type="button") Discard Draft
+                button.btn2#intake-prev-step(type="button" class="intake-nav-btn") Previous
+                button.pdf.btn2#intake-next-step(type="button" class="intake-nav-btn") Next step
+                button.pdf.btn2#intake-submit-button(type="submit" class="intake-submit-btn") Submit and Print
 

@@ -7,6 +7,7 @@ const componentFiles = [
   ["DataTable", "data-table"],
   ["SearchBar", "search-bar"],
   ["RecordDetailModal", "record-detail-modal"],
+  ["ReturnWorkflowModal", "return-workflow-modal"],
   ["Toast", "toast"],
   ["ConfirmModal", "confirm-modal"],
   ["ContactCard", "contact-card"],

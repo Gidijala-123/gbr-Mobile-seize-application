@@ -17,6 +17,7 @@ var mongoSanitize = require("express-mongo-sanitize");
 var { errorHandler } = require("./middleware/errorHandler");
 var { createBodyParsers } = require("./middleware/bodyParsers");
 var { requestIdMiddleware } = require("./middleware/requestContext");
+var { consumeFlash, setFlash } = require("./utils/flash");
 var indexRouter = require("./routes/index");
 var app = express();
 var registeredComponents = require("./components/registry");
@@ -161,6 +162,28 @@ app.use(requestBodyParsers.json);
 app.use(requestBodyParsers.urlencoded);
 app.use(mongoSanitize());
 app.use(cookieParser());
+var vendorCacheAge = process.env.NODE_ENV === "production" ? "7d" : 0;
+app.use(
+  "/vendor/jquery",
+  express.static(path.join(__dirname, "node_modules/jquery/dist"), {
+    maxAge: vendorCacheAge,
+    etag: true,
+  }),
+);
+app.use(
+  "/vendor/jquery-ui",
+  express.static(path.join(__dirname, "node_modules/jquery-ui-dist"), {
+    maxAge: vendorCacheAge,
+    etag: true,
+  }),
+);
+app.use(
+  "/vendor/bootstrap",
+  express.static(path.join(__dirname, "node_modules/bootstrap/dist"), {
+    maxAge: vendorCacheAge,
+    etag: true,
+  }),
+);
 app.use(
   express.static(path.join(__dirname, "public"), {
     maxAge: process.env.NODE_ENV === "production" ? "7d" : 0,
@@ -196,6 +219,14 @@ app.use(
     resave: false,
   }),
 );
+app.use(function attachFlash(req, res, next) {
+  const session = req.session || {};
+  res.locals.flashMessages = consumeFlash(session);
+  req.flash = req.flash || function flash(type, message) {
+    return setFlash(session, type, message);
+  };
+  next();
+});
 app.use(csrf());
 function issueCsrfToken(req, res) {
   const csrfToken = req.csrfToken();

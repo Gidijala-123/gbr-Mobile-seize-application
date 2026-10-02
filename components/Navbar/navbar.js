@@ -44,72 +44,32 @@ $(document).ready(function () {
   }
 });
 
-window.onload = date_time("date_time");
-function date_time(id) {
-  date = new Date();
-  ampm = date.ampm;
-  year = date.getFullYear();
-  month = date.getMonth();
-  months = new Array(
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "Jully",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  );
-  d = date.getDate();
-  day = date.getDay();
-  days = new Array(
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  );
-  h = date.getHours();
-  if (h < 10) {
-    h = "0" + h;
+document.addEventListener("DOMContentLoaded", function () {
+  var liveClock = document.getElementById("live-clock");
+  var liveDate = document.getElementById("live-date");
+  if (!liveClock || !liveDate) return;
+
+  function updateLiveClock() {
+    var now = new Date();
+    var time = [
+      String(now.getHours()).padStart(2, "0"),
+      String(now.getMinutes()).padStart(2, "0"),
+      String(now.getSeconds()).padStart(2, "0"),
+    ].join(":");
+
+    liveClock.textContent = time;
+    liveClock.setAttribute("datetime", now.toISOString());
+    liveDate.textContent = new Intl.DateTimeFormat("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(now);
   }
-  m = date.getMinutes();
-  if (m < 10) {
-    m = "0" + m;
-  }
-  s = date.getSeconds();
-  if (s < 10) {
-    s = "0" + s;
-  }
-  ampm = date.getHours() >= 12 ? "pm" : "am";
-  result =
-    "" +
-    days[day] +
-    " " +
-    months[month] +
-    " " +
-    d +
-    " " +
-    year +
-    "<br>" +
-    "Time : " +
-    h +
-    ":" +
-    m +
-    ":" +
-    s +
-    "" +
-    ampm;
-  document.getElementById(id).innerHTML = result;
-  setTimeout('date_time("' + id + '");', "1000");
-  return true;
-}
+
+  updateLiveClock();
+  window.setInterval(updateLiveClock, 1000);
+});
 
 window.addEventListener("load", function () {
   document.addEventListener(

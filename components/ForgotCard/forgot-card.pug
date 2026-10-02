@@ -1,12 +1,12 @@
 .forgot-wrap.forgot-card-component
-  .forgot-card(ng-controller="forgotController")
+  .forgot-card
     h1 Forgot Password
     hr
     p.sub-desc Enter your registered email address and we'll send a password reset OTP to your inbox.
-    form.form-group(ng-submit="forgot(a)" ng-show="step === 'request'" novalidate)
+    form#reset-request-form.form-group(novalidate)
       .fg-field
         span.fg-icon.fa.fa-envelope
-        input.form-control(type="email" ng-model="a.email" placeholder="Enter your registered email" required autocomplete="off")
+        input#forgot-email.form-control(type="email" aria-label="Registered email address" placeholder="Enter your registered email" required autocomplete="email")
       .note-box
         b Note:
         |  &nbsp;Please enter the email you used to register your account.
@@ -14,27 +14,27 @@
         i.fa.fa-paper-plane(style="margin-right:6px;")
         | Send OTP
 
-    form.form-group(ng-submit="completeReset()" ng-show="step === 'verify'" novalidate)
+    form#reset-verify-form.form-group(hidden novalidate)
       p.note-box If an account exists for this email, a 6-digit code has been sent. The code expires in 10 minutes.
       .fg-field
         span.fg-icon.fa.fa-envelope
-        input.form-control(type="email" ng-model="resetEmail" aria-label="Registered email" readonly)
+        input#reset-email.form-control(type="email" aria-label="Registered email" readonly)
       .fg-field
         span.fg-icon.fa.fa-key
-        input.form-control(type="text" ng-model="reset.otp" placeholder="6-digit reset code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required autocomplete="one-time-code")
+        input#reset-otp.form-control(type="text" aria-label="Six-digit password reset code" placeholder="6-digit reset code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required autocomplete="one-time-code")
       .fg-field
         span.fg-icon.fa.fa-lock
-        input.form-control(type="password" ng-model="reset.password" placeholder="New password (upper, lower, number, symbol)" minlength="10" maxlength="128" required autocomplete="new-password")
+        input#reset-password.form-control(type="password" aria-label="New password" placeholder="New password (upper, lower, number, symbol)" minlength="10" maxlength="128" required autocomplete="new-password")
       .fg-field
         span.fg-icon.fa.fa-lock
-        input.form-control(type="password" ng-model="reset.confirmPassword" placeholder="Confirm new password" required autocomplete="new-password")
+        input#reset-confirm-password.form-control(type="password" aria-label="Confirm new password" placeholder="Confirm new password" required autocomplete="new-password")
       button.btn-send(type="submit")
         i.fa.fa-check(style="margin-right:6px;")
         | Reset Password
-      button.btn-send(type="button" ng-click="resendOtp()" style="margin-top:10px;")
+      button#resend-reset-otp.btn-send(type="button" style="margin-top:10px;")
         i.fa.fa-refresh(style="margin-right:6px;")
         | Send another OTP
-      button.back-link(type="button" ng-click="useAnotherEmail()" style="display:block; margin:14px auto 0; border:0; background:none; cursor:pointer;") Use a different email
+      button#use-another-email.back-link(type="button" style="display:block; margin:14px auto 0; border:0; background:none; cursor:pointer;") Use a different email
 
     .back-wrap
       a.back-link(href="/")

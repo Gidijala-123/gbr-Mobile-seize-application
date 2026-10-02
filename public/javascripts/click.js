@@ -71,7 +71,8 @@ $(document).ready(function()
             { key: 'imei', label: 'IMEI' },
             { key: 'mclr', label: 'Mobile color' },
             { key: 'ename', label: 'Employee name' },
-            { key: 'Date', label: 'Date' }
+            { key: 'Date', label: 'Date' },
+            { key: 'status', label: 'Status' }
         ];
 
         $row.data('inline-record', $.extend({}, record));
@@ -80,13 +81,27 @@ $(document).ready(function()
 
         fields.forEach(function (field) {
             var value = record[field.key];
-            var $input = $('<input>', {
-                type: 'text',
-                class: 'inline-edit-field',
-                'data-inline-field': field.key,
-                'aria-label': field.label
-            }).val(value == null ? '' : String(value));
-            $row.append($('<td>').append($input));
+            var $fieldCell = $('<td>');
+            if (field.key === 'status') {
+                var $select = $('<select>', {
+                    class: 'inline-edit-field form-control',
+                    'data-inline-field': field.key,
+                    'aria-label': field.label
+                });
+                $('<option>', { value: 'At_office', text: 'At_office' }).appendTo($select);
+                $('<option>', { value: 'Returned', text: 'Returned' }).appendTo($select);
+                $select.val(value || 'At_office');
+                $fieldCell.append($select);
+            } else {
+                var $input = $('<input>', {
+                    type: 'text',
+                    class: 'inline-edit-field',
+                    'data-inline-field': field.key,
+                    'aria-label': field.label
+                }).val(value == null ? '' : String(value));
+                $fieldCell.append($input);
+            }
+            $row.append($fieldCell);
         });
 
         var $actions = $('<td>').addClass('inline-edit-actions');
@@ -111,7 +126,8 @@ $(document).ready(function()
             mmodel: 12,
             imei: 13,
             mclr: 14,
-            ename: 16
+            ename: 16,
+            status: 19
         };
         var $sourceRow = $('#example5 tbody tr').filter(function () {
             return $(this).children('td').eq(2).text().trim() === originalId;

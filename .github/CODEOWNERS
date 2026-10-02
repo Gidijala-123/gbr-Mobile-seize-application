@@ -1,0 +1,11 @@
+# Default owners for repository review routing
+
+- @project-maintainers
+
+routes/** @backend-team
+models/** @backend-team
+services/** @backend-team
+views/** @frontend-team
+public/** @frontend-team
+scripts/** @project-maintainers
+ENHANCEMENTS_TODO.md @project-leads

@@ -1,1 +1,9 @@
-// SessionWarning component markup is staged for its owning feature.
+#session-warning.hidden(role='dialog' aria-live='assertive' aria-modal='true' aria-labelledby='session-warning-title')
+  .session-warning-box
+    i.session-icon.fa.fa-clock-o(aria-hidden='true')
+    h3#session-warning-title Session about to expire
+    p
+      | Your session will end in 
+      strong#session-countdown 05:00
+      | . Save your work or extend it now.
+    button#session-extend(type='button') Extend session

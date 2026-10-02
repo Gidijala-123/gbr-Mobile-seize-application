@@ -1,13 +1,21 @@
 const { describe, test, beforeEach } = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
 const path = require("node:path");
 const Module = require("node:module");
 const express = require("express");
 const timeout = require("connect-timeout");
+const compression = require("compression");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
 const sessionMiddleware = require("express-session");
 const csrfProtection = require("@dr.pogodin/csurf").default;
 const supertest = require("supertest");
 const pug = require("pug");
+const registeredComponents = require("../components/registry");
+const { errorHandler } = require("../middleware/errorHandler");
 const { generate: generateTotp } = require("otplib");
 const { EventEmitter } = require("node:events");
 const { wrapAsyncHandlers } = require("../middleware/asyncHandler");
@@ -42,6 +50,19 @@ function resetState() {
   appState.users.clear();
   appState.records = [];
   appState.mail = [];
+  if (typeof router.resetRuntimeState === "function") {
+    router.resetRuntimeState();
+  }
+}
+
+function getRuntimeRecords() {
+  if (typeof router.getRuntimeState === "function") {
+    const runtime = router.getRuntimeState();
+    if (runtime.studentData && Array.isArray(runtime.studentData.items)) {
+      return runtime.studentData.items;
+    }
+  }
+  return appState.records;
 }
 
 function makeCollection(name) {
@@ -49,7 +70,12 @@ function makeCollection(name) {
     createIndex: async () => {},
     insert: async (payload) => {
       if (name === "registration_coll") {
-        const user = { ...payload, _id: `user-${appState.users.size + 1}` };
+        const user = {
+          ...payload,
+          deletedAt: payload.deletedAt ?? null,
+          deletedBy: payload.deletedBy ?? null,
+          _id: `user-${appState.users.size + 1}`,
+        };
         appState.users.set(user.emailCanonical || user.email, user);
         return user;
       }
@@ -77,7 +103,11 @@ function makeCollection(name) {
       if (name !== "registration_coll") return null;
       return (
         [...appState.users.values()].find((user) =>
-          Object.entries(filter).every(([key, value]) => user[key] === value),
+          Object.entries(filter).every(([key, value]) => {
+            const actual = user[key];
+            if (value === null) return actual === null || actual === undefined;
+            return actual === value;
+          }),
         ) || null
       );
     },
@@ -151,9 +181,12 @@ Module._load = function patchedLoad(request, parent, isMain) {
   return originalLoad.apply(this, arguments);
 };
 
-delete require.cache[require.resolve("../routes/index")];
-const router = require("../routes/index");
-const app = require("../app");
+function loadRouter() {
+  delete require.cache[require.resolve("../routes/index")];
+  return require("../routes/index");
+}
+
+let router = loadRouter();
 
 function getHandler(pathname, method) {
   const route = router.stack.find(
@@ -165,41 +198,186 @@ function getHandler(pathname, method) {
   return route && route.route.stack.at(-1).handle;
 }
 
-const httpApp = express();
-httpApp.set("trust proxy", 1);
-httpApp.use(express.json());
-httpApp.use(express.urlencoded({ extended: false }));
-httpApp.use(
-  sessionMiddleware({
-    secret: "csrf-test-session-secret",
-    resave: false,
-    saveUninitialized: false,
-  }),
-);
-httpApp.use(csrfProtection());
-httpApp.use((req, res, next) => {
-  res.locals.csrfToken = req.csrfToken();
-  res.cookie("XSRF-TOKEN", res.locals.csrfToken, { sameSite: "strict" });
-  next();
-});
-httpApp.get("/test-csrf", (req, res) => {
-  res.json({ csrfToken: res.locals.csrfToken });
-});
-httpApp.use(router);
+let app;
+
+function buildApp() {
+  const nextApp = express();
+  const allowedCorsOrigins = new Set(
+    String(process.env.CORS_ORIGINS || "")
+      .split(",")
+      .map((origin) => origin.trim())
+      .filter(Boolean),
+  );
+
+  nextApp.set("trust proxy", 1);
+  nextApp.set("views", path.join(__dirname, "..", "views"));
+  nextApp.set("view engine", "pug");
+  nextApp.locals.components = registeredComponents.filter(
+    (component) => !["LoginCard", "ForgotCard"].includes(component.name),
+  );
+  nextApp.locals.loginComponents = registeredComponents.filter(
+    (component) => component.name === "LoginCard",
+  );
+  nextApp.locals.forgotComponents = registeredComponents.filter(
+    (component) => component.name === "ForgotCard",
+  );
+  nextApp.disable("x-powered-by");
+  nextApp.use(requestIdMiddleware);
+  nextApp.use(timeout("30s"));
+  nextApp.use((req, res, next) => {
+    if (req.timedout) return next(new Error("ETIMEDOUT"));
+    next();
+  });
+  nextApp.use(
+    helmet({
+      contentSecurityPolicy: {
+        useDefaults: false,
+        directives: {
+          defaultSrc: ["'self'"],
+          baseUri: ["'self'"],
+          connectSrc: ["'self'"],
+          fontSrc: [
+            "'self'",
+            "https://fonts.gstatic.com",
+            "https://cdnjs.cloudflare.com",
+            "data:",
+          ],
+          formAction: ["'self'"],
+          frameAncestors: ["'self'"],
+          imgSrc: ["'self'", "data:", "blob:"],
+          objectSrc: ["'none'"],
+          scriptSrc: [
+            "'self'",
+            (req, res) => `'nonce-${res.locals.cspNonce}'`,
+            "https://unpkg.com",
+          ],
+          scriptSrcAttr: ["'none'"],
+          styleSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            "https://fonts.googleapis.com",
+            "https://cdnjs.cloudflare.com",
+          ],
+        },
+      },
+      crossOriginEmbedderPolicy: false,
+      frameguard: { action: "sameorigin" },
+      hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+      noSniff: true,
+      referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+    }),
+  );
+  nextApp.use((req, res, next) => {
+    res.locals.cspNonce = require("crypto").randomBytes(16).toString("base64");
+    res.setHeader(
+      "Permissions-Policy",
+      "camera=(), microphone=(), geolocation=()",
+    );
+    next();
+  });
+  nextApp.use(compression());
+  nextApp.use(
+    cors({
+      origin(origin, callback) {
+        callback(null, Boolean(origin && allowedCorsOrigins.has(origin)));
+      },
+      credentials: true,
+      methods: ["GET", "POST", "OPTIONS"],
+      allowedHeaders: [
+        "Content-Type",
+        "X-CSRF-Token",
+        "CSRF-Token",
+        "X-Requested-With",
+      ],
+      maxAge: 600,
+      optionsSuccessStatus: 204,
+    }),
+  );
+  const requestBodyParsers = {
+    json: express.json({ limit: "2mb" }),
+    urlencoded: express.urlencoded({ extended: false, limit: "2mb" }),
+  };
+  nextApp.use(requestBodyParsers.json);
+  nextApp.use(requestBodyParsers.urlencoded);
+  nextApp.use(mongoSanitize());
+  nextApp.use(cookieParser());
+  nextApp.use(
+    express.static(path.join(__dirname, "..", "public"), { etag: true }),
+  );
+  nextApp.use("/components", (req, res, next) => {
+    if (!/\.(css|js)$/.test(req.path)) return res.sendStatus(404);
+    express.static(path.join(__dirname, "..", "components"), { etag: true })(
+      req,
+      res,
+      next,
+    );
+  });
+  nextApp.use(
+    sessionMiddleware({
+      name: "session",
+      secret: process.env.SESSION_SECRET || "csrf-test-session-secret",
+      cookie: {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      },
+      rolling: true,
+      saveUninitialized: false,
+      resave: false,
+      store: new sessionMiddleware.MemoryStore(),
+    }),
+  );
+  nextApp.use((req, res, next) => {
+    const session = req.session || {};
+    res.locals.flashMessages = [];
+    req.flash = req.flash || (() => {});
+    next();
+  });
+  nextApp.use(csrfProtection());
+  function issueCsrfToken(req, res) {
+    const csrfToken = req.csrfToken();
+    res.locals.csrfToken = csrfToken;
+    res.cookie("XSRF-TOKEN", csrfToken, {
+      httpOnly: false,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+    return csrfToken;
+  }
+  nextApp.locals.issueCsrfToken = issueCsrfToken;
+  nextApp.use((req, res, next) => {
+    issueCsrfToken(req, res);
+    next();
+  });
+  nextApp.get("/test-csrf", (req, res) => {
+    res.json({ csrfToken: res.locals.csrfToken });
+  });
+  nextApp.use(router);
+  nextApp.use((req, res, next) =>
+    next(Object.assign(new Error("Not Found"), { status: 404 })),
+  );
+  nextApp.use(errorHandler);
+  return nextApp;
+}
 
 async function createCsrfAgent() {
-  const agent = supertest.agent(httpApp);
+  const agent = supertest.agent(app);
   const response = await agent.get("/test-csrf");
   return { agent, token: response.body.csrfToken };
 }
 
 function makeReq(overrides = {}) {
+  const session = {
+    regenerate: (callback) => callback(null),
+    destroy: (callback) => callback(),
+    ...(overrides.session || {}),
+  };
   return {
     body: {},
-    session: {
-      regenerate: (callback) => callback(null),
-      destroy: (callback) => callback(),
-    },
+    session,
+    flash: () => {},
     ...overrides,
   };
 }
@@ -242,14 +420,20 @@ function makeRes() {
 
   res.redirect = function redirect(url) {
     this.redirectUrl = url;
+    this.statusCode = 302;
+    this.headers.location = url;
     return this;
   };
 
   return res;
 }
 
-describe("Application route validation", () => {
-  beforeEach(() => resetState());
+describe("Application route validation", { concurrency: false }, () => {
+  beforeEach(() => {
+    router = loadRouter();
+    resetState();
+    app = buildApp();
+  });
 
   test("GET / renders the sign-in page", async () => {
     const handler = getHandler("/", "get");
@@ -323,6 +507,190 @@ describe("Application route validation", () => {
     assert.doesNotMatch(forgot.text, /\/components\/Navbar\//);
   });
 
+  test("dashboard KPI cards include trend deltas and sparkline markup", () => {
+    const html = pug.renderFile(
+      path.join(__dirname, "..", "views", "home.pug"),
+      {
+        components: [],
+        darkMode: false,
+        csrfToken: "test-token",
+        cspNonce: "test-nonce",
+        data: [],
+        data1: [],
+        data2: [],
+        data3: [],
+        deletedData: [],
+        deletedCount: 0,
+        count: 42,
+        count1: 18,
+        count2: 24,
+        dashboardKpis: {
+          total: { delta: 12, sparkline: "0,8,6,10,9,12,10,13,14,15" },
+          atOffice: { delta: -6, sparkline: "14,13,12,11,10,12,11,9,8,7" },
+          returned: { delta: 18, sparkline: "2,3,4,6,5,8,10,12,13,14" },
+        },
+        previousLogin: null,
+      },
+    );
+
+    assert.match(html, /class="trend-badge positive"/i);
+    assert.match(html, /class="sparkline"/i);
+    assert.match(html, /vs last 30 days/i);
+  });
+
+  test("dashboard heatmap renders a GitHub-style calendar grid", () => {
+    const html = pug.renderFile(
+      path.join(__dirname, "..", "views", "home.pug"),
+      {
+        components: [],
+        darkMode: false,
+        csrfToken: "test-token",
+        cspNonce: "test-nonce",
+        data: [],
+        data1: [],
+        data2: [],
+        data3: [],
+        deletedData: [],
+        deletedCount: 0,
+        count: 42,
+        count1: 18,
+        count2: 24,
+        dashboardKpis: {
+          total: { delta: 12, sparkline: "0,8,6,10,9,12,10,13,14,15" },
+          atOffice: { delta: -6, sparkline: "14,13,12,11,10,12,11,9,8,7" },
+          returned: { delta: 18, sparkline: "2,3,4,6,5,8,10,12,13,14" },
+        },
+        dashboardHeatmap: [
+          { date: "2026-09-01", count: 0 },
+          { date: "2026-09-02", count: 2 },
+          { date: "2026-09-03", count: 4 },
+        ],
+        previousLogin: null,
+      },
+    );
+
+    assert.match(html, /dashboard-heatmap/i);
+    assert.match(html, /heatmap-day/i);
+    assert.match(html, /12 month activity/i);
+  });
+
+  test("dashboard repeat offenders card renders rank list and counts", () => {
+    const html = pug.renderFile(
+      path.join(__dirname, "..", "views", "home.pug"),
+      {
+        components: [],
+        darkMode: false,
+        csrfToken: "test-token",
+        cspNonce: "test-nonce",
+        data: [],
+        data1: [],
+        data2: [],
+        data3: [],
+        deletedData: [],
+        deletedCount: 0,
+        count: 42,
+        count1: 18,
+        count2: 24,
+        dashboardKpis: {},
+        dashboardHeatmap: [],
+        repeatOffenders: [
+          { name: "Anjali Sharma", count: 6 },
+          { name: "Rahul Nair", count: 4 },
+        ],
+        previousLogin: null,
+      },
+    );
+
+    assert.match(html, /repeat-offenders/i);
+    assert.match(html, /Anjali Sharma/i);
+    assert.match(html, /6 times/i);
+  });
+
+  test("dashboard exposes loading skeleton placeholders for data and tables", () => {
+    const html = pug.renderFile(
+      path.join(__dirname, "..", "views", "home.pug"),
+      {
+        components: [],
+        darkMode: false,
+        csrfToken: "test-token",
+        cspNonce: "test-nonce",
+        data: [],
+        data1: [],
+        data2: [],
+        data3: [],
+        deletedData: [],
+        deletedCount: 0,
+        count: 0,
+        count1: 0,
+        count2: 0,
+        dashboardKpis: {},
+        dashboardHeatmap: [],
+        previousLogin: null,
+      },
+    );
+
+    assert.match(html, /dashboard-loading-skeleton/i);
+    assert.match(html, /table-loading-skeleton/i);
+  });
+
+  test("dashboard tables use mobile-safe overflow and responsive settings", () => {
+    const dataTableSource = fs.readFileSync(
+      path.join(__dirname, "..", "components", "DataTable", "data-table.js"),
+      "utf8",
+    );
+    const cssSource = fs.readFileSync(
+      path.join(__dirname, "..", "components", "DataTable", "data-table.css"),
+      "utf8",
+    );
+
+    assert.match(dataTableSource, /responsive:\s*true/i);
+    assert.match(dataTableSource, /scrollX:\s*true/i);
+    assert.match(cssSource, /overflow-x:\s*auto/i);
+    assert.match(cssSource, /@media\s*\(max-width:\s*768px\)/i);
+  });
+
+  test("auth and dashboard stat cards use a mobile-safe stacked layout", () => {
+    const loginCss = fs.readFileSync(
+      path.join(__dirname, "..", "components", "LoginCard", "login-card.css"),
+      "utf8",
+    );
+    const statCss = fs.readFileSync(
+      path.join(__dirname, "..", "components", "StatCard", "stat-card.css"),
+      "utf8",
+    );
+
+    assert.match(loginCss, /@media\s*\(max-width:\s*480px\)/i);
+    assert.match(loginCss, /overflow:\s*auto/i);
+    assert.match(loginCss, /auth-wrapper\s*\{[^}]*width:\s*min\(100%/is);
+    assert.match(statCss, /@media\s*\(max-width:\s*480px\)/i);
+    assert.match(statCss, /grid-template-columns:\s*1fr/i);
+  });
+
+  test("toast and session warning stay within mobile viewport bounds", () => {
+    const toastCss = fs.readFileSync(
+      path.join(__dirname, "..", "components", "Toast", "toast.css"),
+      "utf8",
+    );
+    const sessionCss = fs.readFileSync(
+      path.join(
+        __dirname,
+        "..",
+        "components",
+        "SessionWarning",
+        "session-warning.css",
+      ),
+      "utf8",
+    );
+
+    assert.match(toastCss, /max-width:\s*95vw/i);
+    assert.match(
+      toastCss,
+      /word-break:\s*break-word|overflow-wrap:\s*anywhere/i,
+    );
+    assert.match(sessionCss, /@media\s*\(max-width:\s*480px\)/i);
+    assert.match(sessionCss, /width:\s*min\(90vw,\s*380px\)|width:\s*90vw/i);
+  });
+
   test("dashboard component tree renders in light and dark modes", () => {
     const componentRegistry = require("../components/registry");
     const components = componentRegistry.filter(
@@ -341,7 +709,19 @@ describe("Application route validation", () => {
       'id="totp-security-modal"',
       'id="toast-container"',
       'id="confirm-modal"',
+      'id="record-detail-modal"',
+      'id="record-detail-status-history"',
+      'id="record-detail-return-history"',
+      'id="intake-wizard"',
+      'id="intake-step-indicator"',
+      'id="intake-next-step"',
+      'id="mobile-sidebar-backdrop"',
+      'id="live-clock"',
+      'id="analytics-panel"',
+      'href="#analytics"',
     ];
+    const toastMarkup =
+      'id="toast-container" role="status" aria-live="polite" aria-atomic="true"';
 
     for (const component of componentRegistry) {
       const basename = path.basename(component.css, ".css");
@@ -378,6 +758,17 @@ describe("Application route validation", () => {
       );
       for (const markup of requiredMarkup)
         assert.ok(html.includes(markup), markup);
+      assert.ok(html.includes(toastMarkup), "toast live region markup");
+      assert.ok(html.includes('id="sidebar"'), "sidebar id");
+      assert.ok(html.includes('role="navigation"'), "sidebar navigation role");
+      assert.ok(
+        html.includes('aria-label="Primary navigation"'),
+        "sidebar accessible name",
+      );
+      assert.ok(
+        html.includes('aria-hidden="false"'),
+        "sidebar visibility state",
+      );
     }
   });
 
@@ -411,7 +802,7 @@ describe("Application route validation", () => {
       .set("X-Forwarded-For", assetIp)
       .set("X-CSRF-Token", token)
       .send({ email, pwd: "Amber!Comet42Velvet" });
-    assert.equal(login.status, 204);
+    assert.equal(login.status, 204, login.text);
 
     const home = await agent.get("/home").set("X-Forwarded-For", assetIp);
     assert.equal(home.status, 200);
@@ -755,6 +1146,318 @@ describe("Application route validation", () => {
     assert.equal(response.body.data[0].Date, "2026-02-03");
   });
 
+  test("Record detail modal exposes a device-photo gallery contract", () => {
+    const totalListMarkup = fs.readFileSync(
+      path.join(__dirname, "..", "components", "DataTable", "total-list.pug"),
+      "utf8",
+    );
+    const detailModalMarkup = fs.readFileSync(
+      path.join(__dirname, "..", "components", "RecordDetailModal", "record-detail-modal.pug"),
+      "utf8",
+    );
+
+    assert.match(totalListMarkup, /data-device-photos=/);
+    assert.match(detailModalMarkup, /record-detail-photo-gallery|record-detail-photo/);
+  });
+
+  test("POST /hh accepts uploaded device photos and stores them on the record", async () => {
+    const signup = getHandler("/postsignup", "post");
+    const login = getHandler("/postlogin", "post");
+    const create = getHandler("/hh", "post");
+
+    await signup(
+      makeReq({
+        body: { email: "devicephoto@example.com", pwd: "Amber!Comet42Velvet" },
+      }),
+      makeRes(),
+    );
+
+    const session = {
+      regenerate: (callback) => callback(null),
+      user: undefined,
+    };
+    await login(
+      makeReq({
+        body: {
+          email: "devicephoto@example.com",
+          pwd: "Amber!Comet42Velvet",
+          uname: "Device Photo User",
+        },
+        session,
+      }),
+      makeRes(),
+    );
+
+    const req = makeReq({
+      body: {
+        Date: "2026-09-21",
+        Time: "10:20",
+        sname: "Photo Student",
+        spno: "9090909090",
+        rno: "P120",
+        clg: "ABC College",
+        brch: "CSE",
+        year: "2",
+        sec: "A",
+        pname: "Parent Photo",
+        ppno: "8080808080",
+        ename: "Employee Photo",
+        epno: "7070707070",
+        eid: "E220",
+        rsn: "Device photographed during intake",
+        mmodel: "Apple iPhone",
+        imei: "123456789012345",
+        mclr: "Silver",
+        devicePhotos: [
+          "/uploads/device-records/1.jpg",
+          "/uploads/device-records/2.jpg",
+        ],
+      },
+      session,
+    });
+
+    const res = makeRes();
+    await create(req, res);
+
+    assert.equal(res.statusCode, 302);
+    const savedRecord = getRuntimeRecords().find((record) => record.rno === "P120");
+    assert.ok(savedRecord);
+    assert.deepEqual(savedRecord.devicePhotos, [
+      "/uploads/device-records/1.jpg",
+      "/uploads/device-records/2.jpg",
+    ]);
+  });
+
+  test("POST /change rejects incomplete return acknowledgement payloads", async () => {
+    const signup = getHandler("/postsignup", "post");
+    const login = getHandler("/postlogin", "post");
+    const create = getHandler("/hh", "post");
+    const change = getHandler("/change", "post");
+
+    await signup(
+      makeReq({
+        body: { email: "returnvalidation@example.com", pwd: "Amber!Comet42Velvet" },
+      }),
+      makeRes(),
+    );
+
+    const session = {
+      regenerate: (callback) => callback(null),
+      user: undefined,
+    };
+    await login(
+      makeReq({
+        body: {
+          email: "returnvalidation@example.com",
+          pwd: "Amber!Comet42Velvet",
+          uname: "Return Validation User",
+        },
+        session,
+      }),
+      makeRes(),
+    );
+
+    const createReq = makeReq({
+      body: {
+        Date: "2026-09-23",
+        Time: "09:00",
+        sname: "Validation Student",
+        spno: "9090909092",
+        rno: "P140",
+        clg: "ABC College",
+        brch: "CSE",
+        year: "2",
+        sec: "A",
+        pname: "Parent Validation",
+        ppno: "8080808082",
+        ename: "Employee Validation",
+        epno: "7070707072",
+        eid: "E240",
+        rsn: "Sign off validation record",
+        mmodel: "Samsung A40",
+        imei: "123456789012347",
+        mclr: "Black",
+      },
+      session,
+    });
+    const createRes = makeRes();
+    await create(createReq, createRes);
+    const recordId = getRuntimeRecords().find((record) => record.rno === "P140")._id;
+
+    const invalidChangeRes = makeRes();
+    await change(
+      makeReq({
+        body: {
+          _id: recordId,
+          returnedBy: "",
+          returnRelation: "Parent",
+          returnedAt: "2026-09-23T09:45",
+        },
+        session,
+      }),
+      invalidChangeRes,
+    );
+
+    assert.equal(invalidChangeRes.statusCode, 422);
+    assert.equal(getRuntimeRecords().find((record) => record._id === recordId).status, "At_office");
+  });
+
+  test("POST /change records return acknowledgement details", async () => {
+    const signup = getHandler("/postsignup", "post");
+    const login = getHandler("/postlogin", "post");
+    const create = getHandler("/hh", "post");
+    const change = getHandler("/change", "post");
+
+    await signup(
+      makeReq({
+        body: { email: "returnmeta@example.com", pwd: "Amber!Comet42Velvet" },
+      }),
+      makeRes(),
+    );
+
+    const session = {
+      regenerate: (callback) => callback(null),
+      user: undefined,
+    };
+    await login(
+      makeReq({
+        body: {
+          email: "returnmeta@example.com",
+          pwd: "Amber!Comet42Velvet",
+          uname: "Return Meta User",
+        },
+        session,
+      }),
+      makeRes(),
+    );
+
+    const createReq = makeReq({
+      body: {
+        Date: "2026-09-22",
+        Time: "12:00",
+        sname: "Return Student",
+        spno: "9090909091",
+        rno: "P130",
+        clg: "ABC College",
+        brch: "CSE",
+        year: "2",
+        sec: "A",
+        pname: "Parent Return",
+        ppno: "8080808081",
+        ename: "Employee Return",
+        epno: "7070707071",
+        eid: "E230",
+        rsn: "Phone returned after parent pickup",
+        mmodel: "Samsung A35",
+        imei: "123456789012346",
+        mclr: "Blue",
+      },
+      session,
+    });
+    const createRes = makeRes();
+    await create(createReq, createRes);
+    const recordId = getRuntimeRecords().find((record) => record.rno === "P130")._id;
+
+    const changeRes = makeRes();
+    await change(
+      makeReq({
+        body: {
+          _id: recordId,
+          returnedBy: "Parent Return",
+          returnRelation: "Parent",
+          returnedAt: "2026-09-22T12:40",
+          returnNotes: "Signed and handed over on time.",
+          returnSignature: "data:image/png;base64,signature-demo",
+        },
+        session,
+      }),
+      changeRes,
+    );
+
+    assert.equal(changeRes.redirectUrl, "/home");
+    const returnedRecord = getRuntimeRecords().find((record) => record._id === recordId);
+    assert.equal(returnedRecord.status, "Returned");
+    assert.equal(returnedRecord.returnedBy, "Parent Return");
+    assert.equal(returnedRecord.returnRelation, "Parent");
+    assert.equal(returnedRecord.returnNotes, "Signed and handed over on time.");
+    assert.equal(returnedRecord.returnSignature, "data:image/png;base64,signature-demo");
+  });
+
+  test("POST /hh applies a selected preset reason when creating a record", async () => {
+    const signup = getHandler("/postsignup", "post");
+    const login = getHandler("/postlogin", "post");
+    const create = getHandler("/hh", "post");
+    const listRecords = getHandler("/api/records", "get");
+
+    await signup(
+      makeReq({
+        body: { email: "reasonpreset@example.com", pwd: "Amber!Comet42Velvet" },
+      }),
+      makeRes(),
+    );
+
+    const session = {
+      regenerate: (callback) => callback(null),
+      user: undefined,
+    };
+    await login(
+      makeReq({
+        body: {
+          email: "reasonpreset@example.com",
+          pwd: "Amber!Comet42Velvet",
+          uname: "Reason Preset User",
+        },
+        session,
+      }),
+      makeRes(),
+    );
+
+    const createReq = makeReq({
+      body: {
+        Date: "2026-09-20",
+        Time: "09:15",
+        sname: "Preset Student",
+        spno: "9999999999",
+        rno: "P101",
+        clg: "ABC College",
+        brch: "CSE",
+        year: "2",
+        sec: "A",
+        pname: "Parent Preset",
+        ppno: "8888888888",
+        ename: "Employee Preset",
+        epno: "7777777777",
+        eid: "E201",
+        reasonPreset: "Used during class",
+        rsn: "",
+        mmodel: "Samsung Galaxy",
+        imei: "123456789012345",
+        mclr: "Black",
+      },
+      session,
+    });
+    const createRes = makeRes();
+    await create(createReq, createRes);
+    assert.equal(createRes.redirectUrl, "/home");
+
+    const listRes = makeRes();
+    await listRecords(
+      makeReq({
+        session,
+        query: {
+          draw: "1",
+          start: "0",
+          length: "10",
+          status: "At_office",
+          search: { value: "P101" },
+        },
+      }),
+      listRes,
+    );
+    assert.equal(listRes.statusCode, 200);
+    assert.equal(listRes.body.data[0].rsn, "Used during class");
+  });
+
   test("POST /hh, /change, /edit, and /update manage the student record lifecycle", async () => {
     const signup = getHandler("/postsignup", "post");
     const login = getHandler("/postlogin", "post");
@@ -838,6 +1541,7 @@ describe("Application route validation", () => {
       [
         "Date",
         "Time",
+        "__v",
         "_id",
         "clg",
         "brch",
@@ -849,11 +1553,13 @@ describe("Application route validation", () => {
         "mmodel",
         "pname",
         "ppno",
+        "receiptNo",
         "rno",
         "rsn",
         "sec",
         "sname",
         "spno",
+        "status",
         "year",
       ].sort(),
     );
@@ -1120,6 +1826,85 @@ describe("Application route validation", () => {
     assert.ok(forgotLimited.body.retryAfter > 0);
   });
 
+  test("accounts lock after repeated failed password attempts", async () => {
+    const { agent, token } = await createCsrfAgent();
+    const testIp = "198.51.100.240";
+    const email = `lockout-${Date.now()}@example.com`;
+    const password = "Amber!Comet42Velvet";
+
+    const signup = await agent
+      .post("/postsignup")
+      .set("X-Forwarded-For", testIp)
+      .set("X-CSRF-Token", token)
+      .send({ email, pwd: password });
+    assert.equal(signup.status, 204);
+
+    for (let attempt = 1; attempt <= 5; attempt += 1) {
+      const ip = `198.51.100.${240 + attempt}`;
+      const response = await agent
+        .post("/postlogin")
+        .set("X-Forwarded-For", ip)
+        .set("X-CSRF-Token", token)
+        .send({ email, pwd: `Wrong-pass-${attempt}` });
+
+      if (attempt < 5) {
+        assert.equal(response.status, 401, JSON.stringify(response.body));
+      } else {
+        assert.equal(response.status, 429, JSON.stringify(response.body));
+        assert.ok(response.body.retryAfter > 0);
+        assert.match(
+          String(response.body.error || ""),
+          /locked|temporarily|retry/i,
+        );
+      }
+    }
+
+    const stillLocked = await agent
+      .post("/postlogin")
+      .set("X-Forwarded-For", "198.51.100.246")
+      .set("X-CSRF-Token", token)
+      .send({ email, pwd: password });
+    assert.equal(stillLocked.status, 429, JSON.stringify(stillLocked.body));
+    assert.ok(stillLocked.body.retryAfter > 0);
+  });
+
+  test("authenticated users can persist their dark mode preference", async () => {
+    const { agent, token } = await createCsrfAgent();
+    const testIp = "198.51.100.241";
+    const email = `dark-mode-${Date.now()}@example.com`;
+    const password = "Amber!Comet42Velvet";
+
+    const signup = await agent
+      .post("/postsignup")
+      .set("X-Forwarded-For", testIp)
+      .set("X-CSRF-Token", token)
+      .send({ email, pwd: password });
+    assert.equal(signup.status, 204);
+
+    const login = await agent
+      .post("/postlogin")
+      .set("X-Forwarded-For", testIp)
+      .set("X-CSRF-Token", token)
+      .send({ email, pwd: password });
+    assert.equal(login.status, 204);
+
+    const home = await agent.get("/home").set("X-Forwarded-For", testIp);
+    const nextToken = home.text.match(/name="csrf-token" content="([^"]+)"/)[1];
+
+    const preferenceUpdate = await agent
+      .post("/user/preferences")
+      .set("X-Forwarded-For", testIp)
+      .set("X-CSRF-Token", nextToken)
+      .send({ darkMode: true });
+    assert.equal(
+      preferenceUpdate.status,
+      200,
+      JSON.stringify(preferenceUpdate.body),
+    );
+    assert.equal(preferenceUpdate.body.ok, true);
+    assert.equal(preferenceUpdate.body.darkMode, true);
+  });
+
   test("state-changing routes reject missing CSRF tokens", async () => {
     const { agent } = await createCsrfAgent();
     const routes = [
@@ -1246,6 +2031,8 @@ describe("Application route validation", () => {
   test("v1 API uses JSON envelopes and advertises legacy successors", async () => {
     const { agent, token } = await createCsrfAgent();
     const apiIp = "198.51.100.230";
+    const uniqueRno = `V1${Date.now().toString(36).toUpperCase()}`;
+    const uniqueImei = `9${String(Date.now()).padStart(14, "0").slice(-14)}`;
     const unauthorized = await agent.get("/api/v1/users/me");
     assert.equal(unauthorized.status, 401);
     assert.equal(unauthorized.body.success, false);
@@ -1338,13 +2125,13 @@ describe("Application route validation", () => {
       .set("X-CSRF-Token", recordToken)
       .send({
         sname: "API Student",
-        rno: "V1A101",
+        rno: uniqueRno,
         clg: "ABC College",
         brch: "CSE",
         year: "2",
         sec: "A",
         mmodel: "Phone Model",
-        imei: "123456789012345",
+        imei: uniqueImei,
       });
     assert.equal(created.status, 201);
     assert.equal(created.body.success, true);
@@ -1448,34 +2235,37 @@ describe("Application route validation", () => {
 
   test("the mounted app sanitizes Mongo operators and stored record text", async () => {
     const agent = supertest.agent(app);
-    const loginPage = await agent.get("/");
+    const testIp = `198.51.100.${Math.floor(Math.random() * 200) + 1}`;
+    const loginPage = await agent.get("/").set("X-Forwarded-For", testIp);
     const tokenMatch = loginPage.text.match(
       /name="csrf-token" content="([^"]+)"/,
     );
     assert.ok(tokenMatch);
     let token = tokenMatch[1];
-    const email = "input-sanitizer@example.com";
+    const email = `input-sanitizer-${Date.now()}@example.com`;
 
     const signup = await agent
       .post("/postsignup")
+      .set("X-Forwarded-For", testIp)
       .set("X-CSRF-Token", token)
       .send({ email, pwd: "Amber!Comet42Velvet" });
     assert.equal(signup.status, 204);
 
     const login = await agent
       .post("/postlogin")
+      .set("X-Forwarded-For", testIp)
       .set("X-CSRF-Token", token)
       .send({ email, pwd: "Amber!Comet42Velvet" });
     assert.equal(login.status, 204);
 
-    const home = await agent.get("/home");
+    const home = await agent.get("/home").set("X-Forwarded-For", testIp);
     token = home.text.match(/name="csrf-token" content="([^"]+)"/)[1];
     const validRecord = {
       Date: "2026-09-30",
       Time: "12:00",
       sname: "Asha Rao",
       spno: "9876543210",
-      rno: "MSA001",
+      rno: `MSA${Date.now().toString(36).toUpperCase()}`,
       clg: "ABC College",
       brch: "CSE",
       year: "2",
@@ -1487,7 +2277,7 @@ describe("Application route validation", () => {
       eid: "EMP001",
       rsn: "Using phone during class",
       mmodel: "Phone Model",
-      imei: "123456789012345",
+      imei: `8${String(Date.now()).padStart(14, "0").slice(-14)}`,
       mclr: "Blue",
     };
 
@@ -1499,6 +2289,7 @@ describe("Application route validation", () => {
     ]) {
       const invalid = await agent
         .post("/hh")
+        .set("X-Forwarded-For", testIp)
         .set("X-CSRF-Token", token)
         .send({ ...validRecord, ...invalidFields });
       assert.equal(invalid.status, 422);
@@ -1507,6 +2298,7 @@ describe("Application route validation", () => {
 
     const missingRequiredField = await agent
       .post("/hh")
+      .set("X-Forwarded-For", testIp)
       .set("X-CSRF-Token", token)
       .send({ ...validRecord, sname: " " });
     assert.equal(missingRequiredField.status, 422);
@@ -1516,6 +2308,7 @@ describe("Application route validation", () => {
 
     const create = await agent
       .post("/hh")
+      .set("X-Forwarded-For", testIp)
       .set("X-CSRF-Token", token)
       .send({
         ...validRecord,
@@ -1524,23 +2317,27 @@ describe("Application route validation", () => {
       });
     assert.equal(create.status, 302);
 
-    const currentHome = await agent.get("/home");
+    const currentHome = await agent.get("/home").set("X-Forwarded-For", testIp);
     token = currentHome.text.match(/name="csrf-token" content="([^"]+)"/)[1];
-    const listedRecords = await agent.get("/api/records").query({
-      draw: 1,
-      start: 0,
-      length: 10,
-      search: { value: "MSA001" },
-    });
+    const listedRecords = await agent
+      .get("/api/records")
+      .query({
+        draw: 1,
+        start: 0,
+        length: 10,
+        search: { value: validRecord.rno },
+      })
+      .set("X-Forwarded-For", testIp);
     const recordId = listedRecords.body.data[0]._id;
     const edit = await agent
       .post("/edit")
+      .set("X-Forwarded-For", testIp)
       .set("X-CSRF-Token", token)
       .send({ _id: recordId });
 
     assert.equal(edit.status, 200);
     assert.equal(edit.body.sname, "Asha Rao");
-    assert.equal(edit.body.rsn, "Using phone");
+    assert.equal(edit.body.rsn, "Using Phone");
     assert.doesNotMatch(
       JSON.stringify(edit.body),
       /<script|onerror|alert\(1\)/i,
@@ -1557,7 +2354,7 @@ describe("Application route validation", () => {
       start: 0,
       length: 10,
       status: "Returned",
-      "search[value]": "MSA001",
+      "search[value]": validRecord.rno,
     });
     assert.equal(returnedRecords.body.recordsFiltered, 1);
     assert.equal(returnedRecords.body.data[0]._id, recordId);
@@ -1573,7 +2370,7 @@ describe("Application route validation", () => {
       draw: 1,
       start: 0,
       length: 10,
-      search: { value: "MSA001" },
+      search: { value: validRecord.rno },
     });
     assert.equal(activeWhileDeleted.body.recordsFiltered, 0);
     const recycleBinPage = await agent.get("/home");
@@ -1598,7 +2395,7 @@ describe("Application route validation", () => {
       draw: 1,
       start: 0,
       length: 10,
-      search: { value: "MSA001" },
+      search: { value: validRecord.rno },
     });
     assert.equal(activeAgain.body.recordsFiltered, 1);
     assert.equal(activeAgain.body.data[0]._id, recordId);
@@ -1620,7 +2417,7 @@ describe("Application route validation", () => {
     assert.match(activityPage.text, /Record Activity/);
     assert.match(activityPage.text, /sidebar-component/);
     assert.match(activityPage.text, /id="auditTable"/);
-    assert.match(activityPage.text, /MSA001/);
+    assert.match(activityPage.text, new RegExp(validRecord.rno, "i"));
   });
 
   test("TOTP enrollment, challenge login, recovery codes, and disable work", async () => {
@@ -1744,6 +2541,10 @@ describe("Application route validation", () => {
     assert.equal(signup.status, 204);
 
     const signIn = async (client, ip, userAgent) => {
+      await client
+        .get("/logout")
+        .set("User-Agent", userAgent)
+        .set("X-Forwarded-For", ip);
       const loginPage = await client
         .get("/")
         .set("User-Agent", userAgent)
@@ -1794,6 +2595,153 @@ describe("Application route validation", () => {
     assert.match(newDeviceEmails()[0].text, /198\.51\.100\.61/);
   });
 
+  test("PATCH /api/v1/users/me updates the public profile details", async () => {
+    const { agent, token } = await createCsrfAgent();
+    const email = `profile-details-${Date.now()}@example.com`;
+    const password = "Amber!Comet42Velvet";
+
+    await agent
+      .post("/postsignup")
+      .set("X-CSRF-Token", token)
+      .send({ email, pwd: password });
+
+    const loginPage = await agent.get("/");
+    const loginToken = loginPage.text.match(
+      /name="csrf-token" content="([^\"]+)"/,
+    )[1];
+    const login = await agent
+      .post("/postlogin")
+      .set("X-CSRF-Token", loginToken)
+      .send({ email, pwd: password });
+    assert.equal(login.status, 204);
+
+    const profile = await agent.get("/profile");
+    const profileToken = profile.text.match(
+      /name="csrf-token" content="([^"]+)"/,
+    )[1];
+
+    const updated = await agent
+      .patch("/api/v1/users/me")
+      .set("X-CSRF-Token", profileToken)
+      .send({
+        fullName: "Ada Lovelace",
+        designation: "Senior Clerk",
+        phoneNumber: "+919876543210",
+        avatarUrl: "https://example.com/avatar.png",
+      });
+
+    assert.equal(updated.status, 200);
+    assert.equal(updated.body.data.fullName, "Ada Lovelace");
+    assert.equal(updated.body.data.designation, "Senior Clerk");
+    assert.equal(updated.body.data.phoneNumber, "+919876543210");
+    assert.equal(updated.body.data.avatarUrl, "https://example.com/avatar.png");
+
+    const refreshedProfile = await agent.get("/profile");
+    assert.equal(refreshedProfile.status, 200);
+    assert.match(refreshedProfile.text, /Ada Lovelace/i);
+    assert.match(refreshedProfile.text, /Senior Clerk/i);
+    assert.match(refreshedProfile.text, /\+919876543210/);
+  });
+
+  test("DELETE /api/v1/users/me soft deletes the current account and blocks future logins", async () => {
+    const { agent, token } = await createCsrfAgent();
+    const email = `delete-account-${Date.now()}@example.com`;
+    const password = "Amber!Comet42Velvet";
+
+    await agent
+      .post("/postsignup")
+      .set("X-CSRF-Token", token)
+      .send({ email, pwd: password });
+
+    const loginPage = await agent.get("/");
+    const loginToken = loginPage.text.match(
+      /name="csrf-token" content="([^"]+)"/,
+    )[1];
+    const login = await agent
+      .post("/postlogin")
+      .set("X-CSRF-Token", loginToken)
+      .send({ email, pwd: password });
+    assert.equal(login.status, 204);
+
+    const profile = await agent.get("/profile");
+    const profileToken = profile.text.match(
+      /name="csrf-token" content="([^"]+)"/,
+    )[1];
+
+    const deleted = await agent
+      .delete("/api/v1/users/me")
+      .set("X-CSRF-Token", profileToken)
+      .send({ currentPwd: password });
+
+    assert.equal(deleted.status, 200);
+    assert.equal(deleted.body.data.deleted, true);
+    assert.equal(deleted.body.data.email, email);
+
+    const freshAgent = supertest.agent(app);
+    const resetLoginPage = await freshAgent.get("/");
+    const resetToken = resetLoginPage.text.match(
+      /name="csrf-token" content="([^"]+)"/,
+    )[1];
+    const rejectedLogin = await freshAgent
+      .post("/postlogin")
+      .set("X-CSRF-Token", resetToken)
+      .send({ email, pwd: password });
+    assert.equal(rejectedLogin.status, 401);
+  });
+
+  test("GET /profile renders account details and accepts a password change", async () => {
+    const { agent, token } = await createCsrfAgent();
+    const email = `profile-${Date.now()}@example.com`;
+    const originalPassword = "Amber!Comet42Velvet";
+    const newPassword = "Brighter!Moon99Trail";
+
+    await agent
+      .post("/postsignup")
+      .set("X-CSRF-Token", token)
+      .send({ email, pwd: originalPassword });
+
+    const loginPage = await agent.get("/");
+    const loginToken = loginPage.text.match(
+      /name="csrf-token" content="([^"]+)"/,
+    )[1];
+    const login = await agent
+      .post("/postlogin")
+      .set("X-CSRF-Token", loginToken)
+      .send({ email, pwd: originalPassword });
+    assert.equal(login.status, 204);
+
+    const profile = await agent.get("/profile");
+    assert.equal(profile.status, 200);
+    assert.match(profile.text, /My Profile/i);
+    assert.match(
+      profile.text,
+      new RegExp(email.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"),
+    );
+    const profileToken = profile.text.match(
+      /name="csrf-token" content="([^"]+)"/,
+    )[1];
+
+    const changed = await agent
+      .post("/postchangepassword")
+      .set("X-CSRF-Token", profileToken)
+      .send({
+        currentPwd: originalPassword,
+        pwd: newPassword,
+      });
+    assert.equal(changed.status, 204);
+
+    await agent.get("/logout");
+    const nextLoginPage = await agent.get("/");
+    const nextToken = nextLoginPage.text.match(
+      /name="csrf-token" content="([^"]+)"/,
+    )[1];
+    const reLogin = await agent
+      .post("/postlogin")
+      .set("X-CSRF-Token", nextToken)
+      .send({ email, pwd: newPassword });
+    assert.equal(reLogin.status, 204);
+  });
+
   test("GET /home redirects unauthenticated users", async () => {
     const home = getHandler("/home", "get");
     const res = makeRes();
@@ -1801,6 +2749,27 @@ describe("Application route validation", () => {
     await home(makeReq(), res);
 
     assert.equal(res.redirectUrl, "/");
+  });
+
+  test("POST /session/extend refreshes the session expiry", async () => {
+    const handler = getHandler("/session/extend", "post");
+    const session = {
+      cookie: { maxAge: 8 * 60 * 60 * 1000 },
+      user: { email: "session@example.com" },
+      touch: () => {
+        session.cookie.maxAge = 60 * 60 * 1000;
+        session.touched = true;
+      },
+    };
+    const req = makeReq({ session });
+    const res = makeRes();
+
+    await handler(req, res);
+
+    assert.equal(res.statusCode, 200);
+    assert.equal(session.touched, true);
+    assert.equal(res.body.ok, true);
+    assert.ok(res.body.expiresAt > Date.now());
   });
 
   test("GET /logout clears the session", async () => {

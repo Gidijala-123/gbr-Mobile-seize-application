@@ -1,0 +1,282 @@
+.return-workflow-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.62);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 1.25rem;
+}
+
+.return-workflow-panel {
+  width: min(760px, 100%);
+  max-height: min(92vh, 900px);
+  overflow: auto;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(14, 116, 144, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 22px 60px rgba(15, 118, 110, 0.22);
+}
+
+.dark-mode .return-workflow-panel {
+  background: rgba(15, 23, 42, 0.96);
+  border-color: rgba(45, 212, 191, 0.2);
+  color: #e2e8f0;
+}
+
+.return-workflow-header,
+.return-workflow-summary,
+.return-workflow-grid,
+.return-workflow-actions,
+.return-signature-header,
+.return-signature-toggle {
+  display: flex;
+}
+
+.return-workflow-header {
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 1.5rem 0.75rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.return-workflow-kicker {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.7rem;
+  color: #0ea5a4;
+  font-weight: 700;
+}
+
+.return-workflow-close {
+  border: none;
+  background: transparent;
+  font-size: 1.25rem;
+  color: #475569;
+}
+
+.return-workflow-form {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.return-workflow-summary {
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.return-workflow-summary-card {
+  flex: 1;
+  min-width: 0;
+  background: rgba(14, 165, 233, 0.08);
+  border: 1px solid rgba(14, 165, 233, 0.18);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+}
+
+.return-workflow-label {
+  display: block;
+  font-size: 0.72rem;
+  color: #64748b;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.return-workflow-summary-card strong {
+  font-size: 1.02rem;
+}
+
+.return-workflow-grid {
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.return-workflow-field {
+  flex: 1 1 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.return-workflow-field-full {
+  flex-basis: 100%;
+}
+
+.return-workflow-field label,
+.return-signature-header h4 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.dark-mode .return-workflow-field label,
+.dark-mode .return-signature-header h4,
+.dark-mode .return-workflow-label,
+.dark-mode .return-workflow-kicker {
+  color: #cbd5e1;
+}
+
+.return-workflow-field input,
+.return-workflow-field select,
+.return-workflow-field textarea,
+.return-signature-input-wrap input {
+  width: 100%;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  border-radius: 12px;
+  background: rgba(248, 250, 252, 0.9);
+  padding: 0.72rem 0.8rem;
+  color: #0f172a;
+}
+
+.dark-mode .return-workflow-field input,
+.dark-mode .return-workflow-field select,
+.dark-mode .return-workflow-field textarea,
+.dark-mode .return-signature-input-wrap input {
+  background: rgba(15, 23, 42, 0.75);
+  border-color: rgba(148, 163, 184, 0.4);
+  color: #e2e8f0;
+}
+
+.return-signature-section {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 16px;
+  background: rgba(15, 118, 110, 0.03);
+}
+
+.return-signature-header {
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.return-signature-header span {
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+.return-signature-toggle {
+  gap: 1rem;
+  margin: 0.8rem 0 0.9rem;
+}
+
+.return-signature-toggle label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+}
+
+.return-signature-canvas-wrap {
+  position: relative;
+  border: 1px dashed rgba(14, 116, 144, 0.5);
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+  min-height: 220px;
+}
+
+.dark-mode .return-signature-canvas-wrap {
+  background: rgba(15, 23, 42, 0.85);
+}
+
+.return-signature-pad {
+  display: block;
+  width: 100%;
+  height: 220px;
+  cursor: crosshair;
+  touch-action: none;
+  background: #fff;
+}
+
+.dark-mode .return-signature-pad {
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.return-signature-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  pointer-events: none;
+  font-size: 0.9rem;
+}
+
+.return-signature-input-wrap {
+  display: none;
+  margin-top: 0.8rem;
+}
+
+.return-signature-input-wrap.active {
+  display: block;
+}
+
+.return-workflow-actions {
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.return-workflow-primary,
+.return-workflow-secondary {
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font-weight: 700;
+  padding: 0.72rem 1.1rem;
+}
+
+.return-workflow-primary {
+  background: linear-gradient(135deg, #0ea5a4, #2563eb);
+  color: #fff;
+}
+
+.return-workflow-secondary {
+  background: transparent;
+  border-color: rgba(148, 163, 184, 0.6);
+  color: #0f172a;
+}
+
+.dark-mode .return-workflow-secondary {
+  color: #e2e8f0;
+}
+
+.return-workflow-status {
+  min-height: 1.25rem;
+  margin-top: 0.8rem;
+  color: #0f172a;
+  font-size: 0.85rem;
+}
+
+.return-workflow-status.success {
+  color: #166534;
+}
+
+.return-workflow-status.error {
+  color: #b91c1c;
+}
+
+@media (max-width: 640px) {
+  .return-workflow-panel {
+    width: min(100%, 100%);
+    border-radius: 18px;
+  }
+
+  .return-workflow-header,
+  .return-workflow-summary,
+  .return-workflow-actions,
+  .return-signature-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .return-workflow-primary,
+  .return-workflow-secondary {
+    width: 100%;
+  }
+}

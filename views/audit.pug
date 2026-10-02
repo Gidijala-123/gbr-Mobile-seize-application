@@ -13,7 +13,7 @@
           th Changed by
           th Changed at
       tbody
-        each event in auditEvents
+        each event in auditEvents || []
           tr
             td= event.actionType
             td= event.recordRno || ''

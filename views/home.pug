@@ -2,22 +2,60 @@ html
   head
     title GBR's Mobile Storage Application
     //vh=*16.9% of px(top,bottom),vw=7.8% of px(left,right)
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover")
+    meta(name="apple-mobile-web-app-capable" content="yes")
+    meta(name="apple-mobile-web-app-status-bar-style" content="black-translucent")
+    meta(name="apple-mobile-web-app-title" content="MSA")
+    meta#theme-color-light(name="theme-color" content="#ecfeff" media="(prefers-color-scheme: light)")
+    meta#theme-color-dark(name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)")
     meta(name="csrf-token" content=csrfToken)
-    link(type='image/jpg', href='1.jpg?v=20260925-02', rel='icon')
+    link(rel='icon' href='/favicon.ico')
+    link(rel='apple-touch-icon' href='/images/adityalogo.png')
+    link(rel='preconnect' href='https://fonts.googleapis.com' crossorigin)
+    link(rel='preconnect' href='https://fonts.gstatic.com' crossorigin)
+    link(rel='preconnect' href='https://cdnjs.cloudflare.com' crossorigin)
+    link(rel='dns-prefetch' href='https://fonts.googleapis.com')
+    link(rel='dns-prefetch' href='https://fonts.gstatic.com')
+    link(rel='dns-prefetch' href='https://cdnjs.cloudflare.com')
+    link(rel='preload' as='style' href='/vendor/bootstrap/css/bootstrap.min.css?v=3.4.1')
+    link(rel='preload' as='style' href='stylesheets/component.css?v=20260925-02')
+    link(rel='preload' as='style' href='stylesheets/style.css?v=20260925-02')
+    link(rel='preload' as='style' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+    link(rel='prefetch' href='/vendor/jquery/jquery.min.js?v=3.7.1')
+    link(rel='prefetch' href='/vendor/bootstrap/js/bootstrap.min.js?v=3.4.1')
     link(rel='stylesheet', href='stylesheets/buttons.dataTables.min.css?v=20260925-02')
     link(rel='stylesheet', href='stylesheets/jquery.dataTables.min.css?v=20260925-02')
     link(rel='stylesheet', href='stylesheets/dataTables.bootstrap.css?v=20260925-02')
-    link(rel='stylesheet', href='stylesheets/bootstrap.min.css?v=20260925-02')
+    link(rel='stylesheet', href='/vendor/bootstrap/css/bootstrap.min.css?v=3.4.1', integrity='sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu', crossorigin='anonymous')
     link(rel='stylesheet', href='stylesheets/component.css?v=20260925-02')
     link(rel='stylesheet', href='stylesheets/style.css?v=20260925-02')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
-    link(href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet")
-    link(href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet")
-    link(rel='shortcut icon', href='../favicon.ico?v=20260925-02')
+    link(href='https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap' rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&family=Lato:wght@300;400;700&display=swap' rel='stylesheet')
     include components/component-styles.pug
 
-  body.home-body(class=darkMode ? "dark-mode" : null, data-db-error=databaseError)
+  body.home-body(class=darkMode ? "dark-mode" : null, data-db-error=databaseError, data-session-expires-at=sessionExpiresAt || 0, data-session-ttl-ms=sessionTtlMs || 28800000, data-user-authenticated=sessionUser ? 'true' : 'false')
+    a.skip-link(href="#main-content") Skip to main content
+    if sessionUser
+      include ../components/SessionWarning/session-warning.pug
+    .dashboard-loading-skeleton(aria-live="polite" aria-busy="true")
+      .dashboard-loading-shell
+        .dashboard-loading-grid
+          .dashboard-loading-card
+          .dashboard-loading-card
+          .dashboard-loading-card
+        .dashboard-loading-table
+          .dashboard-loading-table-head
+          .dashboard-loading-table-body
+            span
+            span
+            span
+            span
+    .table-loading-skeleton(aria-live="polite" aria-busy="true")
+      .table-loading-header
+      .table-loading-row
+      .table-loading-row
+      .table-loading-row
     section#container
       include ../components/Navbar/navbar.pug
 
@@ -28,6 +66,7 @@ html
             .tab-content
 
               include ../components/IntakeForm/intake-form.pug
+              include ../components/AnalyticsChart/analytics-chart.pug
               include ../components/DataTable/total-list.pug
               include ../components/DataTable/office-list.pug
               include ../components/DataTable/returned-list.pug
@@ -38,13 +77,24 @@ html
               include ../components/HelpSection/help-section.pug
     include ../components/AccountSecurity/account-security.pug
     include ../components/Toast/toast.pug
+    if flashMessages && flashMessages.length
+      script.
+        document.addEventListener('DOMContentLoaded', function () {
+          if (!window.GBR || !GBR.toast) return;
+          flashMessages.forEach(function (item) {
+            var type = item.type === 'error' ? 'error' : item.type === 'warning' ? 'warning' : item.type === 'success' ? 'success' : 'info';
+            GBR.toast[type](item.message);
+          });
+        });
     include ../components/ConfirmModal/confirm-modal.pug
+    include ../components/RecordDetailModal/record-detail-modal.pug
+    include ../components/ReturnWorkflowModal/return-workflow-modal.pug
     include ../components/Footer/footer.pug
     // js placed at the end of the document so the pages load faster
-    script(src='javascripts/jquery.js?v=20260925-02')
-    script(src='javascripts/bootstrap.min.js?v=20260925-02')
+    script(src='/vendor/jquery/jquery.min.js?v=3.7.1', integrity='sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs', crossorigin='anonymous')
+    script(src='/vendor/bootstrap/js/bootstrap.min.js?v=3.4.1', integrity='sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd', crossorigin='anonymous')
     script(src='javascripts/modernizr.custom.js?v=20260925-02')
-    script(src='javascripts/jquery-ui-1.9.2.custom.min.js?v=20260925-02')
+    script(src='/vendor/jquery-ui/jquery-ui.min.js?v=1.13.2', integrity='sha384-4D3G3GikQs6hLlLZGdz5wLFzuqE9v4yVGAcOH86y23JqBDPzj9viv0EqyfIa6YUL', crossorigin='anonymous')
     script(src='javascripts/jquery.ui.touch-punch.min.js?v=20260925-02')
     script(src='javascripts/jquery.dcjqaccordion.2.7.js?v=20260925-02')
     script(src='javascripts/jquery.dlmenu.js?v=20260925-02')
@@ -60,6 +110,7 @@ html
     script(src='javascripts/buttons.print.min.js?v=20260925-02')
     script(src='javascripts/jspdf.min.js?v=20260925-02')
     script(src='javascripts/pdf.js?v=20260925-02')
+    script(src='javascripts/field-masks.js?v=20260925-02')
     script(src="https://unpkg.com/splitting@1.0.5/dist/splitting.min.js")
     script(src='javascripts/click.js?v=20260929-02')
     include components/component-scripts.pug

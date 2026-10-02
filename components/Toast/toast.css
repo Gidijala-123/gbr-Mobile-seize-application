@@ -15,6 +15,7 @@
   gap: 12px;
   min-width: 300px;
   max-width: 440px;
+  width: min(100%, 440px);
   padding: 14px 18px;
   border-radius: 14px;
   background: #ffffff;
@@ -75,6 +76,8 @@
 .toast-msg {
   flex: 1;
   line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .toast-close {
@@ -91,11 +94,13 @@
 .toast-close:hover {
   color: #0f172a;
 }
+
 body.dark-mode .gbr-toast {
   background: #1e293b;
   color: #e2e8f0;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
+
 @media (max-width: 768px) {
   #toast-container {
     right: 12px;
@@ -105,9 +110,25 @@ body.dark-mode .gbr-toast {
 
   .gbr-toast {
     min-width: 0;
-    width: 100%;
+    width: min(100%, 95vw);
+    max-width: 95vw;
   }
 }
+
+@media (max-width: 480px) {
+  #toast-container {
+    right: 8px;
+    left: 8px;
+    top: 68px;
+  }
+
+  .gbr-toast {
+    max-width: 95vw;
+    width: 95vw;
+    padding: 12px 14px;
+  }
+}
+
 .gbr-toast {
   background: rgba(15, 23, 42, 0.95) !important;
   backdrop-filter: blur(20px) !important;

@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /
+
+# Internal admin portal: do not index login, dashboard, or record data.

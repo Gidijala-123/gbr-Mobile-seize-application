@@ -2,7 +2,13 @@ header.header.navbar-component
   button.sidebar-toggle-box(type='button', aria-label='Toggle navigation', aria-expanded='true')
     i.fa.fa-bars.tooltips(data-placement='right', data-original-title='Toggle Navigation', aria-hidden='true')
   span.header-brand Mobile Storage Application
-  #date_time
+  .live-clock-wrap#date_time(role='status' aria-live='polite' aria-atomic='true')
+    span.clock-label Today
+    time#live-clock(datetime='' aria-label='Current time') 00:00:00
+    span#live-date.clock-date Sep 30, 2026
+  a.inner-width-neon(href='/profile')
+    span.bg-width
+    span.btn-text My profile
   a.inner-width-neon(href='/logout')
     span.bg-width
     span.btn-text Logout

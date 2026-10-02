@@ -14,6 +14,7 @@ const {
   createMongoConnectionService,
 } = require("../services/MongoConnectionService");
 const { createEmailService } = require("../services/EmailService");
+const { insertIfMissing } = require("./seed");
 const { createErrorReporter } = require("../services/ErrorReporter");
 const {
   hashPassword,
@@ -22,6 +23,8 @@ const {
 } = require("../utils/crypto");
 const { createDbReadiness, sanitizeMongoUri } = require("../utils/db");
 const { applyMongoUpdate } = require("../utils/mongoUpdate");
+const { setFlash, consumeFlash } = require("../utils/flash");
+const { calculatePasswordStrength } = require("../utils/passwordStrength");
 
 process.env.NODE_ENV = "test";
 process.env.MONGODB_URI = "mongodb://localhost:27017/testdb";
@@ -136,6 +139,7 @@ Module._load = function patchedLoad(requested, parent, isMain) {
 };
 
 const router = require("../routes/index");
+const { InputValidationError, normalizeStudentRecord } = router;
 const getHandler = (pathname, method) => {
   const route = router.stack.find(
     (layer) =>
@@ -146,11 +150,20 @@ const getHandler = (pathname, method) => {
   return route && route.route.stack.at(-1).handle;
 };
 
-const makeReq = (overrides = {}) => ({
-  body: {},
-  session: { regenerate: (cb) => cb(null), destroy: (cb) => cb() },
-  ...overrides,
-});
+const makeReq = (overrides = {}) => {
+  const session = {
+    flash: {},
+    regenerate: (cb) => cb(null),
+    destroy: (cb) => cb(),
+    ...(overrides.session || {}),
+  };
+  return {
+    body: {},
+    session,
+    flash: (type, message) => setFlash(session, type, message),
+    ...overrides,
+  };
+};
 
 const makeRes = () => ({
   statusCode: 200,
@@ -211,6 +224,174 @@ async function runTest(name, fn) {
     const res = makeRes();
     await handler(makeReq(), res);
     assert.equal(res.view, "signLog_net");
+  });
+
+  await run("flash helper stores and consumes redirect messages", async () => {
+    const session = { flash: { success: ["Saved successfully."] } };
+    const messages = consumeFlash(session);
+    assert.deepEqual(messages, [
+      { type: "success", message: "Saved successfully." },
+    ]);
+    assert.deepEqual(session.flash, {});
+
+    setFlash(session, "error", "Something went wrong.");
+    assert.deepEqual(session.flash, { error: ["Something went wrong."] });
+  });
+
+  await run("password strength scoring matches the app rule set", async () => {
+    assert.deepEqual(calculatePasswordStrength("Lowercase2026!"), {
+      score: 6,
+      label: "Strong",
+      percent: 100,
+      meetsPolicy: true,
+    });
+    assert.deepEqual(calculatePasswordStrength("weakpass"), {
+      score: 1,
+      label: "Weak",
+      percent: 10,
+      meetsPolicy: false,
+    });
+    assert.deepEqual(calculatePasswordStrength("Abc123!def"), {
+      score: 5,
+      label: "Strong",
+      percent: 100,
+      meetsPolicy: true,
+    });
+  });
+
+  await run(
+    "student record normalizer safely handles 10,000 deterministic malformed inputs",
+    async () => {
+      const validRecord = {
+        Date: "2026-10-01",
+        Time: "10:00",
+        sname: "Student One",
+        spno: "+919876543210",
+        rno: "A101",
+        clg: "ACET",
+        brch: "MCA",
+        year: "2",
+        sec: "A",
+        pname: "Parent One",
+        ppno: "+919876543211",
+        ename: "Staff One",
+        epno: "+919876543212",
+        eid: "EMP101",
+        rsn: "Using phone",
+        mmodel: "Phone Model",
+        imei: "123456789012345",
+        mclr: "Black",
+      };
+      const fields = ["pname", "rno", "spno", "imei"];
+      const characters = Array.from(
+        "<>/\\' -_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZéह中😀\n\t",
+      );
+      const allowedFields = new Set(Object.keys(validRecord).concat("status"));
+      let seed = 0x5eed1234;
+
+      for (let iteration = 0; iteration < 10000; iteration += 1) {
+        const nextRandom = () => {
+          seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+          return seed;
+        };
+        const field = fields[iteration % fields.length];
+        const length = nextRandom() % 80;
+        let value = "";
+        for (let index = 0; index < length; index += 1) {
+          value += characters[nextRandom() % characters.length];
+        }
+
+        try {
+          const normalized = normalizeStudentRecord(
+            { ...validRecord, [field]: value },
+            "At_office",
+          );
+          assert.ok(
+            Object.keys(normalized).every((key) => allowedFields.has(key)),
+          );
+          assert.equal(normalized.status, "At_office");
+          assert.ok(
+            normalized[field].length <=
+              { pname: 120, rno: 32, spno: 16, imei: 15 }[field],
+          );
+          assert.doesNotMatch(normalized[field], /<|>/);
+          if (field === "spno" && normalized.spno)
+            assert.match(normalized.spno, /^\+91[6-9]\d{9}$/);
+          if (field === "imei") assert.match(normalized.imei, /^\d{15}$/);
+        } catch (error) {
+          assert.ok(
+            error instanceof InputValidationError,
+            `unexpected ${error && error.name}: ${error && error.message}`,
+          );
+        }
+      }
+    },
+  );
+
+  await run(
+    "seed fixture insertion is idempotent across repeated runs",
+    async () => {
+      const documents = new Map();
+      const collection = {
+        findOne: async (filter) =>
+          documents.get(JSON.stringify(filter)) || null,
+        insertOne: async (document) => {
+          const key = JSON.stringify({
+            email: document.email,
+            time: document.time,
+          });
+          if (documents.has(key)) {
+            const error = new Error("duplicate key");
+            error.code = 11000;
+            throw error;
+          }
+          documents.set(key, { ...document, _id: "seed-test" });
+        },
+      };
+      const fixture = {
+        email: "staff@example.test",
+        time: new Date("2026-10-01T12:00:00Z"),
+      };
+
+      assert.equal(await insertIfMissing(collection, fixture, fixture), true);
+      assert.equal(await insertIfMissing(collection, fixture, fixture), false);
+      assert.equal(documents.size, 1);
+    },
+  );
+
+  await run("authenticated users are redirected from login page", async () => {
+    const handler = getHandler("/", "get");
+    const res = makeRes();
+    await handler(
+      makeReq({
+        session: {
+          user: {
+            email: "staff@example.com",
+            preferences: { darkMode: false },
+          },
+        },
+      }),
+      res,
+    );
+    assert.equal(res.redirectUrl, "/home");
+  });
+
+  await run("session extension refreshes the session timeout", async () => {
+    const handler = getHandler("/session/extend", "post");
+    const session = {
+      cookie: { maxAge: 8 * 60 * 60 * 1000 },
+      user: { email: "staff@example.com" },
+      touch: () => {
+        session.cookie.maxAge = 60 * 60 * 1000;
+        session.touched = true;
+      },
+    };
+    const res = makeRes();
+    await handler(makeReq({ session }), res);
+    assert.equal(res.statusCode, 200);
+    assert.equal(session.touched, true);
+    assert.equal(res.body.ok, true);
+    assert.ok(res.body.expiresAt > Date.now());
   });
 
   await run(
@@ -430,6 +611,23 @@ async function runTest(name, fn) {
   await run("email service reuses one lazily created transporter", async () => {
     let transportCount = 0;
     const messages = [];
+    const brandingKeys = [
+      "EMAIL_FROM_NAME",
+      "EMAIL_FROM_ADDRESS",
+      "COLLEGE_NAME",
+      "COLLEGE_ADDRESS",
+      "COLLEGE_PHONE",
+      "SMTP_HOST",
+      "SMTP_PORT",
+      "SMTP_SECURE",
+      "SMTP_USER",
+      "SMTP_PASS",
+      "SMTP_REJECT_UNAUTHORIZED",
+    ];
+    const previousBranding = Object.fromEntries(
+      brandingKeys.map((key) => [key, process.env[key]]),
+    );
+    for (const key of brandingKeys) delete process.env[key];
     const emailService = createEmailService({
       nodemailer: {
         createTransport: (options) => {
@@ -439,6 +637,7 @@ async function runTest(name, fn) {
             user: "demo@example.com",
             pass: "demo-password",
           });
+          assert.equal(options.tls.rejectUnauthorized, true);
           return {
             sendMail: async (message) => {
               messages.push(message);
@@ -450,6 +649,25 @@ async function runTest(name, fn) {
     });
 
     assert.equal(emailService.isConfigured(), true);
+    await emailService.sendPasswordResetCode("staff@example.com", "654321");
+    assert.deepEqual(messages[0].from, {
+      name: "GBR Mobile Storage",
+      address: "demo@example.com",
+    });
+    assert.match(messages[0].html, /Aditya College of Institutions/);
+    assert.match(messages[0].html, /Ayodhya Nagar/);
+    assert.match(
+      messages[0].html,
+      /password reset code expires in 10 minutes/i,
+    );
+
+    Object.assign(process.env, {
+      EMAIL_FROM_NAME: "GBR Notifications",
+      EMAIL_FROM_ADDRESS: "notifications@example.com",
+      COLLEGE_NAME: "Example College",
+      COLLEGE_ADDRESS: "North Campus, Kakinada",
+      COLLEGE_PHONE: "+91 88888 12345",
+    });
     await emailService.sendPasswordResetCode("staff@example.com", "123456");
     await emailService.sendNewDeviceAlert({
       user: { email: "staff@example.com" },
@@ -465,9 +683,98 @@ async function runTest(name, fn) {
     });
 
     assert.equal(transportCount, 1);
-    assert.equal(messages.length, 3);
-    assert.ok(messages.every((message) => message.from === "demo@example.com"));
+    assert.equal(messages.length, 4);
+    assert.ok(
+      messages
+        .slice(1)
+        .every(
+          (message) =>
+            message.from.name === "GBR Notifications" &&
+            message.from.address === "notifications@example.com",
+        ),
+    );
+    assert.ok(
+      messages.every(
+        (message) =>
+          typeof message.text === "string" && message.text.length > 0,
+      ),
+    );
+    assert.match(messages[1].html, /Example College/);
+    assert.match(messages[1].html, /North Campus, Kakinada/);
+    assert.match(messages[1].html, /\+91 88888 12345/);
+    assert.match(
+      messages[1].html,
+      /password reset code expires in 10 minutes/i,
+    );
+    assert.match(messages[1].html, /123456/);
+    assert.match(
+      messages[3].html,
+      /Verify your GBR Mobile Storage account within 7 days/i,
+    );
+    for (const [key, value] of Object.entries(previousBranding)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
   });
+
+  await run(
+    "SMTP settings support local hosts and explicit certificate overrides",
+    async () => {
+      const keys = [
+        "GMAIL_USER",
+        "GMAIL_PASS",
+        "EMAIL_FROM_ADDRESS",
+        "SMTP_HOST",
+        "SMTP_PORT",
+        "SMTP_SECURE",
+        "SMTP_USER",
+        "SMTP_PASS",
+        "SMTP_REJECT_UNAUTHORIZED",
+      ];
+      const previous = Object.fromEntries(
+        keys.map((key) => [key, process.env[key]]),
+      );
+      Object.assign(process.env, {
+        GMAIL_USER: "",
+        GMAIL_PASS: "",
+        EMAIL_FROM_ADDRESS: "local@example.test",
+        SMTP_HOST: "127.0.0.1",
+        SMTP_PORT: "1025",
+        SMTP_SECURE: "false",
+        SMTP_USER: "",
+        SMTP_PASS: "",
+        SMTP_REJECT_UNAUTHORIZED: "false",
+      });
+      let transportOptions;
+      try {
+        const emailService = createEmailService({
+          nodemailer: {
+            createTransport: (options) => {
+              transportOptions = options;
+              return {
+                sendMail: async () => ({ accepted: ["local@example.test"] }),
+              };
+            },
+          },
+        });
+        assert.equal(emailService.isConfigured(), true);
+        await emailService.sendPasswordResetCode(
+          "staff@example.test",
+          "654321",
+        );
+        assert.equal(transportOptions.host, "127.0.0.1");
+        assert.equal(transportOptions.port, 1025);
+        assert.equal(transportOptions.secure, false);
+        assert.equal(transportOptions.tls.rejectUnauthorized, false);
+        assert.equal(transportOptions.auth, undefined);
+      } finally {
+        for (const [key, value] of Object.entries(previous)) {
+          if (value === undefined) delete process.env[key];
+          else process.env[key] = value;
+        }
+      }
+    },
+  );
 
   await run("signup creates account", async () => {
     resetState();
@@ -1044,6 +1351,8 @@ async function runTest(name, fn) {
       createRes,
     );
     assert.equal(createRes.redirectUrl, "/home");
+
+    const duplicateRes = makeRes();
     await create(
       makeReq({
         body: {
@@ -1068,8 +1377,95 @@ async function runTest(name, fn) {
         },
         session,
       }),
-      makeRes(),
+      duplicateRes,
     );
+    assert.equal(duplicateRes.statusCode, 409);
+    assert.match(JSON.stringify(duplicateRes.body), /duplicate|already/i);
+
+    const secondaryCreateRes = makeRes();
+    await create(
+      makeReq({
+        body: {
+          Date: "2026-09-18",
+          Time: "10:01",
+          sname: "Student Two",
+          spno: "9999999998",
+          rno: "A102",
+          clg: "ABC College",
+          brch: "CSE",
+          year: "2",
+          sec: "A",
+          pname: "Parent Two",
+          ppno: "8888888887",
+          ename: "Emergency Two",
+          epno: "7777777776",
+          eid: "E102",
+          rsn: "Second record",
+          mmodel: "Pixel 9",
+          imei: "223456789012345",
+          mclr: "Black",
+        },
+        session,
+      }),
+      secondaryCreateRes,
+    );
+    assert.equal(secondaryCreateRes.redirectUrl, "/home");
+
+    const messyCreateRes = makeRes();
+    await create(
+      makeReq({
+        body: {
+          Date: "2026-09-18",
+          Time: "10:02",
+          sname: "  mohammed   farhan  ",
+          spno: "9848012345",
+          rno: "A103",
+          clg: "  acs   college  ",
+          brch: " cse ",
+          year: "2",
+          sec: " a ",
+          pname: "  ayesha   khan  ",
+          ppno: "9848012346",
+          ename: "  ram   shetty  ",
+          epno: "9876543210",
+          eid: "E103",
+          rsn: "  <script>alert(1)</script> used during class  ",
+          mmodel: "  iphone 15  ",
+          imei: "123456789012346",
+          mclr: "  silver   grey  ",
+        },
+        session,
+      }),
+      messyCreateRes,
+    );
+    assert.equal(messyCreateRes.redirectUrl, "/home");
+
+    const messyListRes = makeRes();
+    await listRecords(
+      makeReq({
+        session,
+        query: {
+          draw: "1",
+          start: "0",
+          length: "10",
+          search: { value: "A103" },
+        },
+      }),
+      messyListRes,
+    );
+    const messyRecord = messyListRes.body.data[0];
+    assert.equal(messyRecord.sname, "Mohammed Farhan");
+    assert.equal(messyRecord.pname, "Ayesha Khan");
+    assert.equal(messyRecord.ename, "Ram Shetty");
+    assert.equal(messyRecord.clg, "Acs College");
+    assert.equal(messyRecord.brch, "Cse");
+    assert.equal(messyRecord.mmodel, "Iphone 15");
+    assert.equal(messyRecord.mclr, "Silver Grey");
+    assert.equal(messyRecord.rsn, "Used During Class");
+    assert.equal(messyRecord.spno, "+919848012345");
+    assert.equal(messyRecord.ppno, "+919848012346");
+    assert.equal(messyRecord.epno, "+919876543210");
+
     const listRes = makeRes();
     await listRecords(
       makeReq({
@@ -1087,10 +1483,7 @@ async function runTest(name, fn) {
     const firstSameRollRecord = listRes.body.data.find(
       (record) => record.sname === "Student One",
     );
-    const secondSameRollRecord = listRes.body.data.find(
-      (record) => record.sname === "Student Two",
-    );
-    assert.notEqual(firstSameRollRecord._id, secondSameRollRecord._id);
+    assert.ok(firstSameRollRecord);
     const recordId = firstSameRollRecord._id;
 
     const editRes = makeRes();
@@ -1125,12 +1518,17 @@ async function runTest(name, fn) {
           mmodel: "iPhone 16",
           imei: "123456789012345",
           mclr: "Blue",
+          status: "Returned",
         },
         session,
       }),
       updateRes,
     );
     assert.equal(updateRes.redirectUrl, "/home");
+
+    const statusEditRes = makeRes();
+    await edit(makeReq({ body: { _id: recordId }, session }), statusEditRes);
+    assert.equal(statusEditRes.body.status, "Returned");
 
     const inlineUpdateRes = makeRes();
     await update(
@@ -1155,6 +1553,7 @@ async function runTest(name, fn) {
           mmodel: "iPhone 16",
           imei: "123456789012345",
           mclr: "Blue",
+          status: "At_office",
         },
         session,
       }),
@@ -1165,6 +1564,7 @@ async function runTest(name, fn) {
     await edit(makeReq({ body: { _id: recordId }, session }), renamedEditRes);
     assert.equal(renamedEditRes.body.rno, "A102");
     assert.equal(renamedEditRes.body.pname, "Parent One");
+    assert.equal(renamedEditRes.body.status, "At_office");
 
     const remainingRollRes = makeRes();
     await listRecords(
@@ -1179,8 +1579,8 @@ async function runTest(name, fn) {
       }),
       remainingRollRes,
     );
-    assert.equal(remainingRollRes.body.recordsFiltered, 1);
-    assert.equal(remainingRollRes.body.data[0].sname, "Student Two");
+    assert.equal(remainingRollRes.body.recordsFiltered, 0);
+    assert.deepEqual(remainingRollRes.body.data, []);
 
     const auditRes = makeRes();
     await audit(makeReq({ params: { id: recordId }, session }), auditRes);
@@ -1272,6 +1672,143 @@ async function runTest(name, fn) {
       assert.equal(response.body.recordsFiltered, 3);
       assert.equal(response.body.data.length, 1);
       assert.equal(response.body.data[0].Date, "2026-01-03");
+    },
+  );
+
+  await run(
+    "optimistic concurrency rejects stale record updates and increments version numbers",
+    async () => {
+      let latestVersion = 0;
+      const record = {
+        _id: "rec-900",
+        Date: "2026-09-18",
+        Time: "10:00",
+        sname: "Alpha Student",
+        spno: "9876543210",
+        rno: "A900",
+        clg: "Test College",
+        brch: "CSE",
+        year: "2",
+        sec: "A",
+        pname: "Parent Alpha",
+        ppno: "9123456789",
+        ename: "Employee Alpha",
+        epno: "9098765432",
+        eid: "E900",
+        rsn: "Normal use",
+        mmodel: "Pixel 8",
+        imei: "123456789012345",
+        mclr: "Black",
+        status: "At_office",
+        deletedAt: null,
+        __v: 0,
+      };
+      const repo = {
+        find: async (filter = {}) => {
+          if (filter._id === record._id && filter.deletedAt === null)
+            return [record];
+          return [];
+        },
+        update: async (filter, updateDoc) => {
+          const expectedVersion = Number(filter.__v ?? latestVersion);
+          if (record.__v !== expectedVersion) {
+            return { ok: 0, matchedCount: 0, modifiedCount: 0 };
+          }
+          if (updateDoc.$set) Object.assign(record, updateDoc.$set);
+          if (updateDoc.$inc && updateDoc.$inc.__v) {
+            latestVersion =
+              Number(record.__v || 0) + Number(updateDoc.$inc.__v);
+            record.__v = latestVersion;
+          }
+          return { ok: 1, matchedCount: 1, modifiedCount: 1 };
+        },
+      };
+      const auditRepo = { insert: async () => undefined };
+      const service = createDeviceService({
+        getRecordRepository: () => repo,
+        getAuditRepository: () => auditRepo,
+      });
+
+      await assert.rejects(
+        () =>
+          service.updateById(
+            record._id,
+            { ...record, rsn: "Updated by stale draft", status: "Returned" },
+            "records@example.com",
+            999,
+          ),
+        /changed by another staff member/i,
+      );
+
+      const result = await service.updateById(
+        record._id,
+        {
+          ...record,
+          rsn: "Updated by current staff",
+          status: "Returned",
+        },
+        "records@example.com",
+        0,
+      );
+      assert.equal(result.matchedCount, 1);
+      assert.equal(record.__v, 1);
+      assert.equal(record.rsn, "Updated by current staff");
+      assert.equal(record.status, "Returned");
+    },
+  );
+
+  await run(
+    "receipt numbers are generated sequentially per intake",
+    async () => {
+      let sequence = 0;
+      const service = createDeviceService({
+        getRecordRepository: () => ({
+          find: async () => [],
+          insert: async (record) => ({ ...record, _id: `rec-${sequence + 1}` }),
+        }),
+        getCounterRepository: () => ({
+          findOneAndUpdate: async (filter, update) => {
+            sequence += 1;
+            return { _id: filter._id, seq: sequence };
+          },
+        }),
+      });
+
+      const first = await service.create(
+        {
+          Date: "2026-09-18",
+          Time: "10:00",
+          sname: "Alpha Student",
+          rno: "A900",
+          clg: "Test College",
+          brch: "CSE",
+          year: "2",
+          sec: "A",
+          mmodel: "Pixel 8",
+          imei: "123456789012345",
+          status: "At_office",
+        },
+        "records@example.com",
+      );
+      const second = await service.create(
+        {
+          Date: "2026-09-18",
+          Time: "10:05",
+          sname: "Beta Student",
+          rno: "A901",
+          clg: "Test College",
+          brch: "CSE",
+          year: "2",
+          sec: "A",
+          mmodel: "Pixel 9",
+          imei: "123456789012346",
+          status: "At_office",
+        },
+        "records@example.com",
+      );
+
+      assert.equal(first.receiptNo, "MSA-2026-000001");
+      assert.equal(second.receiptNo, "MSA-2026-000002");
     },
   );
 
@@ -1386,6 +1923,271 @@ async function runTest(name, fn) {
           hint: { deletedAt: 1, status: 1 },
         },
       ]);
+    },
+  );
+
+  await run(
+    "dashboard KPI trends include delta percentages and sparkline points",
+    async () => {
+      const today = new Date("2026-10-01T12:00:00Z");
+      const calls = [];
+      const service = createDeviceService({
+        getRecordRepository: () => ({
+          countDocuments: async (filter) => {
+            calls.push(filter);
+            const status = filter.status;
+            if (filter.createdAt && filter.createdAt.$gte) {
+              const start = new Date(filter.createdAt.$gte);
+              const end = new Date(filter.createdAt.$lt);
+              const isPrevious = end < new Date("2026-10-01T00:00:00Z");
+              if (status === "At_office") {
+                return isPrevious ? 4 : 8;
+              }
+              if (status === "Returned") {
+                return isPrevious ? 3 : 6;
+              }
+              return isPrevious ? 10 : 14;
+            }
+            return 0;
+          },
+        }),
+      });
+
+      const trends = await service.getDashboardKpiTrends(today);
+      assert.equal(trends.total.delta, 40);
+      assert.equal(trends.atOffice.delta, 100);
+      assert.equal(trends.returned.delta, 100);
+      assert.match(trends.total.sparkline, /^\d+(?:,\d+){9}$/);
+      assert.match(trends.atOffice.sparkline, /^\d+(?:,\d+){9}$/);
+      assert.match(trends.returned.sparkline, /^\d+(?:,\d+){9}$/);
+      assert.ok(calls.length >= 6);
+    },
+  );
+
+  await run(
+    "dashboard repeat offenders ranks students by seizure frequency",
+    async () => {
+      const service = createDeviceService({
+        getRecordRepository: () => ({
+          find: async (filter = {}) => [
+            { sname: "Anjali Sharma", deletedAt: null },
+            { sname: "Anjali Sharma", deletedAt: null },
+            { sname: "Rahul Nair", deletedAt: null },
+            { sname: "Rahul Nair", deletedAt: null },
+            { sname: "Rahul Nair", deletedAt: null },
+            { sname: "Meera Iyer", deletedAt: null },
+          ],
+        }),
+      });
+
+      const offenders = await service.getRepeatOffenders(3);
+      assert.deepEqual(
+        offenders.map((item) => item.name),
+        ["Rahul Nair", "Anjali Sharma", "Meera Iyer"],
+      );
+      assert.deepEqual(
+        offenders.map((item) => item.count),
+        [3, 2, 1],
+      );
+    },
+  );
+
+  await run(
+    "dashboard staff leaderboard counts total and current-month intakes",
+    async () => {
+      const service = createDeviceService({
+        getRecordRepository: () => ({
+          find: async () => [
+            {
+              ename: "Priya Rao",
+              eid: "E-1",
+              createdAt: new Date("2026-10-03T08:00:00Z"),
+            },
+            {
+              ename: "Priya Rao",
+              eid: "E-1",
+              createdAt: new Date("2026-09-29T08:00:00Z"),
+            },
+            {
+              ename: "Arun Das",
+              eid: "E-2",
+              createdAt: new Date("2026-10-02T08:00:00Z"),
+            },
+            { ename: "", eid: "", createdAt: new Date("2026-10-01T08:00:00Z") },
+          ],
+        }),
+      });
+
+      const leaderboard = await service.getEmployeeLeaderboard(
+        5,
+        new Date("2026-10-15T12:00:00Z"),
+      );
+      assert.deepEqual(leaderboard, [
+        {
+          name: "Priya Rao",
+          employeeId: "E-1",
+          totalIntakes: 2,
+          monthIntakes: 1,
+        },
+        {
+          name: "Arun Das",
+          employeeId: "E-2",
+          totalIntakes: 1,
+          monthIntakes: 1,
+        },
+      ]);
+    },
+  );
+
+  await run(
+    "dashboard activity groups today's audit field changes",
+    async () => {
+      const activityDate = new Date("2026-10-01T12:00:00");
+      const start = new Date(activityDate);
+      start.setHours(0, 0, 0, 0);
+      const service = createDeviceService({
+        getAuditRepository: () => ({
+          find: async () => [
+            {
+              recordId: "r-1",
+              recordRno: "A101",
+              actionType: "CREATE",
+              changedByEmail: "staff@example.com",
+              changedAt: new Date(start.getTime() + 3600000),
+              field: "sname",
+            },
+            {
+              recordId: "r-1",
+              recordRno: "A101",
+              actionType: "CREATE",
+              changedByEmail: "staff@example.com",
+              changedAt: new Date(start.getTime() + 3600500),
+              field: "imei",
+            },
+            {
+              recordId: "r-2",
+              recordRno: "A102",
+              actionType: "STATUS_CHANGE",
+              changedByEmail: "staff@example.com",
+              changedAt: new Date(start.getTime() + 7200000),
+              field: "status",
+              newValue: "Returned",
+            },
+            {
+              recordId: "r-3",
+              recordRno: "A103",
+              actionType: "DELETE",
+              changedByEmail: "staff@example.com",
+              changedAt: new Date(start.getTime() - 1000),
+              field: "deletedAt",
+            },
+          ],
+        }),
+      });
+
+      const activities = await service.getDashboardActivity(20, activityDate);
+      assert.equal(activities.length, 2);
+      assert.deepEqual(
+        activities.map((item) => item.summary),
+        ["Marked returned", "Created record"],
+      );
+      assert.deepEqual(
+        activities.map((item) => item.count),
+        [1, 2],
+      );
+    },
+  );
+
+  await run(
+    "dashboard shell renders loading skeleton placeholders",
+    async () => {
+      const pug = require("pug");
+      const path = require("node:path");
+      const html = pug.renderFile(
+        path.join(__dirname, "..", "views", "home.pug"),
+        {
+          components: [],
+          darkMode: false,
+          csrfToken: "test-token",
+          cspNonce: "test-nonce",
+          data: [],
+          data1: [],
+          data2: [],
+          data3: [],
+          deletedData: [],
+          deletedCount: 0,
+          count: 0,
+          count1: 0,
+          count2: 0,
+          dashboardKpis: {},
+          dashboardHeatmap: [],
+          previousLogin: null,
+        },
+      );
+
+      assert.match(html, /dashboard-loading-skeleton/i);
+      assert.match(html, /table-loading-skeleton/i);
+    },
+  );
+
+  await run("dashboard aging KPIs count stale at-office records", async () => {
+    const service = createDeviceService({
+      getRecordRepository: () => ({
+        countDocuments: async (filter) => {
+          const createdAt = filter.createdAt || {};
+          if (createdAt.$lt) {
+            const cutoff = new Date(createdAt.$lt);
+            if (cutoff.getTime() <= new Date("2026-07-01T12:00:00Z").getTime())
+              return 3;
+            if (cutoff.getTime() <= new Date("2026-09-01T12:00:00Z").getTime())
+              return 7;
+            if (cutoff.getTime() <= new Date("2026-09-24T12:00:00Z").getTime())
+              return 12;
+            return 0;
+          }
+          return 0;
+        },
+      }),
+    });
+
+    const aging = await service.getDashboardAgingKpis(
+      new Date("2026-10-01T12:00:00Z"),
+    );
+    assert.deepEqual(aging, {
+      over7Days: 12,
+      over30Days: 7,
+      over90Days: 7,
+    });
+  });
+
+  await run(
+    "visitor dashboard summary tracks today month and all-time counts",
+    async () => {
+      const { createVisitorService } = require("../services/VisitorService");
+      const service = createVisitorService({
+        getVisitorRepository: () => ({
+          countDocuments: async (filter) => {
+            const time = filter.time || {};
+            if (time.$gte && time.$lt) {
+              if (filter.email) return 3;
+              return 12;
+            }
+            if (filter.time && filter.time.$gte) {
+              return 8;
+            }
+            return 42;
+          },
+        }),
+      });
+
+      const summary = await service.getVisitorSummary(
+        new Date("2026-10-01T12:00:00Z"),
+      );
+      assert.deepEqual(summary, {
+        today: 8,
+        thisMonth: 12,
+        allTime: 42,
+      });
     },
   );
 

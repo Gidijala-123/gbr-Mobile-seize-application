@@ -27,7 +27,9 @@ include data-table.pug
             td #{member.imei}
             td #{member.deletedBy}
             td
-              button.restore-btn(type="button" data-record-id=member._id title="Restore record")
+              button.row-details-toggle(type="button" aria-expanded="false" aria-label="Expand deleted record details" title="Expand deleted record details")
+                i.fa.fa-plus(aria-hidden="true")
+              button.restore-btn(type="button" data-action='restore' data-record-id=member._id title="Restore record")
                 i.fa.fa-undo(aria-hidden="true")
                 |  Restore
 

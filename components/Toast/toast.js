@@ -18,9 +18,15 @@ GBR.toast = (function () {
       if (!_container) {
         _container = document.createElement("div");
         _container.id = "toast-container";
+        _container.setAttribute("role", "status");
+        _container.setAttribute("aria-live", "polite");
+        _container.setAttribute("aria-atomic", "true");
         document.body.appendChild(_container);
       }
     }
+    _container.setAttribute("role", "status");
+    _container.setAttribute("aria-live", "polite");
+    _container.setAttribute("aria-atomic", "true");
     return _container;
   }
 
@@ -38,6 +44,9 @@ GBR.toast = (function () {
 
     var toast = document.createElement("div");
     toast.className = "gbr-toast gbr-toast--" + type;
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
+    toast.setAttribute("aria-atomic", "true");
     toast.innerHTML =
       '<i class="fa ' +
       icons[type] +

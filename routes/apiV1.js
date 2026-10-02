@@ -2,12 +2,15 @@ const express = require("express");
 const crypto = require("node:crypto");
 const { normalizeError } = require("../middleware/errorHandler");
 const {
+  VALID_DEVICE_STATUSES,
   changePasswordSchema,
   createDeviceSchema,
   emailSchema,
   loginSchema,
+  normalizeDeviceStatus,
   recordIdSchema,
   resetSchema,
+  returnDeviceSchema,
   signupSchema,
   updateDeviceSchema,
 } = require("../validation/schemas");
@@ -37,6 +40,7 @@ function createApiV1Router(dependencies) {
     regenerateSession,
     establishUserSession,
     createClientFingerprint,
+    createClientIpFingerprint,
     fingerprintsMatch,
     verifyTotpToken,
     decryptTotpSecret,
@@ -91,6 +95,9 @@ function createApiV1Router(dependencies) {
       id: String(user.id || user._id),
       email: user.emailDisplay || user.email,
       fullName: user.fullName || "",
+      designation: user.designation || "",
+      phoneNumber: user.phoneNumber || "",
+      avatarUrl: user.avatarUrl || "",
       role: user.role || "staff",
       emailVerified: Boolean(user.emailVerified),
       createdAt: user.createdAt || null,
@@ -118,10 +125,20 @@ function createApiV1Router(dependencies) {
       "epno",
       "eid",
       "rsn",
+      "devicePhotos",
       "mmodel",
       "imei",
       "mclr",
       "status",
+      "receiptNo",
+      "returnedBy",
+      "returnRelation",
+      "returnedAt",
+      "returnSignature",
+      "returnNotes",
+      "onHoldNotes",
+      "statusChangedBy",
+      "statusChangedAt",
       "createdAt",
     ];
     const result = { _id: String(record._id) };
@@ -256,6 +273,7 @@ function createApiV1Router(dependencies) {
           email: user.email,
           visitorName,
           clientFingerprint: createClientFingerprint(req),
+          clientIpFingerprint: createClientIpFingerprint(req),
           expiresAt: Date.now() + totpChallengeTtlMs,
         };
         return success(
@@ -288,11 +306,13 @@ function createApiV1Router(dependencies) {
           401,
           "The two-factor sign-in challenge has expired.",
         );
+      const currentFingerprint = createClientFingerprint(req);
+      const currentIpFingerprint = createClientIpFingerprint(req);
       if (
-        !fingerprintsMatch(
-          pending.clientFingerprint,
-          createClientFingerprint(req),
-        )
+        !fingerprintsMatch(pending.clientFingerprint, currentFingerprint) ||
+        (pending.clientIpFingerprint &&
+          currentIpFingerprint &&
+          !fingerprintsMatch(pending.clientIpFingerprint, currentIpFingerprint))
       )
         return failure(
           res,
@@ -457,6 +477,7 @@ function createApiV1Router(dependencies) {
         );
       await regenerateSession(req);
       req.session.clientFingerprint = createClientFingerprint(req);
+      req.session.clientIpFingerprint = createClientIpFingerprint(req);
       req.session.user = dependencies.buildSessionUser(
         user,
         user.fullName || user.emailDisplay || user.email,
@@ -634,11 +655,45 @@ function createApiV1Router(dependencies) {
     }),
   );
 
+  router.delete(
+    "/users/me",
+    requireApiUser,
+    asyncRoute(async (req, res) => {
+      const currentPwd = req.body && req.body.currentPwd;
+      if (typeof currentPwd !== "string" || currentPwd.trim().length < 1)
+        return failure(res, 422, "currentPwd is required.");
+
+      await ensureDbReady();
+      const result = await authService.deleteAccount(
+        req.session.user.email,
+        currentPwd,
+      );
+      if (result.error) return failure(res, result.status, result.error);
+      if (req.session && typeof req.session.destroy === "function") {
+        await new Promise((resolve, reject) =>
+          req.session.destroy((error) => (error ? reject(error) : resolve())),
+        );
+      }
+      return success(res, {
+        deleted: true,
+        email: result.user.email,
+      });
+    }),
+  );
+
   router.patch(
     "/users/me",
     requireApiUser,
     asyncRoute(async (req, res) => {
-      const fullName = req.body && req.body.fullName;
+      const body = req.body || {};
+      const fullName = typeof body.fullName === "string" ? body.fullName : "";
+      const designation =
+        typeof body.designation === "string" ? body.designation : "";
+      const phoneNumber =
+        typeof body.phoneNumber === "string" ? body.phoneNumber : "";
+      const avatarUrl =
+        typeof body.avatarUrl === "string" ? body.avatarUrl : "";
+
       if (typeof fullName !== "string" || fullName.trim().length > 120)
         return failure(
           res,
@@ -653,18 +708,87 @@ function createApiV1Router(dependencies) {
             ],
           },
         );
+      if (typeof designation !== "string" || designation.trim().length > 80)
+        return failure(
+          res,
+          422,
+          "designation must be text no longer than 80 characters.",
+          {
+            errors: [
+              {
+                field: "designation",
+                message: "Enter a designation of at most 80 characters.",
+              },
+            ],
+          },
+        );
+      if (
+        typeof phoneNumber === "string" &&
+        phoneNumber.trim() &&
+        !/^\+?[0-9()\s-]{10,20}$/.test(phoneNumber.trim())
+      )
+        return failure(res, 422, "phoneNumber must be a valid mobile number.", {
+          errors: [
+            {
+              field: "phoneNumber",
+              message: "Enter a valid phone number.",
+            },
+          ],
+        });
+      if (
+        typeof avatarUrl === "string" &&
+        avatarUrl.trim() &&
+        !/^https?:\/\//i.test(avatarUrl.trim())
+      )
+        return failure(res, 422, "avatarUrl must be a valid http/https URL.", {
+          errors: [
+            {
+              field: "avatarUrl",
+              message: "Enter a valid image URL.",
+            },
+          ],
+        });
+
       await ensureDbReady();
       const user = await authService.findUserByEmail(req.session.user.email);
       if (!user) return failure(res, 404, "Account not found.");
       const normalizedName = sanitizePlainText(fullName).slice(0, 120);
+      const normalizedDesignation = sanitizePlainText(designation).slice(0, 80);
+      const normalizedPhone =
+        typeof phoneNumber === "string" && phoneNumber.trim()
+          ? phoneNumber.trim().replace(/\s+/g, "")
+          : "";
+      const normalizedAvatar =
+        typeof avatarUrl === "string" && avatarUrl.trim()
+          ? sanitizePlainText(avatarUrl).trim()
+          : "";
       const result = await authService.updateUser(
         { _id: user._id },
-        { $set: { fullName: normalizedName } },
+        {
+          $set: {
+            fullName: normalizedName,
+            designation: normalizedDesignation,
+            phoneNumber: normalizedPhone,
+            avatarUrl: normalizedAvatar,
+          },
+        },
       );
       if (!result.matchedCount || result.ok === 0)
         return failure(res, 409, "The account could not be updated.");
       req.session.user.fullName = normalizedName;
-      return success(res, publicUser({ ...user, fullName: normalizedName }));
+      req.session.user.designation = normalizedDesignation;
+      req.session.user.phoneNumber = normalizedPhone;
+      req.session.user.avatarUrl = normalizedAvatar;
+      return success(
+        res,
+        publicUser({
+          ...user,
+          fullName: normalizedName,
+          designation: normalizedDesignation,
+          phoneNumber: normalizedPhone,
+          avatarUrl: normalizedAvatar,
+        }),
+      );
     }),
   );
 
@@ -696,9 +820,13 @@ function createApiV1Router(dependencies) {
           422,
           "pageSize must be an integer between 1 and 100.",
         );
-      const status = req.query.status;
-      if (status !== undefined && !["At_office", "Returned"].includes(status))
-        return failure(res, 422, "status must be At_office or Returned.");
+      const status = normalizeDeviceStatus(req.query.status);
+      if (status !== undefined && !VALID_DEVICE_STATUSES.includes(status))
+        return failure(
+          res,
+          422,
+          `status must be one of: ${VALID_DEVICE_STATUSES.join(", ")}.`,
+        );
       const search = req.query.search || "";
       if (typeof search !== "string" || search.length > 128)
         return failure(
@@ -805,10 +933,25 @@ function createApiV1Router(dependencies) {
     asyncRoute(async (req, res) => {
       const id = validateRecordId(req.params.id, res);
       if (!id) return;
+      const body = validate(
+        returnDeviceSchema,
+        { ...req.body, _id: id },
+        res,
+      );
+      if (!body) return;
       await ensureDbReady();
+      const returnMeta = {
+        returnedBy: body.returnedBy,
+        returnRelation: body.returnRelation,
+        returnedAt: body.returnedAt,
+        returnSignature:
+          body.returnSignature || body.returnSignatureText || null,
+        returnNotes: body.returnNotes,
+      };
       const result = await deviceService.markReturned(
         id,
         req.session.user.email,
+        returnMeta,
       );
       if (!result.matchedCount) return failure(res, 404, "Record not found.");
       const records = await deviceService.findById(id);

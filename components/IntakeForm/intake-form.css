@@ -221,6 +221,116 @@ body.home-body #dboard #form form br {
   font-size: 0 !important;
 }
 
+body.home-body #dboard #form .intake-wizard {
+  display: block;
+}
+
+body.home-body #dboard #form .intake-step-indicator {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+body.home-body #dboard #form .intake-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  background: rgba(239, 246, 255, 0.72);
+  color: #1e293b;
+  font-weight: 700;
+  font-family: 'Lato', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+body.home-body #dboard #form .intake-step span {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #e2e8f0;
+  color: #0f172a;
+  font-size: 0.8rem;
+}
+
+body.home-body #dboard #form .intake-step small {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+body.home-body #dboard #form .intake-step.is-active {
+  border-color: #2dd4bf;
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.12), rgba(14, 116, 144, 0.09));
+}
+
+body.home-body #dboard #form .intake-step.is-active span {
+  background: linear-gradient(135deg, #0f766e, #0ea5e9);
+  color: #ffffff;
+}
+
+body.home-body #dboard #form .intake-step.is-complete {
+  border-color: #86efac;
+  background: rgba(220, 252, 231, 0.8);
+}
+
+body.home-body #dboard #form .intake-step-panel {
+  display: none;
+}
+
+body.home-body #dboard #form .intake-step-panel.is-active {
+  display: block;
+}
+
+body.home-body #dboard #form .intake-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+body.home-body #dboard #form .intake-nav-btn,
+body.home-body #dboard #form .intake-submit-btn {
+  min-width: 140px;
+}
+
+body.home-body #dboard #form .intake-submit-btn {
+  display: none;
+}
+
+body.home-body #dboard #form .intake-step-panel.is-active .intake-submit-btn {
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  body.home-body #dboard #form .intake-step-indicator {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.home-body #dboard #form .intake-step {
+    padding: 8px 10px;
+  }
+
+  body.home-body #dboard #form .intake-form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  body.home-body #dboard #form .intake-nav-btn,
+  body.home-body #dboard #form .intake-submit-btn {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
 body.home-body #dboard #form form .col-md-4 br {
   display: none !important;
 }
@@ -2902,4 +3012,43 @@ body.home-body:not(.dark-mode) #dboard #form form.form-group {
 html body.home-body #dboard #form form.form-group::before,
 html body.home-body:not(.dark-mode) #dboard #form form.form-group::before {
   border-radius: 20px 20px 0 0 !important;
+}
+
+html body.home-body #dboard #form form select.form-control,
+html body.home-body #fmgrp select.form-control {
+  height: 48px !important;
+  border-radius: 13px !important;
+  padding-right: 40px !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+  background-size: 12px 8px !important;
+}
+
+html body.home-body #dboard #form form select.form-control:focus,
+html body.home-body #fmgrp select.form-control:focus {
+  --select-surface: #ffffff;
+  border: 2px solid transparent !important;
+  background-color: var(--select-surface) !important;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230f766e' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"),
+    linear-gradient(var(--select-surface), var(--select-surface)),
+    linear-gradient(135deg, #0f766e, #0891b2, #22d3ee) !important;
+  background-origin: padding-box, padding-box, border-box !important;
+  background-clip: padding-box, padding-box, border-box !important;
+  background-position: right 14px center, 0 0, 0 0 !important;
+  background-size: 12px 8px, 100% 100%, 100% 100% !important;
+  background-repeat: no-repeat !important;
+  outline: none !important;
+}
+
+html body.home-body.dark-mode #dboard #form form select.form-control:focus,
+html body.home-body.dark-mode #fmgrp select.form-control:focus {
+  --select-surface: rgba(15, 23, 42, 0.85);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2322d3ee' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"),
+    linear-gradient(var(--select-surface), var(--select-surface)),
+    linear-gradient(135deg, #0f766e, #0891b2, #22d3ee) !important;
 }

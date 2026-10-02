@@ -39,11 +39,13 @@ const { createDbReadiness, sanitizeMongoUri } = require("../utils/db");
 const { applyMongoUpdate } = require("../utils/mongoUpdate");
 const { getRequestId } = require("../middleware/requestContext");
 const {
+  VALID_DEVICE_STATUSES,
   changePasswordSchema,
   createDeviceSchema,
   deleteSchema,
   emailSchema,
   loginSchema,
+  normalizeDeviceStatus,
   recordIdSchema,
   resetSchema,
   returnDeviceSchema,
@@ -65,6 +67,8 @@ const RECYCLE_BIN_PURGE_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const passwordResetRateLimits = new Map();
 const LOGIN_RATE_WINDOW_MS = 15 * 60 * 1000;
 const LOGIN_LOCKOUT_MS = 60 * 60 * 1000;
+const USER_LOGIN_FAILURE_LIMIT = 5;
+const USER_LOGIN_LOCKOUT_MS = 60 * 60 * 1000;
 const SIGNUP_RATE_WINDOW_MS = 60 * 60 * 1000;
 const FORGOT_RATE_WINDOW_MS = 60 * 60 * 1000;
 const TOTP_CHALLENGE_TTL_MS = 5 * 60 * 1000;
@@ -105,9 +109,17 @@ const editRecordFields = [
   "epno",
   "eid",
   "rsn",
+  "devicePhotos",
+  "returnNotes",
+  "onHoldNotes",
   "mmodel",
   "imei",
   "mclr",
+  "status",
+  "receiptNo",
+  "statusChangedBy",
+  "statusChangedAt",
+  "__v",
 ];
 
 function publicEditRecord(record) {
@@ -115,6 +127,7 @@ function publicEditRecord(record) {
   for (const field of editRecordFields) {
     if (record[field] !== undefined) dto[field] = record[field];
   }
+  if (dto.__v === undefined) dto.__v = 0;
   return dto;
 }
 
@@ -254,6 +267,47 @@ function clearPasswordResetRateLimit(email, action) {
   passwordResetRateLimits.delete(`${action}:${email}`);
 }
 
+function resetRuntimeState() {
+  loginLockouts.clear();
+  passwordResetRateLimits.clear();
+
+  const limiters = [
+    signupRateLimit,
+    forgotRateLimit,
+    totpChallengeRateLimit,
+    loginRateLimit,
+  ];
+
+  for (const limiter of limiters) {
+    if (limiter && typeof limiter.resetAll === "function") {
+      limiter.resetAll();
+    }
+  }
+
+  signlogColl = createInMemoryCollection("registration_coll");
+  visitorsOfPage = createInMemoryCollection("visitors_of_page");
+  loginAuditLogs = createInMemoryCollection("login_audit_logs");
+  recordAuditLogs = createInMemoryCollection("record_audit_logs");
+  errorReports = createInMemoryCollection("error_reports");
+  studentData = createInMemoryCollection("student_data");
+  receiptCounter = createInMemoryCollection("receipt_counter");
+  inMemoryObjectIdCounter = 1;
+}
+
+function getRuntimeState() {
+  return {
+    signlogColl,
+    visitorsOfPage,
+    loginAuditLogs,
+    recordAuditLogs,
+    errorReports,
+    studentData,
+    receiptCounter,
+    mongoReady,
+    mongoInitError,
+  };
+}
+
 function createModelRepository(model) {
   return {
     async insert(doc) {
@@ -277,6 +331,15 @@ function createModelRepository(model) {
     },
     async update(filter, updateDoc) {
       return applyMongoMaxTime(model.updateOne(filter, updateDoc)).exec();
+    },
+    async findOneAndUpdate(filter, updateDoc, options = {}) {
+      return applyMongoMaxTime(
+        model.findOneAndUpdate(filter, updateDoc, {
+          new: true,
+          upsert: true,
+          ...options,
+        }),
+      ).exec();
     },
     async createIndex(spec, options = {}) {
       return model.collection.createIndex(spec, options);
@@ -320,6 +383,31 @@ function createInMemoryCollection(name) {
   };
 
   return {
+    items,
+    async findOneAndUpdate(filter = {}, updateDoc = {}, options = {}) {
+      const shouldUpsert = Boolean(options.upsert);
+      const matching = items.find((item) => matchesFilter(item, filter));
+      let next;
+      if (!matching) {
+        if (!shouldUpsert) return null;
+        const base = Object.fromEntries(
+          Object.entries(filter).filter(([key]) => !key.startsWith("$")),
+        );
+        next = { ...base, ...updateDoc.$set };
+        if (updateDoc.$inc) {
+          for (const [key, value] of Object.entries(updateDoc.$inc)) {
+            const current = Number(next[key] || 0);
+            next[key] = current + Number(value);
+          }
+        }
+        items.push(next);
+        return next;
+      }
+      next = applyMongoUpdate(matching, updateDoc);
+      const idx = items.indexOf(matching);
+      items[idx] = next;
+      return next;
+    },
     async insert(doc) {
       if (
         name === "registration_coll" &&
@@ -334,11 +422,16 @@ function createInMemoryCollection(name) {
       }
       const record = {
         ...(name === "student_data"
-          ? { deletedAt: null, deletedBy: null }
+          ? { deletedAt: null, deletedBy: null, __v: 0 }
           : {}),
         ...doc,
+        __v: name === "student_data" ? Number(doc.__v ?? 0) : undefined,
         _id: doc._id || inMemoryObjectIdCounter.toString(16).padStart(24, "0"),
       };
+      if (name === "student_data") {
+        delete record.__v;
+        record.__v = 0;
+      }
       inMemoryObjectIdCounter += 1;
       items.push(record);
       if (typeof doc.email === "string") {
@@ -421,6 +514,7 @@ let loginAuditLogs;
 let recordAuditLogs;
 let errorReports;
 let studentData;
+let receiptCounter;
 let mongoReady = null;
 let mongoInitError = null;
 const ensureDbReady = createDbReadiness({
@@ -430,6 +524,7 @@ const ensureDbReady = createDbReadiness({
     Boolean(
       signlogColl &&
       studentData &&
+      receiptCounter &&
       errorReports &&
       visitorsOfPage &&
       loginAuditLogs &&
@@ -451,6 +546,7 @@ const recordError = (type, email, error) =>
 const deviceService = createDeviceService({
   getRecordRepository: () => studentData,
   getAuditRepository: () => recordAuditLogs,
+  getCounterRepository: () => receiptCounter,
 });
 const loginAuditService = createLoginAuditService({
   getUserRepository: () => signlogColl,
@@ -481,6 +577,7 @@ async function initializeMongo() {
     recordAuditLogs = createInMemoryCollection("record_audit_logs");
     errorReports = createInMemoryCollection("error_reports");
     studentData = createInMemoryCollection("student_data");
+    receiptCounter = createInMemoryCollection("receipt_counter");
     console.log("MongoDB Atlas is connected..!");
     return;
   }
@@ -500,6 +597,16 @@ async function initializeMongo() {
   recordAuditLogs = createModelRepository(RecordAuditLog);
   errorReports = createModelRepository(ErrorReport);
   studentData = createModelRepository(DeviceRecord);
+  const ReceiptCounter =
+    mongoose.models.ReceiptCounter ||
+    mongoose.model(
+      "ReceiptCounter",
+      new mongoose.Schema(
+        { _id: String, seq: { type: Number, default: 0 } },
+        { collection: "receipt_counter", strict: true, versionKey: false },
+      ),
+    );
+  receiptCounter = createModelRepository(ReceiptCounter);
 
   await Promise.all([
     signlogColl.createIndex({ email: 1 }, { unique: true }),
@@ -612,10 +719,23 @@ const studentFieldLimits = {
   epno: 16,
   eid: 64,
   rsn: 1000,
+  devicePhotos: 4096,
+  returnedBy: 120,
+  returnRelation: 60,
+  returnNotes: 1000,
+  onHoldNotes: 1000,
+  returnSignature: 1048576,
   mmodel: 120,
   imei: 15,
   mclr: 60,
 };
+const reasonPresetLabels = [
+  "Used during class",
+  "Ringing in exam",
+  "Playing games",
+  "Social media",
+  "Other (specify)",
+];
 const nameFields = new Set(["sname", "pname", "ename"]);
 const phoneFields = new Set(["spno", "ppno", "epno"]);
 const plainTextOptions = { allowedTags: [], allowedAttributes: {} };
@@ -628,24 +748,133 @@ class InputValidationError extends Error {
 }
 class InvalidCredentialsError extends Error {}
 
+function stripInjectedTextFragments(value) {
+  if (typeof value !== "string") return value;
+  return value
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/(?:javascript:|vbscript:|data:)[^\s]*/gi, " ")
+    .replace(/\b(?:alert|confirm|prompt)\s*\([^)]*\)/gi, " ")
+    .replace(/\bon\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function sanitizePlainText(value) {
   if (typeof value !== "string") return "";
-  return sanitizeHtml(value, plainTextOptions).replace(/\s+/g, " ").trim();
+  return stripInjectedTextFragments(
+    sanitizeHtml(value, plainTextOptions),
+  ).replace(/\s+/g, " ").trim();
+}
+
+function normalizeTextCase(value) {
+  if (typeof value !== "string") return value;
+  return value
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(
+      /(^|[\s'-])([a-z])/g,
+      (match, prefix, letter) => prefix + letter.toUpperCase(),
+    );
+}
+
+function normalizeIndianPhoneNumber(value) {
+  if (typeof value !== "string") return value;
+  const digits = value.replace(/\D/g, "");
+  if (!digits) return "";
+
+  const normalized = digits.startsWith("0") ? digits.slice(1) : digits;
+  if (normalized.length === 10) return `+91${normalized}`;
+  if (normalized.length === 12 && normalized.startsWith("91")) {
+    return `+${normalized}`;
+  }
+  if (normalized.length === 11 && normalized.startsWith("1")) {
+    return `+${normalized}`;
+  }
+  return `+${normalized}`;
 }
 
 function isValidRollNumber(value) {
   return typeof value === "string" && validator.isAlphanumeric(value);
 }
 
+function resolveReasonText(body) {
+  const presetValue =
+    typeof body.reasonPreset === "string" ? body.reasonPreset.trim() : "";
+  const customValue =
+    typeof body.reasonCustom === "string"
+      ? body.reasonCustom.trim()
+      : typeof body.rsn === "string"
+        ? body.rsn.trim()
+        : "";
+
+  if (!presetValue && !customValue) return "";
+  if (!presetValue || presetValue === "custom") return customValue;
+  if (presetValue === "Other (specify)") {
+    return customValue;
+  }
+  return customValue ? `${presetValue} — ${customValue}` : presetValue;
+}
+
 function sanitizeStudentField(field, value) {
   if (value === undefined || value === null) return value;
+
+  if (field === "devicePhotos") {
+    const rawValues = Array.isArray(value)
+      ? value
+      : typeof value === "string"
+        ? (() => {
+            try {
+              const parsed = JSON.parse(value);
+              return Array.isArray(parsed) ? parsed : [value];
+            } catch (error) {
+              return [value];
+            }
+          })()
+        : [];
+
+    const cleanedValues = rawValues
+      .slice(0, 3)
+      .map((item) => String(item || "").trim())
+      .filter(Boolean)
+      .map((item) => sanitizePlainText(item))
+      .filter(Boolean)
+      .filter((item) =>
+        /^(data:image\/[a-zA-Z0-9.+-]+;base64,|https?:\/\/|\/uploads\/|\/images\/|\/components\/)/i.test(item),
+      );
+
+    if (cleanedValues.length > 3)
+      throw new InputValidationError(field, `${field} can contain up to 3 images.`);
+    return cleanedValues;
+  }
+
   if (typeof value !== "string")
     throw new InputValidationError(field, `${field} must be text.`);
 
-  const cleanValue = sanitizePlainText(value);
+  let cleanValue = sanitizePlainText(value);
 
-  if (cleanValue.length > studentFieldLimits[field])
-    throw new InputValidationError(field, `${field} is too long.`);
+  if (field === "rno" || field === "sec") {
+    cleanValue = cleanValue.toUpperCase();
+  } else if (
+    [
+      "sname",
+      "pname",
+      "ename",
+      "clg",
+      "brch",
+      "mmodel",
+      "mclr",
+    ].includes(field)
+  ) {
+    cleanValue = normalizeTextCase(cleanValue);
+  } else if (field === "rsn" && cleanValue) {
+    const matchingPreset = reasonPresetLabels.find(
+      (label) => label.toLowerCase() === cleanValue.toLowerCase(),
+    );
+    cleanValue = matchingPreset || normalizeTextCase(cleanValue);
+  }
+
   if (
     nameFields.has(field) &&
     cleanValue &&
@@ -658,15 +887,15 @@ function sanitizeStudentField(field, value) {
   }
   if (field === "rno" && !isValidRollNumber(cleanValue))
     throw new InputValidationError(field, "Roll number must be alphanumeric.");
-  if (
-    phoneFields.has(field) &&
-    cleanValue &&
-    !/^\+?[1-9]\d{9,14}$/.test(cleanValue)
-  )
-    throw new InputValidationError(
-      field,
-      `${field} must contain 10 to 15 digits.`,
-    );
+  if (phoneFields.has(field)) {
+    cleanValue = normalizeIndianPhoneNumber(cleanValue);
+    if (cleanValue && !/^\+91[6-9]\d{9}$/.test(cleanValue)) {
+      throw new InputValidationError(
+        field,
+        `${field} must be a valid Indian mobile number.`,
+      );
+    }
+  }
   if (field === "imei" && !/^\d{15}$/.test(cleanValue))
     throw new InputValidationError(
       field,
@@ -677,6 +906,7 @@ function sanitizeStudentField(field, value) {
 }
 
 function normalizeStudentRecord(body, status = null) {
+  const resolvedReason = resolveReasonText(body);
   const record = {
     Date: body.Date,
     Time: body.Time,
@@ -692,14 +922,24 @@ function normalizeStudentRecord(body, status = null) {
     ename: body.ename,
     epno: body.epno,
     eid: body.eid,
-    rsn: body.rsn,
+    rsn: resolvedReason || body.rsn,
+    devicePhotos: body.devicePhotos,
+    returnedBy: body.returnedBy,
+    returnRelation: body.returnRelation,
+    returnedAt: body.returnedAt,
+    returnSignature: body.returnSignature || body.returnSignatureText,
+    returnNotes: body.returnNotes,
+    onHoldNotes: body.onHoldNotes || body.holdNotes || body.onholdNotes,
     mmodel: body.mmodel,
     imei: body.imei,
     mclr: body.mclr,
-    ...(status ? { status } : {}),
+    ...(status ? { status: normalizeDeviceStatus(status) } : {}),
   };
   for (const field of Object.keys(studentFieldLimits)) {
     record[field] = sanitizeStudentField(field, record[field]);
+  }
+  if (record.status && !VALID_DEVICE_STATUSES.includes(record.status)) {
+    throw new InputValidationError("status", "status is not supported.");
   }
   return record;
 }
@@ -778,6 +1018,20 @@ function buildSessionUser(user, visitorName) {
     sanitizePlainText(user.fullName || visitorName)
       .trim()
       .slice(0, 120) || email.split("@")[0];
+  const designation = sanitizePlainText(user.designation || "")
+    .trim()
+    .slice(0, 80);
+  const phoneNumber =
+    typeof user.phoneNumber === "string"
+      ? normalizeIndianPhoneNumber(sanitizePlainText(user.phoneNumber)).slice(
+          0,
+          20,
+        )
+      : "";
+  const avatarUrl =
+    typeof user.avatarUrl === "string"
+      ? sanitizePlainText(user.avatarUrl).trim().slice(0, 512)
+      : "";
   const role =
     typeof user.role === "string"
       ? sanitizePlainText(user.role).trim().slice(0, 32) || "staff"
@@ -798,6 +1052,9 @@ function buildSessionUser(user, visitorName) {
     email,
     role,
     fullName,
+    designation,
+    phoneNumber,
+    avatarUrl,
     preferences: {
       darkMode: storedPreferences.darkMode === true,
       lang: language,
@@ -813,7 +1070,6 @@ function buildSessionUser(user, visitorName) {
 }
 
 function createClientFingerprint(req) {
-  const ip = String(req.ip || "unknown").replace(/^::ffff:/i, "");
   const userAgent =
     (req && typeof req.get === "function" && req.get("user-agent")) ||
     (req && req.headers && req.headers["user-agent"]) ||
@@ -824,7 +1080,36 @@ function createClientFingerprint(req) {
   );
   return crypto
     .createHmac("sha256", key)
-    .update(`${ip}\0${String(userAgent).slice(0, 512)}`)
+    .update(String(userAgent).slice(0, 512))
+    .digest("hex");
+}
+
+function createClientIpFingerprint(req) {
+  const rawIp =
+    (req && req.headers && req.headers["x-forwarded-for"]) ||
+    (req && req.ip) ||
+    (req && req.socket && req.socket.remoteAddress) ||
+    "unknown";
+  const firstIp = String(rawIp)
+    .split(",")[0]
+    .trim()
+    .replace(/^::ffff:/i, "");
+  if (
+    !firstIp ||
+    firstIp === "unknown" ||
+    firstIp === "127.0.0.1" ||
+    firstIp === "::1" ||
+    firstIp === "localhost"
+  ) {
+    return null;
+  }
+  const key = normalizeEnvValue(
+    process.env.SESSION_SECRET,
+    "local-session-key",
+  );
+  return crypto
+    .createHmac("sha256", key)
+    .update(firstIp.slice(0, 64))
     .digest("hex");
 }
 
@@ -846,6 +1131,7 @@ function refreshCsrfToken(req, res) {
 async function establishUserSession(req, user, visitorName) {
   await regenerateSession(req);
   req.session.clientFingerprint = createClientFingerprint(req);
+  req.session.clientIpFingerprint = createClientIpFingerprint(req);
   const sessionUser = buildSessionUser(user, visitorName);
   req.session.user = sessionUser;
   await visitorService.recordVisit(sessionUser.fullName, sessionUser.email);
@@ -902,6 +1188,7 @@ function renderDatabaseErrorHome(req, res, message) {
     count1: 0,
     count2: 0,
     deletedCount: 0,
+    visitorSummary: { today: 0, thisMonth: 0, allTime: 0 },
     darkMode: Boolean(
       req.session.user.preferences && req.session.user.preferences.darkMode,
     ),
@@ -912,13 +1199,20 @@ function renderDatabaseErrorHome(req, res, message) {
 
 router.use((req, res, next) => {
   if (!hasSessionUser(req)) return next();
-  if (
-    fingerprintsMatch(
-      req.session.clientFingerprint,
-      createClientFingerprint(req),
-    )
-  )
-    return next();
+  const currentFingerprint = createClientFingerprint(req);
+  const currentIpFingerprint = createClientIpFingerprint(req);
+  const storedFingerprint = req.session.clientFingerprint;
+  const storedIpFingerprint = req.session.clientIpFingerprint;
+  const userAgentMatches = fingerprintsMatch(
+    storedFingerprint,
+    currentFingerprint,
+  );
+  const ipMatches =
+    !storedIpFingerprint ||
+    !currentIpFingerprint ||
+    fingerprintsMatch(storedIpFingerprint, currentIpFingerprint);
+
+  if (userAgentMatches && ipMatches) return next();
 
   req.session.destroy(() => {
     res.clearCookie("session", {
@@ -1003,11 +1297,49 @@ router.get("/health", async (req, res) => {
 });
 
 router.get("/", (req, res) => {
+  if (hasSessionUser(req)) return res.redirect("/home");
   res.render("signLog_net");
 });
 
 router.get("/forgot", (req, res) => {
+  if (hasSessionUser(req)) return res.redirect("/home");
   res.render("forgot");
+});
+
+router.get("/profile", requireLogin, async (req, res) => {
+  try {
+    await ensureDbReady();
+    const user = await findUserByEmail(req.session.user.email);
+    if (!user) return res.redirect("/");
+    const sessionTtlMs =
+      Number(req.session.cookie && req.session.cookie.maxAge) ||
+      8 * 60 * 60 * 1000;
+    const csrfToken = refreshCsrfToken(req, res);
+    res.render("profile", {
+      sessionUser: req.session.user,
+      user: {
+        email: user.emailDisplay || user.email || req.session.user.email,
+        fullName: user.fullName || req.session.user.fullName,
+        designation: user.designation || req.session.user.designation || "",
+        phoneNumber: user.phoneNumber || req.session.user.phoneNumber || "",
+        avatarUrl: user.avatarUrl || req.session.user.avatarUrl || "",
+        createdAt: user.createdAt || null,
+      },
+      csrfToken,
+      sessionExpiresAt: Date.now() + sessionTtlMs,
+      sessionTtlMs,
+      darkMode: Boolean(
+        req.session.user.preferences && req.session.user.preferences.darkMode,
+      ),
+      previousLogin: req.session.user.previousLogin || null,
+    });
+  } catch (err) {
+    await recordError("profile-page", req.session.user.email, err);
+    res.status(500).render("error", {
+      message: "Unable to load your profile right now.",
+      error: { status: 500 },
+    });
+  }
 });
 
 router.post(
@@ -1124,8 +1456,64 @@ router.post(
       return res.status(400).send("Enter your email and password.");
     try {
       await ensureDbReady();
+      const existingUser = await findUserByEmail(email);
+      if (existingUser) {
+        const lockedUntilMs =
+          existingUser.lockedUntil instanceof Date
+            ? existingUser.lockedUntil.getTime()
+            : existingUser.lockedUntil
+              ? new Date(existingUser.lockedUntil).getTime()
+              : 0;
+        if (lockedUntilMs > Date.now()) {
+          return res.status(429).json({
+            error:
+              "This account is temporarily locked because of repeated failed login attempts.",
+            retryAfter: Math.max(1, lockedUntilMs - Date.now()),
+          });
+        }
+        if (lockedUntilMs && lockedUntilMs <= Date.now()) {
+          await authService.updateUser(
+            { _id: existingUser._id },
+            { $set: { failedLoginAttempts: 0, lockedUntil: null } },
+          );
+        }
+      }
+
       const data = await authService.authenticate(email, password);
-      if (!data) throw new InvalidCredentialsError("Invalid credentials");
+      if (!data) {
+        if (existingUser) {
+          const nextAttempts =
+            Number(existingUser.failedLoginAttempts || 0) + 1;
+          const shouldLock = nextAttempts >= USER_LOGIN_FAILURE_LIMIT;
+          await authService.updateUser(
+            { _id: existingUser._id },
+            {
+              $set: {
+                failedLoginAttempts: shouldLock
+                  ? USER_LOGIN_FAILURE_LIMIT
+                  : nextAttempts,
+                lockedUntil: shouldLock
+                  ? new Date(Date.now() + USER_LOGIN_LOCKOUT_MS)
+                  : null,
+              },
+            },
+          );
+          if (shouldLock) {
+            return res.status(429).json({
+              error:
+                "This account is temporarily locked because of repeated failed login attempts.",
+              retryAfter: USER_LOGIN_LOCKOUT_MS,
+            });
+          }
+        }
+        throw new InvalidCredentialsError("Invalid credentials");
+      }
+
+      await authService.updateUser(
+        { _id: data._id },
+        { $set: { failedLoginAttempts: 0, lockedUntil: null } },
+      );
+
       const visitorName =
         sanitizePlainText(req.body.uname).slice(0, 120) ||
         email.split("@")[0] ||
@@ -1138,6 +1526,7 @@ router.post(
           email: data.email,
           visitorName,
           clientFingerprint: createClientFingerprint(req),
+          clientIpFingerprint: createClientIpFingerprint(req),
           expiresAt: Date.now() + TOTP_CHALLENGE_TTL_MS,
         };
         const csrfToken = refreshCsrfToken(req, res);
@@ -1146,6 +1535,7 @@ router.post(
 
       await establishUserSession(req, data, visitorName);
       await recordLoginAudit(data, req, true, null);
+      req.flash("success", "Welcome back. Dashboard ready.");
       res.sendStatus(204);
     } catch (err) {
       if (err instanceof InvalidCredentialsError)
@@ -1159,6 +1549,122 @@ router.post(
     }
   },
 );
+
+router.post("/profile/update", requireLogin, async (req, res) => {
+  try {
+    await ensureDbReady();
+    const user = await findUserByEmail(req.session.user.email);
+    if (!user) return res.redirect("/");
+
+    const fullName = sanitizePlainText(
+      typeof req.body.fullName === "string" ? req.body.fullName : "",
+    )
+      .trim()
+      .slice(0, 120);
+    const designation = sanitizePlainText(
+      typeof req.body.designation === "string" ? req.body.designation : "",
+    )
+      .trim()
+      .slice(0, 80);
+    const rawPhoneNumber =
+      typeof req.body.phoneNumber === "string" ? req.body.phoneNumber : "";
+    const phoneNumber = rawPhoneNumber
+      ? normalizeIndianPhoneNumber(sanitizePlainText(rawPhoneNumber)).slice(
+          0,
+          20,
+        )
+      : "";
+    if (rawPhoneNumber && !/^\+91[6-9]\d{9}$/.test(phoneNumber)) {
+      throw new InputValidationError(
+        "phoneNumber",
+        "Enter a valid Indian mobile number.",
+      );
+    }
+    const avatarUrl =
+      typeof req.body.avatarUrl === "string"
+        ? sanitizePlainText(req.body.avatarUrl).trim().slice(0, 512)
+        : "";
+    if (avatarUrl && !/^https?:\/\//i.test(avatarUrl)) {
+      throw new InputValidationError(
+        "avatarUrl",
+        "Avatar URL must begin with http:// or https://.",
+      );
+    }
+
+    const result = await authService.updateUser(
+      { _id: user._id },
+      {
+        $set: {
+          fullName,
+          designation,
+          phoneNumber,
+          avatarUrl,
+        },
+      },
+    );
+    if (!result.matchedCount || result.ok === 0)
+      return res.status(409).send("The profile could not be updated.");
+
+    req.session.user = {
+      ...req.session.user,
+      fullName,
+      designation,
+      phoneNumber,
+      avatarUrl,
+    };
+    req.flash("success", "Profile updated successfully.");
+    res.redirect("/profile");
+  } catch (err) {
+    if (err instanceof InputValidationError)
+      return res.status(422).send(err.message);
+    console.error("Profile update error:", err);
+    await recordError("profile-update", req.session.user.email, err);
+    return res.status(500).send("Unable to update your profile right now.");
+  }
+});
+
+router.post("/profile/delete", requireLogin, async (req, res) => {
+  try {
+    const currentPwd =
+      typeof req.body.currentPwd === "string" ? req.body.currentPwd : "";
+    if (!currentPwd.trim()) {
+      req.flash(
+        "error",
+        "Enter your current password to confirm account deletion.",
+      );
+      return res.redirect("/profile");
+    }
+
+    await ensureDbReady();
+    const result = await authService.deleteAccount(
+      req.session.user.email,
+      currentPwd,
+    );
+    if (result.error) {
+      req.flash("error", result.error);
+      return res.redirect("/profile");
+    }
+
+    if (req.session && typeof req.session.destroy === "function") {
+      await new Promise((resolve, reject) =>
+        req.session.destroy((error) => (error ? reject(error) : resolve())),
+      );
+    }
+    res.clearCookie("session", {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+    });
+    req.flash("success", "Your account has been deleted.");
+    return res.redirect("/");
+  } catch (err) {
+    console.error("Account delete error:", err);
+    await recordError("profile-delete", req.session.user.email, err);
+    req.flash("error", "Unable to delete your account right now.");
+    return res.redirect("/profile");
+  }
+});
 
 router.post(
   "/postchangepassword",
@@ -1203,8 +1709,13 @@ router.post("/postlogin/totp", totpChallengeRateLimit, async (req, res) => {
   const pending = req.session && req.session.pendingTotpUser;
   if (!pending || pending.expiresAt <= Date.now())
     return res.status(401).send("Verification expired. Please sign in again.");
+  const currentFingerprint = createClientFingerprint(req);
+  const currentIpFingerprint = createClientIpFingerprint(req);
   if (
-    !fingerprintsMatch(pending.clientFingerprint, createClientFingerprint(req))
+    !fingerprintsMatch(pending.clientFingerprint, currentFingerprint) ||
+    (pending.clientIpFingerprint &&
+      currentIpFingerprint &&
+      !fingerprintsMatch(pending.clientIpFingerprint, currentIpFingerprint))
   )
     return res.status(401).send("Verification expired. Please sign in again.");
 
@@ -1275,12 +1786,10 @@ router.post("/totp/setup", requireLogin, async (req, res) => {
     res.json({ secret, qrCode: await QRCode.toDataURL(uri) });
   } catch (err) {
     await recordError("totp-setup", req.session.user.email, err);
-    res
-      .status(503)
-      .json({
-        error:
-          "Unable to start setup. Check the TOTP encryption key configuration.",
-      });
+    res.status(503).json({
+      error:
+        "Unable to start setup. Check the TOTP encryption key configuration.",
+    });
   }
 });
 
@@ -1365,6 +1874,7 @@ router.post("/totp/disable", requireLogin, async (req, res) => {
     });
     await regenerateSession(req);
     req.session.clientFingerprint = createClientFingerprint(req);
+    req.session.clientIpFingerprint = createClientIpFingerprint(req);
     req.session.user = buildSessionUser(
       user,
       user.fullName || user.emailDisplay || user.email,
@@ -1520,9 +2030,12 @@ router.get("/api/records", requireLogin, async (req, res) => {
   if (requestedLength === null || requestedLength === 0)
     return invalidQuery("length", "length must be a positive integer.");
 
-  const status = query.status;
-  if (status !== undefined && !["At_office", "Returned"].includes(status))
-    return invalidQuery("status", "status must be At_office or Returned.");
+  const status = normalizeDeviceStatus(query.status);
+  if (status !== undefined && !VALID_DEVICE_STATUSES.includes(status))
+    return invalidQuery(
+      "status",
+      `status must be one of: ${VALID_DEVICE_STATUSES.join(", ")}.`,
+    );
 
   const searchGroup = query.search;
   const searchValue =
@@ -1625,16 +2138,38 @@ router.get("/api/records/:id/audit", requireLogin, async (req, res) => {
 router.get("/audit", requireLogin, async (req, res) => {
   try {
     await ensureDbReady();
-    const [data, deletedData, counts, auditEvents] = await Promise.all([
+    const [
+      data,
+      deletedData,
+      counts,
+      auditEvents,
+      dashboardKpis,
+      dashboardHeatmap,
+      repeatOffenders,
+      employeeLeaderboard,
+      dashboardActivity,
+      agingKpis,
+      visitorSummary,
+    ] = await Promise.all([
       deviceService.listAll(),
       deviceService.listDeleted(
         new Date(Date.now() - RECYCLE_BIN_RETENTION_MS),
       ),
       deviceService.getDashboardCounts(),
       deviceService.listRecentAuditLogs(500),
+      deviceService.getDashboardKpiTrends(),
+      deviceService.getDashboardHeatmap(),
+      deviceService.getRepeatOffenders(10),
+      deviceService.getEmployeeLeaderboard(5),
+      deviceService.getDashboardActivity(20),
+      deviceService.getDashboardAgingKpis(),
+      visitorService.getVisitorSummary(),
     ]);
     const data1 = data.filter((record) => record.status === "At_office");
     const data2 = data.filter((record) => record.status === "Returned");
+    const sessionTtlMs =
+      Number(req.session.cookie && req.session.cookie.maxAge) ||
+      8 * 60 * 60 * 1000;
     res.render("home", {
       data,
       data1,
@@ -1645,7 +2180,17 @@ router.get("/audit", requireLogin, async (req, res) => {
       count: counts.total,
       count1: counts.atOffice,
       count2: counts.returned,
+      dashboardKpis,
+      dashboardHeatmap,
+      repeatOffenders,
+      employeeLeaderboard,
+      dashboardActivity,
+      agingKpis,
+      visitorSummary,
       email: req.session.user.email,
+      sessionUser: req.session.user,
+      sessionExpiresAt: Date.now() + sessionTtlMs,
+      sessionTtlMs,
       darkMode: Boolean(
         req.session.user.preferences && req.session.user.preferences.darkMode,
       ),
@@ -1694,16 +2239,37 @@ router.get("/home", requireLogin, async (req, res) => {
   res.locals.email = req.session.user.email;
   try {
     await ensureDbReady();
-    const [data, deletedData, counts] = await Promise.all([
+    const [
+      data,
+      deletedData,
+      counts,
+      dashboardKpis,
+      dashboardHeatmap,
+      repeatOffenders,
+      employeeLeaderboard,
+      dashboardActivity,
+      agingKpis,
+      visitorSummary,
+    ] = await Promise.all([
       deviceService.listAll(),
       deviceService.listDeleted(
         new Date(Date.now() - RECYCLE_BIN_RETENTION_MS),
       ),
       deviceService.getDashboardCounts(),
+      deviceService.getDashboardKpiTrends(),
+      deviceService.getDashboardHeatmap(),
+      deviceService.getRepeatOffenders(10),
+      deviceService.getEmployeeLeaderboard(5),
+      deviceService.getDashboardActivity(20),
+      deviceService.getDashboardAgingKpis(),
+      visitorService.getVisitorSummary(),
     ]);
     const data1 = data.filter((record) => record.status === "At_office");
     const data2 = data.filter((record) => record.status === "Returned");
     const data3 = data;
+    const sessionTtlMs =
+      Number(req.session.cookie && req.session.cookie.maxAge) ||
+      8 * 60 * 60 * 1000;
     res.render("home", {
       data,
       data1,
@@ -1714,6 +2280,16 @@ router.get("/home", requireLogin, async (req, res) => {
       count: counts.total,
       count1: counts.atOffice,
       count2: counts.returned,
+      dashboardKpis,
+      dashboardHeatmap,
+      repeatOffenders,
+      employeeLeaderboard,
+      dashboardActivity,
+      agingKpis,
+      visitorSummary,
+      sessionUser: req.session.user,
+      sessionExpiresAt: Date.now() + sessionTtlMs,
+      sessionTtlMs,
       darkMode: Boolean(
         req.session.user.preferences && req.session.user.preferences.darkMode,
       ),
@@ -1743,12 +2319,27 @@ router.post(
         req.session.user.email,
       );
       console.log(dbResponse);
+      req.flash("success", "Record created successfully.");
       res.redirect("/home");
     } catch (err) {
       if (err instanceof InputValidationError)
         return res.status(422).json({
           errors: [{ field: err.field || "body", message: err.message }],
         });
+      if (err && err.statusCode === 409) {
+        const duplicateType = err.duplicateType || "duplicate";
+        const message =
+          duplicateType === "class-roll"
+            ? "A student with this class roll number already exists."
+            : duplicateType === "imei"
+              ? "A record with this IMEI already exists."
+              : "A duplicate record already exists.";
+        return res.status(409).json({
+          error: "Duplicate record detected.",
+          message,
+          details: { type: duplicateType },
+        });
+      }
       console.error("Insert data error:", err);
       await recordError("create-record", req.session.user.email, err);
       return renderDatabaseErrorHome(
@@ -1768,10 +2359,33 @@ router.post(
     if (!hasSessionUser(req))
       return res.status(401).send("Authentication required.");
     try {
+      const validation = returnDeviceSchema.validate(req.body, {
+        abortEarly: false,
+        stripUnknown: false,
+        convert: true,
+      });
+      if (validation.error) {
+        return res.status(422).json({
+          errors: validation.error.details.map((detail) => ({
+            field: detail.path.length ? detail.path.join(".") : "body",
+            message: detail.message,
+          })),
+        });
+      }
+      req.body = validation.value;
       await ensureDbReady();
+      const returnMeta = {
+        returnedBy: req.body.returnedBy,
+        returnRelation: req.body.returnRelation,
+        returnedAt: req.body.returnedAt,
+        returnSignature:
+          req.body.returnSignature || req.body.returnSignatureText || null,
+        returnNotes: req.body.returnNotes,
+      };
       const docs = await deviceService.markReturned(
         req.body._id,
         req.session.user.email,
+        returnMeta,
       );
       if (!docs.matchedCount) return res.status(404).send("Record not found.");
       console.log(docs);
@@ -1814,11 +2428,12 @@ router.post(
     if (!hasSessionUser(req)) return res.redirect("/");
     try {
       await ensureDbReady();
-      const data = normalizeStudentRecord(req.body);
+      const data = normalizeStudentRecord(req.body, req.body.status || null);
       const dbResponse = await deviceService.updateById(
         req.body._id,
         data,
         req.session.user.email,
+        req.body.__v,
       );
       console.log(dbResponse);
       res.redirect("/home");
@@ -1827,6 +2442,12 @@ router.post(
         return res.status(422).json({
           errors: [{ field: err.field || "body", message: err.message }],
         });
+      if (err && err.statusCode === 409) {
+        return res.status(409).json({
+          error:
+            "Record was changed by another staff member. Reload and try again.",
+        });
+      }
       console.error("Update data error:", err);
       await recordError("update", req.session.user.email, err);
       res.status(500).send("An error occurred while updating the data.");
@@ -1863,6 +2484,89 @@ router.post(
   },
 );
 
+router.get("/session/status", requireLogin, (req, res) => {
+  const maxAge = Number(
+    req.session && req.session.cookie && req.session.cookie.maxAge
+      ? req.session.cookie.maxAge
+      : 8 * 60 * 60 * 1000,
+  );
+  const expiresAt = Date.now() + maxAge;
+  res.json({
+    ok: true,
+    expiresAt,
+    remainingMs: Math.max(0, expiresAt - Date.now()),
+    maxAge,
+  });
+});
+
+router.post("/session/extend", requireLogin, (req, res) => {
+  const maxAge = Number(
+    req.session && req.session.cookie && req.session.cookie.maxAge
+      ? req.session.cookie.maxAge
+      : 8 * 60 * 60 * 1000,
+  );
+  if (req.session && typeof req.session.touch === "function") {
+    req.session.touch();
+  }
+  const expiresAt = Date.now() + maxAge;
+  res.json({
+    ok: true,
+    expiresAt,
+    remainingMs: Math.max(0, expiresAt - Date.now()),
+    maxAge,
+  });
+});
+
+router.post("/user/preferences", requireLogin, async (req, res) => {
+  if (!hasSessionUser(req))
+    return res.status(401).json({ error: "Authentication required" });
+
+  const requestedDarkMode =
+    req.body && typeof req.body.darkMode !== "undefined"
+      ? Boolean(req.body.darkMode)
+      : false;
+
+  try {
+    await ensureDbReady();
+    const user = await findUserByEmail(req.session.user.email);
+    if (!user) return res.status(404).json({ error: "Account not found." });
+
+    const savedPreferences =
+      user.preferences && typeof user.preferences === "object"
+        ? user.preferences
+        : {};
+    const nextPreferences = {
+      darkMode: requestedDarkMode,
+      lang:
+        typeof savedPreferences.lang === "string"
+          ? sanitizePlainText(savedPreferences.lang).trim().slice(0, 16) || "en"
+          : "en",
+    };
+
+    await signlogColl.update(
+      { _id: user._id },
+      { $set: { preferences: nextPreferences } },
+    );
+
+    req.session.user = {
+      ...req.session.user,
+      preferences: {
+        darkMode: requestedDarkMode,
+        lang: nextPreferences.lang,
+      },
+    };
+
+    return res.json({
+      ok: true,
+      darkMode: requestedDarkMode,
+      csrfToken: refreshCsrfToken(req, res),
+    });
+  } catch (err) {
+    await recordError("user-preferences", req.session.user.email, err);
+    return res.status(500).json({ error: "Unable to save your preferences." });
+  }
+});
+
 router.get("/logout", (req, res) => {
   req.session.destroy(() => res.redirect("/"));
 });
@@ -1892,6 +2596,7 @@ router.use(
     regenerateSession,
     establishUserSession,
     createClientFingerprint,
+    createClientIpFingerprint,
     fingerprintsMatch,
     verifyTotpToken,
     decryptTotpSecret,
@@ -1907,4 +2612,11 @@ router.use(
   }),
 );
 
+Object.defineProperties(router, {
+  InputValidationError: { value: InputValidationError },
+  normalizeStudentRecord: { value: normalizeStudentRecord },
+});
+
 module.exports = router;
+module.exports.resetRuntimeState = resetRuntimeState;
+module.exports.getRuntimeState = getRuntimeState;

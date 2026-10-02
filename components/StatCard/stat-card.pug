@@ -1,6 +1,14 @@
-mixin statCard(icon, target, label, value, variant)
+mixin statCard(icon, target, label, value, variant, trend)
 	.dd1.stat-card-component(class=variant)
 		p.p1
 			i.fa(class=icon + " stat-ico")
 			a.stat-link(data-toggle="tab", href=target)= label
 		.pp1= value
+		if trend
+			.stat-card-meta
+				span.trend-badge(class=trend.delta >= 0 ? "positive" : "negative")
+					span.trend-arrow= trend.delta >= 0 ? "▲" : "▼"
+					| #{Math.abs(trend.delta)}%
+				span.trend-copy vs last 30 days
+				svg.sparkline(viewBox='0 0 120 28' preserveAspectRatio='none' aria-label=label + ' trend over 30 days')
+					polyline(points=trend.sparkline)

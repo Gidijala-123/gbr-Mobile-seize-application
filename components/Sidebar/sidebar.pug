@@ -1,5 +1,6 @@
 aside.sidebar-component
-  #sidebar.nav-collapse
+  #mobile-sidebar-backdrop(aria-hidden='true')
+  #sidebar.nav-collapse(role='navigation' aria-label='Primary navigation' aria-hidden='false')
     //- Sidebar brand (no image — clean icon + text)
     .sidebar-brand
       .sidebar-brand-icon
@@ -43,6 +44,11 @@ aside.sidebar-component
           .nav-icon-wrap
             i.fa.fa-history
           span.nav-text Record Activity
+      li.sub-menu
+        a(data-toggle='tab', href='#analytics', data-tooltip='Analytics')
+          .nav-icon-wrap
+            i.fa.fa-bar-chart
+          span.nav-text Analytics
       li.sub-menu
         a(data-toggle='tab', href='#search-edit', data-tooltip='Search')
           .nav-icon-wrap

@@ -25,10 +25,11 @@ include data-table.pug
           th Employee_name
           th Employee_phno
           th Employee_ID
+          th Photo
           th Action
       tbody
         each member in data1
-          tr
+          tr(data-device-photos=member.devicePhotos && member.devicePhotos.length ? JSON.stringify(member.devicePhotos) : '')
             td #{member.Date}
             td #{member.Time}
             td #{member._id}
@@ -49,6 +50,19 @@ include data-table.pug
             td #{member.epno}
             td #{member.eid}
             td
-              button.del-btn(data-record-id=member._id data-rno=member.rno data-name=member.sname title="Delete record")
+              if member.devicePhotos && member.devicePhotos.length
+                .device-table-thumb-strip
+                  each photo in member.devicePhotos.slice(0, 3)
+                    img.device-table-thumb(src=photo alt='Device photo thumbnail')
+              else
+                span.device-table-no-photo —
+            td
+              button.row-details-toggle(type="button" aria-expanded="false" aria-label="Expand record details" title="Expand record details")
+                i.fa.fa-plus(aria-hidden="true")
+              button.return-btn(type="button" data-record-id=member._id data-rno=member.rno data-name=member.sname data-student-name=member.sname title="Mark as returned")
+                i.fa.fa-check(aria-hidden="true")
+                |  Return
+              |
+              button.del-btn(data-action='delete' data-record-id=member._id data-rno=member.rno data-name=member.sname title="Delete record")
                 i.fa.fa-trash
 

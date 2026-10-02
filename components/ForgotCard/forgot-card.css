@@ -1,3 +1,14 @@
+.forgot-card-component :is(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid #0891b2;
+  outline-offset: 2px;
+}
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
 /* ForgotCard component styles; keep selectors namespaced. */
 a.forgot-link {
   font-size: 12px;

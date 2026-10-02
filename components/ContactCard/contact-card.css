@@ -398,6 +398,19 @@ body.home-body #contact .staff-search-input .fa {
   transform: translateY(-50%);
 }
 
+body.home-body #contact .staff-directory-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+body.home-body #contact .staff-category-group > h3 {
+  margin: 0 0 10px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 800;
+}
+
 body.home-body #contact .staff-directory-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
@@ -493,6 +506,28 @@ body.home-body #contact .staff-profile-id {
   margin: 0;
   color: #64748b;
   font-size: 12px;
+}
+
+body.home-body #contact .staff-profile-phone {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+body.home-body #contact .staff-profile-phone .fa {
+  color: #0f766e;
+}
+
+body.home-body #contact .staff-profile-phone a {
+  color: inherit;
+  text-decoration: none;
+}
+
+body.home-body #contact .staff-profile-phone a:hover {
+  text-decoration: underline;
 }
 
 body.home-body #contact .staff-profile-id .fa {

@@ -4,9 +4,15 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+    "dev": "node --watch ./bin/www",
+    "seed": "node scripts/seed.js",
+    "debug": "node --inspect-brk ./bin/www",
     "build": "npm install --legacy-peer-deps",
+    "audit": "npm audit --audit-level=high",
     "check": "node --check app.js && node --check routes/index.js",
-    "test": "node scripts/app-tests.js"
+    "lint": "node --check app.js && node --check routes/index.js && node --check scripts/seed.js && node --check scripts/app-tests.js",
+    "test": "node scripts/app-tests.js",
+    "test:watch": "node --watch scripts/app-tests.js"
   },
   "engines": {
     "node": ">=20.0.0",
@@ -14,6 +20,7 @@
   },
   "dependencies": {
     "@dr.pogodin/csurf": "^1.18.1",
+    "bootstrap": "3.4.1",
     "compression": "^1.8.2",
     "connect-mongo": "^6.0.0",
     "connect-timeout": "^1.9.1",
@@ -29,6 +36,8 @@
     "helmet": "^8.3.0",
     "http-errors": "^2.0.0",
     "joi": "^18.2.9",
+    "jquery": "3.7.1",
+    "jquery-ui-dist": "1.13.2",
     "mongodb": "^6.21.0",
     "mongoose": "^9.10.3",
     "morgan": "^1.10.0",

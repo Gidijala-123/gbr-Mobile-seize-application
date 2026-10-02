@@ -1,3 +1,31 @@
+body.home-body .skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 20000;
+  padding: 10px 14px;
+  transform: translateY(-160%);
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.25);
+}
+
+body.home-body .skip-link:focus {
+  transform: translateY(0);
+}
+
+body.home-body :is(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid #0891b2 !important;
+  outline-offset: 2px !important;
+}
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  body.home-body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
 /*
 Template Name: DASHGUM FREE - Bootstrap 3.2 Admin Theme
 Template Version: 1.0
@@ -1795,7 +1823,12 @@ body.home-body * {
 @media (max-width: 768px) {
   body.home-body #main-content {
     left: 0 !important;
-    padding: 20px 16px 120px !important;
+    padding: 20px 12px 120px !important;
+  }
+
+  body.home-body .wrapper {
+    padding-left: 8px;
+    padding-right: 8px;
   }
 
   body.home-body p.anim-typewriter {
@@ -1804,6 +1837,14 @@ body.home-body * {
 
   body.home-body .tab-pane.align {
     padding: 16px;
+  }
+
+  body.home-body .btn,
+  body.home-body .btn2,
+  body.home-body button {
+    min-height: 44px;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 
   body.home-body .btn2 {
@@ -3444,14 +3485,14 @@ body.home-body.dark-mode #dboard>p.anim-typewriter {
   padding: 0 !important;
 }
 
-  body.home-body #auditlist.tab-pane.align {
-    padding: 24px !important;
-  }
+body.home-body #auditlist.tab-pane.align {
+  padding: 24px !important;
+}
 
-  @media (max-width: 767px) {
-    body.home-body #auditlist.tab-pane.align {
-      padding: 16px !important;
-    }
+@media (max-width: 767px) {
+  body.home-body #auditlist.tab-pane.align {
+    padding: 16px !important;
   }
+}
 
 /* ── Responsive ─────────────────────────────────────────────────── */

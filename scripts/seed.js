@@ -328,6 +328,22 @@ const VISITORS = [
   },
 ];
 
+async function insertIfMissing(collection, filter, createDocument) {
+  const existing = await collection.findOne(filter, { projection: { _id: 1 } });
+  if (existing) return false;
+
+  const document = typeof createDocument === "function"
+    ? await createDocument()
+    : createDocument;
+  try {
+    await collection.insertOne(document);
+    return true;
+  } catch (error) {
+    if (error && error.code === 11000) return false;
+    throw error;
+  }
+}
+
 // ── Main ───────────────────────────────────────────────────────────────────
 
 async function seed() {
@@ -352,24 +368,22 @@ async function seed() {
   await regColl.createIndex({ email: 1 }, { unique: true });
 
   let regInserted = 0;
+  let regSkipped = 0;
   for (const account of STAFF_ACCOUNTS) {
-    try {
-      await regColl.insertOne({
+    const inserted = await insertIfMissing(regColl, { email: account.email }, async () => ({
         email: account.email,
         pwd: await hashPassword(account.password),
         createdAt: new Date(),
-      });
+      }));
+    if (inserted) {
       console.log(`  ✓ ${account.email} (password: ${account.password})`);
       regInserted++;
-    } catch (err) {
-      if (err.code === 11000) {
-        console.log(`  ⚠  ${account.email} already exists — skipped`);
-      } else {
-        throw err;
-      }
+    } else {
+      console.log(`  ⚠  ${account.email} already exists — skipped`);
+      regSkipped++;
     }
   }
-  console.log(`  → ${regInserted} account(s) inserted\n`);
+  console.log(`  → ${regInserted} account(s) inserted, ${regSkipped} skipped\n`);
 
   // ── 2. student_data ─────────────────────────────────────────────────────
   console.log("Seeding student_data...");
@@ -378,26 +392,44 @@ async function seed() {
   await stuColl.createIndex({ status: 1 });
 
   let stuInserted = 0;
+  let stuSkipped = 0;
   for (const record of STUDENT_RECORDS) {
-    try {
-      await stuColl.insertOne(record);
+    const inserted = await insertIfMissing(
+      stuColl,
+      {
+        rno: record.rno,
+        clg: record.clg,
+        brch: record.brch,
+        year: record.year,
+        sec: record.sec,
+      },
+      record,
+    );
+    if (inserted) {
       console.log(`  ✓ ${record.rno} — ${record.sname} [${record.status}]`);
       stuInserted++;
-    } catch (err) {
-      if (err.code === 11000) {
-        console.log(`  ⚠  ${record.rno} already exists — skipped`);
-      } else {
-        throw err;
-      }
+    } else {
+      console.log(`  ⚠  ${record.rno} already exists — skipped`);
+      stuSkipped++;
     }
   }
-  console.log(`  → ${stuInserted} student record(s) inserted\n`);
+  console.log(`  → ${stuInserted} student record(s) inserted, ${stuSkipped} skipped\n`);
 
   // ── 3. visitors_of_page ─────────────────────────────────────────────────
   console.log("Seeding visitors_of_page...");
   const visColl = db.collection("visitors_of_page");
-  const visResult = await visColl.insertMany(VISITORS);
-  console.log(`  → ${visResult.insertedCount} visitor log(s) inserted\n`);
+  let visitorsInserted = 0;
+  let visitorsSkipped = 0;
+  for (const visitor of VISITORS) {
+    const inserted = await insertIfMissing(
+      visColl,
+      { email: visitor.email, time: visitor.time },
+      visitor,
+    );
+    if (inserted) visitorsInserted++;
+    else visitorsSkipped++;
+  }
+  console.log(`  → ${visitorsInserted} visitor log(s) inserted, ${visitorsSkipped} skipped\n`);
 
   // ── 4. error_reports — leave existing 2 docs, just print count ──────────
   const errCount = await db.collection("error_reports").countDocuments();
@@ -420,7 +452,11 @@ async function seed() {
   await client.close();
 }
 
-seed().catch((err) => {
-  console.error("Seed failed:", err.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  seed().catch((err) => {
+    console.error("Seed failed:", err.message);
+    process.exit(1);
+  });
+}
+
+module.exports = { insertIfMissing, seed };

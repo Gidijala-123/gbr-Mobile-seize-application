@@ -28,6 +28,17 @@ PORT=4444
 NODE_ENV=development
 GMAIL_USER=your-email@gmail.com
 GMAIL_PASS=your-gmail-app-password-without-spaces
+SMTP_HOST=
+SMTP_PORT=587
+SMTP_SECURE=
+SMTP_USER=
+SMTP_PASS=
+SMTP_REJECT_UNAUTHORIZED=true
+EMAIL_FROM_NAME=GBR Mobile Storage
+EMAIL_FROM_ADDRESS=
+COLLEGE_NAME=Aditya College of Institutions
+COLLEGE_ADDRESS=Aditya PG College, Ayodhya Nagar, Kakinada, Andhra Pradesh 533437
+COLLEGE_PHONE=0884-2346661
 ```
 
 Notes:
@@ -35,6 +46,9 @@ Notes:
 - `MONGODB_URI` is required for the app and session store to start.
 - `SESSION_SECRET` is required in production.
 - For Gmail, use a 16-character app password. If you paste it with spaces, the app now strips whitespace automatically for smoother setup.
+- `EMAIL_FROM_ADDRESS` is optional and falls back to `GMAIL_USER`; custom Gmail sender addresses must be configured as authorized send-as identities.
+- College branding variables are optional and default to the institution details shown on the Contact Staff page.
+- Leave `SMTP_HOST` blank for Gmail. For a local MailHog/MailDev server, set its host/port and use `SMTP_REJECT_UNAUTHORIZED=false` only on the trusted local connection.
 
 ### Authentication and account access
 
@@ -98,7 +112,7 @@ Notes:
 ### Frontend
 
 - Pug templates
-- AngularJS 1.7 for authentication and password-recovery interactions
+- Native HTML form handling with shared Fetch-based authentication requests
 - jQuery for browser interactions and AJAX requests
 - Bootstrap 3/4 styles and components
 - DataTables and DataTables Buttons
@@ -198,10 +212,22 @@ MONGODB_URI=mongodb+srv://your-user:your-password@your-cluster/mobile_seize_db
 SESSION_SECRET=replace-with-a-long-random-secret
 GMAIL_USER=your-email@example.com
 GMAIL_PASS=your-app-password
+SMTP_HOST=
+SMTP_PORT=587
+SMTP_SECURE=
+SMTP_USER=
+SMTP_PASS=
+SMTP_REJECT_UNAUTHORIZED=true
+EMAIL_FROM_NAME=GBR Mobile Storage
+EMAIL_FROM_ADDRESS=
+COLLEGE_NAME=Aditya College of Institutions
+COLLEGE_ADDRESS=Aditya PG College, Ayodhya Nagar, Kakinada, Andhra Pradesh 533437
+COLLEGE_PHONE=0884-2346661
 PUBLIC_APP_URL=https://your-domain.example
 ```
 
-Render does not receive your local `.env` file (`.env` is gitignored). Open the web service's **Environment** settings and add `MONGODB_URI`, `SESSION_SECRET`, `GMAIL_USER`, `GMAIL_PASS`, and `PUBLIC_APP_URL` there. Set `PUBLIC_APP_URL` to the deployed HTTPS origin so verification links point to the correct service. Set `NODE_ENV` to `production` if it is not already set; Render provides `PORT` automatically. Generate `SESSION_SECRET` with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` and paste the output as the value. Keep the secret stable between deploys so existing sessions remain valid. After saving the variables, redeploy the service.
+Render does not receive your local `.env` file (`.env` is gitignored). Open the web service's **Environment** settings and add the values shown above. `EMAIL_FROM_ADDRESS` may be left blank to use `GMAIL_USER`; a custom address must be authorized by Gmail. Set `PUBLIC_APP_URL` to the deployed HTTPS origin so verification links point to the correct service. Set `NODE_ENV` to `production` if it is not already set; Render provides `PORT` automatically. Generate `SESSION_SECRET` with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` and paste the output as the value. Keep the secret stable between deploys so existing sessions remain valid. After saving the variables, redeploy the service.
+Render does not receive your local `.env` file (`.env` is gitignored). Open the web service's **Environment** settings and add the values shown above. `EMAIL_FROM_ADDRESS` may be left blank to use `GMAIL_USER`; a custom address must be authorized by Gmail. Leave `SMTP_HOST` blank to use Gmail. Set `PUBLIC_APP_URL` to the deployed HTTPS origin so verification links point to the correct service. Set `NODE_ENV` to `production` if it is not already set; Render provides `PORT` automatically. Generate `SESSION_SECRET` with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` and paste the output as the value. Keep the secret stable between deploys so existing sessions remain valid. After saving the variables, redeploy the service.
 
 Gmail requires an app password when two-step verification is enabled. Never commit real credentials, database connection strings, or app passwords to source control. Rotate any credentials that were previously present in a local or public `.env` file.
 
